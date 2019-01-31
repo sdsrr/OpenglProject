@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1304830080 source:e:\gamedev\opengl\trunk\gltools\glbatch.cpp
+	<GLBatch.h>
+	<GLShaderManager.h>
+
+1492414898 source:e:\gamedev\opengl\trunk\gltools\glshadermanager.cpp
+	<GLShaderManager.h>
+	<GLTools.h>
+	<stdarg.h>
+
+1492414898 source:e:\gamedev\opengl\trunk\gltools\gltools.cpp
+	<GLTools.h>
+	<math3d.h>
+	<GLTriangleBatch.h>
+	<stdio.h>
+	<assert.h>
+	<stdarg.h>
+	<cstdlib>
+	<unistd.h>
+
+1304830080 source:e:\gamedev\opengl\trunk\gltools\gltrianglebatch.cpp
+	<GLTriangleBatch.h>
+	<GLShaderManager.h>
+
+1304830080 source:e:\gamedev\opengl\trunk\gltools\math3d.cpp
+	<math3d.h>
+
+1492425304 source:e:\gamedev\opengl\trunk\gltools\glew.c
+	<GL/glew.h>
+	<GL/osmesa.h>
+	<GL/eglew.h>
+	<GL/wglew.h>
+	<GL/glxew.h>
+	<stddef.h>
+	<dlfcn.h>
+	<stdio.h>
+	<stdlib.h>
+	<stdlib.h>
+	<string.h>
+	<AvailabilityMacros.h>
+	<dlfcn.h>
+	<mach-o/dyld.h>
+

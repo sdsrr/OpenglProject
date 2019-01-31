@@ -1,0 +1,10 @@
+#version 330
+layout (location = 0) in vec3 vVertex;
+layout (location = 1) in vec3 vColor;
+out vec4 fragCol;
+
+void main(void)
+{
+    fragCol = vec4(1,0,0,1);
+    gl_Position = vec4(vVertex, 1);
+}

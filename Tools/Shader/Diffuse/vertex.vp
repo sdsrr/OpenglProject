@@ -1,0 +1,15 @@
+#version 330
+
+layout (location = 0) in vec3 vVertex;
+layout (location = 1) in vec3 vNormal;
+
+uniform mat4 mvpMatrix;
+uniform vec4 color;
+
+out vec4 fragCol;
+
+void main(void)
+{
+    fragCol = color;
+    gl_Position = vec4(vVertex,1) * mvpMatrix;
+}
