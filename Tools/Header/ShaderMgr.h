@@ -27,6 +27,12 @@ private:
     GLint texture2dArrayShader_iColor;
     GLint texture2dArrayShader_iColorMap;
     GLint texture2dArrayShader_iTime;
+
+    GLint textureCubeMapShader;
+    GLint textureCubeMapShader_iMatrix;
+    GLint textureCubeMapShader_iColor;
+    GLint textureCubeMapShader_iCubeMap;
+
 public:
     void OnInit();
     void OnUnInit();
@@ -36,7 +42,7 @@ public:
     void UseDiffuse(M3DVector4f color, const M3DMatrix44f mvpMatrix);
     void UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture);
     void UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture, GLuint time);
-
+    void UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint cubeMap);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源

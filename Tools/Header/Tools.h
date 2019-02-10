@@ -23,19 +23,19 @@
 #endif
 
 #define random(x) (rand()%x)
-#define clamp(ret, x, min, max) if(x<min)ret=min; else if(x>max) ret=max;else ret=x;
+
 class Util
 {
 public:
+    static const char* projectPath;
+    static char* GetFullPath(const char* relativePath);
     static void printstring(int count, char* str, ...);
     static void printmatrix44f(M3DMatrix44f matrix);
     static void printmatrix44f(const M3DMatrix44f matrix);
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
+    static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
 };
-
-
-
 
 
 #endif // TOOLS__

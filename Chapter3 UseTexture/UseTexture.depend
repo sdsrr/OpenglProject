@@ -257,7 +257,7 @@
 	<GLBatch.h>
 	<GLTriangleBatch.h>
 
-1469329178 c:\program files (x86)\codeblocks\mingw\include\gl\glew.h
+1469321978 c:\program files (x86)\codeblocks\mingw\include\gl\glew.h
 	<stddef.h>
 	<inttypes.h>
 	<stdint.h>
@@ -350,5 +350,34 @@
 	"../Header/ShaderMgr.h"
 
 1548923350 source:e:\gamedev\opengl\trunk\chapter3 usetexture\main.cpp
+	"../Tools/Header/ShaderMgr.h"
+
+1549172991 source:e:\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
+
+1549170407 e:\opengl\trunk\openglproject\tools\header\shadermgr.h
+	"Tools.h"
+
+1549169357 e:\opengl\trunk\openglproject\tools\header\tools.h
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<math3d.h>
+	<stdarg.h>
+	<string.h>
+	<GLTools.h>
+	<GLBatch.h>
+	<GLFrustum.h>
+	<GLMatrixStack.h>
+	<GLGeometryTransform.h>
+	<iostream>
+	<glut/glut.h>
+	<GL/glut.h>
+
+1549172198 source:e:\opengl\trunk\openglproject\tools\sources\tools.cpp
+	"../Header/Tools.h"
+
+1549175873 source:e:\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 

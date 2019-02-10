@@ -44,6 +44,8 @@
 		</Linker>
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
+		<Unit filename="../Tools/Shader/Cubemap/fragment.fp" />
+		<Unit filename="../Tools/Shader/Cubemap/vertex.vp" />
 		<Unit filename="../Tools/Shader/Diffuse/fragment.fp" />
 		<Unit filename="../Tools/Shader/Diffuse/vertex.vp" />
 		<Unit filename="../Tools/Shader/SolidColor/fragment.fp" />
@@ -54,9 +56,41 @@
 		<Unit filename="../Tools/Shader/TextureArray/vertex.vp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />
-		<Unit filename="Texture/brick.tga" />
-		<Unit filename="Texture/ceiling.tga" />
-		<Unit filename="Texture/floor.tga" />
+		<Unit filename="Texture/moon00.tga" />
+		<Unit filename="Texture/moon01.tga" />
+		<Unit filename="Texture/moon02.tga" />
+		<Unit filename="Texture/moon03.tga" />
+		<Unit filename="Texture/moon04.tga" />
+		<Unit filename="Texture/moon05.tga" />
+		<Unit filename="Texture/moon06.tga" />
+		<Unit filename="Texture/moon07.tga" />
+		<Unit filename="Texture/moon08.tga" />
+		<Unit filename="Texture/moon09.tga" />
+		<Unit filename="Texture/moon10.tga" />
+		<Unit filename="Texture/moon11.tga" />
+		<Unit filename="Texture/moon12.tga" />
+		<Unit filename="Texture/moon13.tga" />
+		<Unit filename="Texture/moon14.tga" />
+		<Unit filename="Texture/moon15.tga" />
+		<Unit filename="Texture/moon16.tga" />
+		<Unit filename="Texture/moon17.tga" />
+		<Unit filename="Texture/moon18.tga" />
+		<Unit filename="Texture/moon19.tga" />
+		<Unit filename="Texture/moon20.tga" />
+		<Unit filename="Texture/moon21.tga" />
+		<Unit filename="Texture/moon22.tga" />
+		<Unit filename="Texture/moon23.tga" />
+		<Unit filename="Texture/moon24.tga" />
+		<Unit filename="Texture/moon25.tga" />
+		<Unit filename="Texture/moon26.tga" />
+		<Unit filename="Texture/moon27.tga" />
+		<Unit filename="Texture/moon28.tga" />
+		<Unit filename="Texture/neg_x.tga" />
+		<Unit filename="Texture/neg_y.tga" />
+		<Unit filename="Texture/neg_z.tga" />
+		<Unit filename="Texture/pos_x.tga" />
+		<Unit filename="Texture/pos_y.tga" />
+		<Unit filename="Texture/pos_z.tga" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

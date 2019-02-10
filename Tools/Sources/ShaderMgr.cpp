@@ -3,27 +3,34 @@
 void ShaderMgr::OnInit()
 {
     //单色
-    solidShader = LoadShader("E:/GameDev/Opengl/trunk/Tools/Shader/SolidColor/vertex.vp", "E:/GameDev/Opengl/trunk/Tools/Shader/SolidColor/fragment.fp");
+    solidShader = LoadShader(Util::GetFullPath("Tools/Shader/SolidColor/vertex.vp"), Util::GetFullPath("Tools/Shader/SolidColor/fragment.fp"));
 
     //漫反射
-    diffuseShader = LoadShader("E:/GameDev/Opengl/trunk/Tools/Shader/Diffuse/vertex.vp", "E:/GameDev/Opengl/trunk/Tools/Shader/Diffuse/fragment.fp");
+    diffuseShader = LoadShader(Util::GetFullPath("Tools/Shader/Diffuse/vertex.vp"), Util::GetFullPath("Tools/Shader/Diffuse/fragment.fp"));
     diffuseShader_iMatrix = glGetUniformLocation(diffuseShader, "mvpMatrix");
     diffuseShader_iColor = glGetUniformLocation(diffuseShader, "color");
 
     //2d纹理
-    texture2dShader = LoadShader("E:/GameDev/Opengl/trunk/Tools/Shader/Texture2D/vertex.vp", "E:/GameDev/Opengl/trunk/Tools/Shader/Texture2D/fragment.fp");
+    texture2dShader = LoadShader(Util::GetFullPath("Tools/Shader/Texture2D/vertex.vp"), Util::GetFullPath("Tools/Shader/Texture2D/fragment.fp"));
     texture2dShader_iMatrix = glGetUniformLocation(texture2dShader, "mvpMatrix");
     texture2dShader_iColor = glGetUniformLocation(texture2dShader, "color");
     texture2dShader_iColorMap = glGetUniformLocation(texture2dShader, "colorMap");
 
     //2d纹理数组
-    texture2dArrayShader = LoadShader("E:/GameDev/Opengl/trunk/Tools/Shader/TextureArray/vertex.vp", "E:/GameDev/Opengl/trunk/Tools/Shader/TextureArray/fragment.fp");
+    texture2dArrayShader = LoadShader(Util::GetFullPath("Tools/Shader/TextureArray/vertex.vp"), Util::GetFullPath("Tools/Shader/TextureArray/fragment.fp"));
     texture2dArrayShader_iMatrix = glGetUniformLocation(texture2dArrayShader, "mvpMatrix");
     texture2dArrayShader_iColor = glGetUniformLocation(texture2dArrayShader, "color");
     texture2dArrayShader_iColorMap = glGetUniformLocation(texture2dArrayShader, "colorMap");
     texture2dArrayShader_iTime = glGetUniformLocation(texture2dArrayShader, "time");
+
+    //cubemap
+    textureCubeMapShader = LoadShader(Util::GetFullPath("Tools/Shader/Cubemap/vertex.vp"), Util::GetFullPath("Tools/Shader/Cubemap/fragment.fp"));
+    textureCubeMapShader_iMatrix = glGetUniformLocation(textureCubeMapShader, "mvpMatrix");
+    textureCubeMapShader_iColor = glGetUniformLocation(textureCubeMapShader, "color");
+    textureCubeMapShader_iCubeMap = glGetUniformLocation(textureCubeMapShader, "cubeMap");
+
     //若为-1表示未取得index可能变量未使用被优化掉了
-    printf("%d  %d  %d", texture2dArrayShader_iMatrix, texture2dArrayShader_iColor, texture2dArrayShader_iColorMap);
+    //printf("%d  %d  %d", textureCubeMapShader_iMatrix, textureCubeMapShader_iColor, textureCubeMapShader_iCubeMap);
 }
 
 void ShaderMgr::OnUnInit()
@@ -32,6 +39,7 @@ void ShaderMgr::OnUnInit()
     glDeleteProgram(diffuseShader);
     glDeleteProgram(texture2dShader);
     glDeleteProgram(texture2dArrayShader);
+    glDeleteProgram(textureCubeMapShader);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -160,8 +168,20 @@ void ShaderMgr::UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix,
     glUseProgram(texture2dArrayShader);
     glUniformMatrix4fv(texture2dArrayShader_iMatrix, 1, GL_TRUE, mvpMatrix);
     glUniform4fv(texture2dArrayShader_iColor,1,color);
+    glUniform1f(texture2dArrayShader_iTime, time);
+
     glActiveTexture(0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
     glUniform1i(texture2dShader_iColorMap, 0);
-    glUniform1i(texture2dArrayShader_iTime, time);
+}
+
+void ShaderMgr::UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint cubeMap)
+{
+    glUseProgram(textureCubeMapShader);
+    glUniformMatrix4fv(textureCubeMapShader_iMatrix, 1, GL_TRUE, mvpMatrix);
+    glUniform4fv(textureCubeMapShader_iColor, 1, color);
+
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+    glUniform1i(textureCubeMapShader_iCubeMap, 0);
 }
