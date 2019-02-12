@@ -1,6 +1,6 @@
 #include "../Header/Tools.h"
 
-const char* Util::projectPath = "E:/Opengl/trunk/OpenglProject/";
+const char* Util::projectPath = "E:/GameDev/Opengl/trunk/OpenglProject/";
 
 void Util::printstring(int count, char* str, ...)
 {
@@ -133,6 +133,6 @@ char* Util::GetFullPath(const char* relativePath)
     static char fullPath[256][256];
     strcpy(fullPath[index], projectPath);
     strcat(fullPath[index], relativePath);
-    //printf("full path %s\n", fullPath);
+    //printf("full path %s\n", fullPath[index]);
     return fullPath[index++];
 }

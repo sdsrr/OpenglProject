@@ -45,12 +45,12 @@ const char* textures[] =
 
 const char* cubemap[] =
 {
-    "Chapter3 UseTexture/Texture/neg_x.tga",
-    "Chapter3 UseTexture/Texture/pos_x.tga",
-    "Chapter3 UseTexture/Texture/neg_y.tga",
-    "Chapter3 UseTexture/Texture/pos_y.tga",
-    "Chapter3 UseTexture/Texture/neg_z.tga",
-    "Chapter3 UseTexture/Texture/pos_z.tga",
+    "Tools/Texture/Cubemap/neg_x.tga",
+    "Tools/Texture/Cubemap/pos_x.tga",
+    "Tools/Texture/Cubemap/neg_y.tga",
+    "Tools/Texture/Cubemap/pos_y.tga",
+    "Tools/Texture/Cubemap/neg_z.tga",
+    "Tools/Texture/Cubemap/pos_z.tga",
 };
 
 
@@ -82,9 +82,12 @@ static void display(void)
     //shaderMgr.UseTexture2d(color, tranformPipeline.GetModelViewProjectionMatrix(), textureID);
 
     //use texture2d array
-    //GLuint tick = (time++)/16%29;
-    //shaderMgr.UseTextureArray(color, tranformPipeline.GetModelViewProjectionMatrix(), textureArrayID, tick);
-    //triangleBathch.Draw();
+    /*
+    GLuint tick = (time++)/16%29;
+    shaderMgr.UseTextureArray(color, tranformPipeline.GetModelViewProjectionMatrix(), textureArrayID, tick);
+    triangleBathch.Draw();
+    */
+
     //use cubemap
     shaderMgr.UseCubeMap(color, tranformPipeline.GetModelViewProjectionMatrix(), textureCubemap);
     cubeBatch.Draw();
@@ -104,11 +107,17 @@ static void key(unsigned char key, int x, int y)
     case 'd':
         modelviewMatrixStack.Translate(-speed, 0, 0);
         break;
-    case 'w':
-        modelviewMatrixStack.Translate(0, 0, -speed);
+	case 's':
+        modelviewMatrixStack.Translate(0, speed, 0);
         break;
-    case 's':
+    case 'w':
+        modelviewMatrixStack.Translate(0, -speed, 0);
+        break;
+	case 'e':
         modelviewMatrixStack.Translate(0, 0, speed);
+        break;
+    case 'q':
+        modelviewMatrixStack.Translate(0, 0, -speed);
         break;
     }
 
@@ -163,13 +172,14 @@ void OnStartUp()
 */
     triangleBathch.End();
 
-    gltMakeCube(cubeBatch, 2);
+    gltMakeCube(cubeBatch, 1);
 
     //init matrix
     tranformPipeline.SetMatrixStacks(modelviewMatrixStack, projectMatrixStack);
     frustum.SetPerspective(50, 640/480, 1, 100);
     projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewMatrixStack.Translate(0,0,-3);
+    modelviewMatrixStack.Translate(0,0,-5);
+
 }
 
 void OnShutUp()
@@ -193,7 +203,7 @@ int main(int argc, char *argv[])
     glutKeyboardFunc(key);
     glutIdleFunc(idle);
 
-    glEnable(GL_DEPTH);
+    glEnable(GL_DEPTH_TEST);
     if (glewInit() != GLEW_OK)
     {
         printf("glew init failed..\n");

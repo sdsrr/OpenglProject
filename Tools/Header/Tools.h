@@ -10,6 +10,7 @@
 #include <string.h>
 #include <GLTools.h>
 #include <GLBatch.h>
+#include <GLFrame.h>
 #include <GLFrustum.h>
 #include <GLMatrixStack.h>
 #include <GLGeometryTransform.h>

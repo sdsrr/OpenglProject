@@ -33,6 +33,9 @@ private:
     GLint textureCubeMapShader_iColor;
     GLint textureCubeMapShader_iCubeMap;
 
+    GLint textureSkybox;
+    GLint textureSkybox_iCubeMap;
+    GLint textureSkybox_iMatrix;
 public:
     void OnInit();
     void OnUnInit();
@@ -43,6 +46,7 @@ public:
     void UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture);
     void UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture, GLuint time);
     void UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint cubeMap);
+    void UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint cubeMap);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源

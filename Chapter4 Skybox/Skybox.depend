@@ -1,8 +1,11 @@
 # depslib dependency file v1.0
-1548924055 source:e:\gamedev\opengl\trunk\tools\sources\tools.cpp
-	"../Header/Tools.h"
+1549959841 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
 
-1548930020 e:\gamedev\opengl\trunk\tools\header\tools.h
+1549891665 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+	"Tools.h"
+
+1549963586 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -12,6 +15,7 @@
 	<string.h>
 	<GLTools.h>
 	<GLBatch.h>
+	<GLFrame.h>
 	<GLFrustum.h>
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
@@ -340,73 +344,9 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1548819586 source:e:\gamedev\opengl\trunk\usetexture\main.cpp
-	"../Tools/Header/ShaderMgr.h"
-
-1548928411 e:\gamedev\opengl\trunk\tools\header\shadermgr.h
-	"Tools.h"
-
-1548927560 source:e:\gamedev\opengl\trunk\tools\sources\shadermgr.cpp
-	"../Header/ShaderMgr.h"
-
-1548923350 source:e:\gamedev\opengl\trunk\chapter3 usetexture\main.cpp
-	"../Tools/Header/ShaderMgr.h"
-
-1549172991 source:e:\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
-	"../Header/ShaderMgr.h"
-
-1549170407 e:\opengl\trunk\openglproject\tools\header\shadermgr.h
-	"Tools.h"
-
-1549169357 e:\opengl\trunk\openglproject\tools\header\tools.h
-	<windows.h>
-	<stdio.h>
-	<stdlib.h>
-	<math.h>
-	<math3d.h>
-	<stdarg.h>
-	<string.h>
-	<GLTools.h>
-	<GLBatch.h>
-	<GLFrustum.h>
-	<GLMatrixStack.h>
-	<GLGeometryTransform.h>
-	<iostream>
-	<glut/glut.h>
-	<GL/glut.h>
-
-1549172198 source:e:\opengl\trunk\openglproject\tools\sources\tools.cpp
-	"../Header/Tools.h"
-
-1549175873 source:e:\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
-	"../Tools/Header/ShaderMgr.h"
-
-1549868098 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
-	"../Header/ShaderMgr.h"
-
-1549847274 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
-	"Tools.h"
-
-1549847274 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
-	<windows.h>
-	<stdio.h>
-	<stdlib.h>
-	<math.h>
-	<math3d.h>
-	<stdarg.h>
-	<string.h>
-	<GLTools.h>
-	<GLBatch.h>
-	<GLFrustum.h>
-	<GLMatrixStack.h>
-	<GLGeometryTransform.h>
-	<iostream>
-	<glut/glut.h>
-	<GL/glut.h>
-
-1549855156 source:e:\gamedev\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
-	"../Tools/Header/ShaderMgr.h"
-
 1549855190 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
+
+1549965307 source:e:\gamedev\opengl\trunk\openglproject\chapter4 skybox\main.cpp
+	"../Tools/Header/ShaderMgr.h"
 

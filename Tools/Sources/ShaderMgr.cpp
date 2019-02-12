@@ -29,6 +29,10 @@ void ShaderMgr::OnInit()
     textureCubeMapShader_iColor = glGetUniformLocation(textureCubeMapShader, "color");
     textureCubeMapShader_iCubeMap = glGetUniformLocation(textureCubeMapShader, "cubeMap");
 
+    //skybox
+    textureSkybox = LoadShader(Util::GetFullPath("Tools/Shader/SkyBox/vertex.vp"), Util::GetFullPath("Tools/Shader/SkyBox/fragment.fp"));
+    textureSkybox_iCubeMap = glGetUniformLocation(textureSkybox, "colorMap");
+    textureSkybox_iMatrix = glGetUniformLocation(textureSkybox, "mvpMatrix");
     //若为-1表示未取得index可能变量未使用被优化掉了
     //printf("%d  %d  %d", textureCubeMapShader_iMatrix, textureCubeMapShader_iColor, textureCubeMapShader_iCubeMap);
 }
@@ -40,6 +44,7 @@ void ShaderMgr::OnUnInit()
     glDeleteProgram(texture2dShader);
     glDeleteProgram(texture2dArrayShader);
     glDeleteProgram(textureCubeMapShader);
+    glDeleteProgram(textureSkybox);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -184,4 +189,13 @@ void ShaderMgr::UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLui
     glActiveTexture(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
     glUniform1i(textureCubeMapShader_iCubeMap, 0);
+}
+
+void ShaderMgr::UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint cubeMap)
+{
+    glUseProgram(textureSkybox);
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+    glUniform1i(textureSkybox_iCubeMap, 0);
+    glUniformMatrix4fv(textureSkybox_iMatrix, 1, GL_TRUE, mvpMatrix);
 }
