@@ -56,11 +56,12 @@ void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
     glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, eFormat, GL_UNSIGNED_BYTE, pBits);
     //printf("path:%s width:%d  height:%d", filepath, width, height);
     free(pBits);
-
+    /*
     if(filter == GL_LINEAR_MIPMAP_LINEAR ||
        filter == GL_LINEAR_MIPMAP_NEAREST ||
        filter == GL_NEAREST_MIPMAP_LINEAR ||
        filter == GL_NEAREST_MIPMAP_NEAREST)
+    */
         glGenerateMipmap(GL_TEXTURE_2D);
 }
 

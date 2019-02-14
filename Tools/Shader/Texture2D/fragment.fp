@@ -9,5 +9,5 @@ uniform vec4 color;
 
 void main(void)
 {
-    vFragColor = color+texture(colorMap, texCoords.st);
+    vFragColor = color*texture(colorMap, texCoords.st);
 }
