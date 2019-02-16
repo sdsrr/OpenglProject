@@ -1,0 +1,14 @@
+#version 330
+
+layout (location = 0) in vec4 vVertex;
+layout (location = 1) in vec4 vColor;
+uniform mat4 mvpMatrix;
+uniform float size;
+out vec4 color;
+
+void main(void)
+{
+    color = vColor;
+    gl_PointSize = size;
+    gl_Position = vVertex * mvpMatrix;
+}

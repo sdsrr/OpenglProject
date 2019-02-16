@@ -33,8 +33,14 @@ void ShaderMgr::OnInit()
     textureSkybox = LoadShader(Util::GetFullPath("Tools/Shader/SkyBox/vertex.vp"), Util::GetFullPath("Tools/Shader/SkyBox/fragment.fp"));
     textureSkybox_iCubeMap = glGetUniformLocation(textureSkybox, "colorMap");
     textureSkybox_iMatrix = glGetUniformLocation(textureSkybox, "mvpMatrix");
+
+    //spritepoint
+    textureSprite = LoadShader(Util::GetFullPath("Tools/Shader/SpritePoint/vertex.vp"), Util::GetFullPath("Tools/Shader/SpritePoint/fragment.fp"));
+    textureSprite_iMatrix = glGetUniformLocation(textureSprite, "mvpMatrix");
+    textureSprite_iColorMap = glGetUniformLocation(textureSprite, "colorMap");
+    textureSprite_iSize = glGetUniformLocation(textureSprite, "size");
     //若为-1表示未取得index可能变量未使用被优化掉了
-    //printf("%d  %d  %d", textureCubeMapShader_iMatrix, textureCubeMapShader_iColor, textureCubeMapShader_iCubeMap);
+    //printf("%d  %d  %d", textureSprite_iMatrix, textureSprite_iColor, textureSprite_iColorMap);
 }
 
 void ShaderMgr::OnUnInit()
@@ -45,6 +51,7 @@ void ShaderMgr::OnUnInit()
     glDeleteProgram(texture2dArrayShader);
     glDeleteProgram(textureCubeMapShader);
     glDeleteProgram(textureSkybox);
+    glDeleteProgram(textureSprite);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -198,4 +205,14 @@ void ShaderMgr::UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint cubeMap)
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
     glUniform1i(textureSkybox_iCubeMap, 0);
     glUniformMatrix4fv(textureSkybox_iMatrix, 1, GL_TRUE, mvpMatrix);
+}
+
+void ShaderMgr::UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint texture, GLfloat size)
+{
+    glUseProgram(textureSprite);
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(textureSprite_iColorMap, 0);
+    glUniform1f(textureSprite_iSize, size);
+    glUniformMatrix4fv(textureSprite_iMatrix, 1, GL_TRUE, mvpMatrix);
 }
