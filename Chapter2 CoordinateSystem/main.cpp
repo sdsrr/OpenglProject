@@ -59,7 +59,6 @@ static void idle(void)
     glutPostRedisplay();
 }
 
-GLfloat vertexs[] = {-0.5f,0.0f,0.0f, 0.5f,0.0f,0.0f, 0.0f,0.5f,0.0f};
 GLfloat vRed[] = {1.0f, 0.0f, 0.0f ,0.0f};
 M3DVector4f color = {0.0f, 0.5f ,1.0f ,1.0f};
 float lastTime = 0;
@@ -130,7 +129,12 @@ void OnStartUp()
     shaderMgr.OnInit();
     shaderMgr_.InitializeStockShaders();
     batch.Begin(GL_TRIANGLES, 3);
-    batch.CopyVertexData3f(vertexs);
+    batch.Color4f(1,0,0,1);
+    batch.Vertex3f(-0.5f,0.0f,0.0f);
+    batch.Color4f(0,1,0,1);
+    batch.Vertex3f(0.5f,0.0f,0.0f);
+    batch.Color4f(0,0,1,1);
+    batch.Vertex3f(0.0f,0.5f,0.0f);
     batch.End();
 }
 

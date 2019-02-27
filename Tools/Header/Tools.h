@@ -25,6 +25,7 @@
 
 #define random(x) (rand()%x)
 
+
 class Util
 {
 public:
@@ -36,7 +37,9 @@ public:
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
+    static void executeKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack);
 };
+
 
 
 #endif // TOOLS__

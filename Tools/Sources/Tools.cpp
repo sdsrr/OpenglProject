@@ -35,6 +35,35 @@ void Util::printmatrix44f(const M3DMatrix44f matrix)
     std::cout<<'\n';
 }
 
+
+void Util::executeKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack)
+{
+    float speed = 0.5f;
+    switch (key)
+    {
+        case 'a':
+            modelviewStack.Translate(speed,0,0);
+            break;
+        case 'd':
+            modelviewStack.Translate(-speed,0,0);
+            break;
+        case 'w':
+            modelviewStack.Translate(0,-speed,0);
+            break;
+        case 's':
+            modelviewStack.Translate(0,speed,0);
+            break;
+        case 'q':
+            modelviewStack.Translate(0,0,-speed);
+            break;
+        case 'e':
+            modelviewStack.Translate(0,0,speed);
+            break;
+    }
+
+    glutPostRedisplay();
+}
+
 void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
 {
     GLenum eFormat;

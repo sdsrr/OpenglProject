@@ -771,3 +771,33 @@
 1548416345 source:e:\gamedev\opengl\trunk\chapter2 coordinatesystem\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 
+1550312275 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
+
+1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+	"Tools.h"
+
+1549963586 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<math3d.h>
+	<stdarg.h>
+	<string.h>
+	<GLTools.h>
+	<GLBatch.h>
+	<GLFrame.h>
+	<GLFrustum.h>
+	<GLMatrixStack.h>
+	<GLGeometryTransform.h>
+	<iostream>
+	<glut/glut.h>
+	<GL/glut.h>
+
+1550234413 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+	"../Header/Tools.h"
+
+1550312547 source:e:\gamedev\opengl\trunk\openglproject\chapter2 coordinatesystem\main.cpp
+	"../Tools/Header/ShaderMgr.h"
+
