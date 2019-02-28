@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <BrowseTracker_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="4">
-		<Cursor position="1114" topLine="11" />
-	</File>
 	<File name="..\Tools\Shader\Diffuse\fragment.fp" open="1" top="0" tabpos="3">
 		<Cursor position="135" topLine="0" />
 	</File>
-	<File name="..\Tools\Shader\Diffuse\vertex.vp" open="1" top="0" tabpos="2">
-		<Cursor position="227" topLine="0" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+	<File name="..\Tools\Shader\Diffuse\vertex.vp" open="1" top="0" tabpos="3">
+		<Cursor position="132" topLine="0" />
 	</File>
 	<File name="..\Tools\Sources\ShaderMgr.cpp" open="1" top="0" tabpos="2">
 		<Cursor position="4118" topLine="18" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
 	</File>
 	<File name="..\Tools\Sources\Tools.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="882" topLine="27" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+		<Cursor position="5128" topLine="128" />
 	</File>
 	<File name="main.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="1760" topLine="40" />
-		<BrowseMarks positions="1058,2877" />
+		<Cursor position="1930" topLine="54" />
+		<BrowseMarks positions="1414,2943" />
 		<Book_Marks positions="" />
+	</File>
+	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="4">
+		<Cursor position="1114" topLine="11" />
 	</File>
 	<File name="..\Tools\Header\Tools.h" open="0" top="0" tabpos="3">
 		<Cursor position="831" topLine="8" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
 	</File>
 </BrowseTracker_layout_file>
