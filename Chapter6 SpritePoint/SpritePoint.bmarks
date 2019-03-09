@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <BrowseTracker_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="..\Tools\Shader\SpritePoint\vertex.vp" open="1" top="0" tabpos="2">
-		<Cursor position="217" topLine="0" />
-		<BrowseMarks positions="180" />
-		<Book_Marks positions="" />
-	</File>
-	<File name="..\Tools\Header\Tools.h" open="1" top="0" tabpos="6">
-		<Cursor position="815" topLine="8" />
+	<File name="..\Tools\Header\Tools.h" open="1" top="1" tabpos="2">
+		<Cursor position="474" topLine="12" />
 		<BrowseMarks positions="" />
 		<Book_Marks positions="" />
 	</File>
-	<File name="..\Tools\Sources\Tools.cpp" open="1" top="0" tabpos="7">
-		<Cursor position="1600" topLine="63" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="470" topLine="8" />
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="3243" topLine="87" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+		<BrowseMarks positions="130" />
 	</File>
-	<File name="..\Tools\Sources\ShaderMgr.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="8187" topLine="181" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="2538" />
-	</File>
-	<File name="..\Tools\Header\ShaderMgr.h" open="1" top="0" tabpos="5">
+	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="5">
 		<Cursor position="982" topLine="24" />
 	</File>
-	<File name="..\Tools\Shader\SpritePoint\fragment.fp" open="1" top="0" tabpos="3">
+	<File name="..\Tools\Shader\SpritePoint\fragment.fp" open="0" top="0" tabpos="3">
 		<Cursor position="160" topLine="0" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+	</File>
+	<File name="..\Tools\Shader\SpritePoint\vertex.vp" open="0" top="0" tabpos="2">
+		<Cursor position="217" topLine="0" />
+		<BrowseMarks positions="180" />
+	</File>
+	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="7539" topLine="181" />
+		<Book_Marks positions="2538" />
 	</File>
 </BrowseTracker_layout_file>

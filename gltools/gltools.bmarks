@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<BrowseTracker_layout_file>
+	<ActiveTarget name="Release" />
+	<File name="glew.c" open="1" top="0" tabpos="0">
+		<Cursor position="154452" topLine="2796" />
+		<BrowseMarks positions="154070" />
+		<Book_Marks positions="" />
+	</File>
+	<File name="GLTools.cpp" open="0" top="0" tabpos="8">
+		<Cursor position="33469" topLine="1036" />
+		<BrowseMarks positions="" />
+		<Book_Marks positions="" />
+	</File>
+</BrowseTracker_layout_file>
