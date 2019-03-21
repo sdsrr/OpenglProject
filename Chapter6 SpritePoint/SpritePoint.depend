@@ -439,9 +439,10 @@
 	"_winsock.h"
 	"wtypes.h"
 
-1550304493 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
+1552303480 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
+	<cstdlib>
 
 1437525942 c:\program files (x86)\codeblocks\mingw\include\gl\freeglut_std.h
 	<windows.h>

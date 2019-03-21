@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <BrowseTracker_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="glew.c" open="1" top="0" tabpos="0">
-		<Cursor position="154452" topLine="2796" />
-		<BrowseMarks positions="154070" />
-		<Book_Marks positions="" />
+	<File name="GLBatch.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="3072" topLine="68" />
 	</File>
-	<File name="GLTools.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="33469" topLine="1036" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
+	<File name="GLTools.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="34134" topLine="1053" />
+	</File>
+	<File name="GLShaderManager.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="20667" topLine="523" />
 	</File>
 </BrowseTracker_layout_file>

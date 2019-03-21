@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <BrowseTracker_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="..\Tools\Header\Tools.h" open="1" top="1" tabpos="2">
-		<Cursor position="474" topLine="12" />
-		<BrowseMarks positions="" />
-		<Book_Marks positions="" />
-	</File>
-	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="470" topLine="8" />
-	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="3243" topLine="87" />
-		<BrowseMarks positions="130" />
-	</File>
 	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="5">
 		<Cursor position="982" topLine="24" />
+	</File>
+	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="7539" topLine="181" />
+		<Book_Marks positions="2538" />
+	</File>
+	<File name="..\Tools\Header\Tools.h" open="0" top="0" tabpos="2">
+		<Cursor position="1121" topLine="12" />
+	</File>
+	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="806" topLine="47" />
 	</File>
 	<File name="..\Tools\Shader\SpritePoint\fragment.fp" open="0" top="0" tabpos="3">
 		<Cursor position="160" topLine="0" />
@@ -23,8 +21,9 @@
 		<Cursor position="217" topLine="0" />
 		<BrowseMarks positions="180" />
 	</File>
-	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="4">
-		<Cursor position="7539" topLine="181" />
-		<Book_Marks positions="2538" />
+	<File name="main.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="301" topLine="0" />
+		<BrowseMarks positions="132" />
+		<Book_Marks positions="3243" />
 	</File>
 </BrowseTracker_layout_file>

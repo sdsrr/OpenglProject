@@ -5,7 +5,7 @@
 1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1550486192 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1552110466 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -278,11 +278,11 @@
 1341006776 c:\program files (x86)\codeblocks\mingw\include\stdint.h
 	<stddef.h>
 
-1301111164 c:\program files (x86)\codeblocks\mingw\include\gl\glu.h
+1548158464 c:\program files (x86)\codeblocks\mingw\include\gl\glu.h
 	<stddef.h>
 	<GL/gl.h>
 
-1301111164 c:\program files (x86)\codeblocks\mingw\include\gl\gl.h
+1548158464 c:\program files (x86)\codeblocks\mingw\include\gl\gl.h
 
 1304830080 c:\program files (x86)\codeblocks\mingw\include\glbatch.h
 	<windows.h>
@@ -344,7 +344,7 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1550486175 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1552110474 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
 1551270565 source:e:\gamedev\opengl\trunk\openglproject\vbo\main.cpp
@@ -354,4 +354,92 @@
 1551332653 source:e:\gamedev\opengl\trunk\openglproject\chapter7 vertexdata\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\w32api.h
+	<sdkddkver.h>
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\sdkddkver.h
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\msvcrtver.h
+	<_mingw.h>
+
+1552023502 c:\program files (x86)\codeblocks\mingw\include\features.h
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\strings.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\wchar.h
+	<_mingw.h>
+	<wctype.h>
+	<sys/types.h>
+	"stdio.h"
+	"stdlib.h"
+	"direct.h"
+	"sys/stat.h"
+	"conio.h"
+	"io.h"
+	"time.h"
+	"locale.h"
+	"process.h"
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\wctype.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\locale.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\alloca.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\direct.h
+	"dos.h"
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\dos.h
+	"io.h"
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\io.h
+	<_mingw.h>
+	<sys/types.h>
+	"stdint.h"
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\sys\stat.h
+	<sys/types.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\conio.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\time.h
+	<sys/types.h>
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\process.h
+	<_mingw.h>
+	<sys/types.h>
+	"stdint.h"
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\dbt.h
+	<windef.h>
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\reason.h
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\_winsock.h
+	<sdkddkver.h>
+	<winsock2.h>
+	<winsock.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\sys\bsdtypes.h
+	<_mingw.h>
+
+1548158450 c:\program files (x86)\codeblocks\mingw\include\sys\time.h
+	<time.h>
+
+1548158464 c:\program files (x86)\codeblocks\mingw\include\nspapi.h
+	"_winsock.h"
+	"wtypes.h"
 
