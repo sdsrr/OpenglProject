@@ -90,7 +90,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
     // load file
     if (LoadShaderFile(fileVertex, vertexShader) == false)
     {
-        Util::printstring(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
+        Util::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         return 0;
@@ -98,7 +98,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
 
     if (LoadShaderFile(fileFragment, fragmentShader) == false)
     {
-        Util::printstring(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
+        Util::PrintString(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         return 0;
@@ -115,7 +115,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
     {
         char logs[1024];
         glGetShaderInfoLog(vertexShader, 1024, NULL, logs);
-        Util::printstring(2, (char*)"vertext shader compile faile ", logs);
+        Util::PrintString(2, (char*)"vertext shader compile faile ", logs);
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         return 0;
@@ -124,7 +124,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
     {
         char logs[1024];
         glGetShaderInfoLog(fragmentShader, 1024, NULL, logs);
-        Util::printstring(2, (char*)"fragment shader compile faile ", logs);
+        Util::PrintString(2, (char*)"fragment shader compile faile ", logs);
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         return 0;

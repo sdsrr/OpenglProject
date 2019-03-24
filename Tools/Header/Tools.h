@@ -1,5 +1,5 @@
 #ifndef TOOLS__LIBRARY
-#define TOOLS__LIBRARY _
+#define TOOLS__LIBRARY
 
 #include <windows.h>
 #include <stdio.h>
@@ -15,6 +15,11 @@
 #include <GLMatrixStack.h>
 #include <GLGeometryTransform.h>
 #include <iostream>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
 
 #ifdef __APPLE__
 #include <glut/glut.h>
@@ -31,16 +36,17 @@ class Util
 public:
     static const char* projectPath;
     static char* GetFullPath(const char* relativePath);
-    static void printstring(int count, char* str, ...);
-    static void printmatrix44f(M3DMatrix44f matrix);
-    static void printmatrix44f(const M3DMatrix44f matrix);
+    static void PrintString(int count, char* str, ...);
+    static void PrintMatrix44f(M3DMatrix44f matrix);
+    static void PrintMatrix44f(const M3DMatrix44f matrix);
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
-    static void executeKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack);
+    static void ExecuteKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack);
+    static void CheckErrors(std::string desc);
+    static bool FileExists(const std::string& abs_filename);
+    static std::string GetBaseDir(const std::string& filepath);
 };
-
-
 
 #endif // TOOLS__
 

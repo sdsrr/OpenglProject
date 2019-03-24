@@ -1,5 +1,5 @@
 #include "../Tools/Header/ShaderMgr.h"
-
+#include "../Tools/Header/Tools.h"
 
 ShaderMgr shaderMgr;
 GLfloat vertexs[] = {
@@ -7,6 +7,8 @@ GLfloat vertexs[] = {
      0.5f, -0.5f, 0.0f,
      0.0f,  0.5f, 0.0f,
 };
+
+M3DVector4f color = {0,1,0,0};
 
 static void resize(int width, int height)
 {
@@ -26,7 +28,7 @@ static void display(void)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
 
-    shaderMgr.UseSolidColor(0,1,0,0);
+    shaderMgr.UseSolidColor(color);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glutSwapBuffers();
