@@ -50,8 +50,8 @@
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />
 		<Unit filename="../Tools/Sources/Trackball.cpp" />
+		<Unit filename="main.cpp" />
 		<Unit filename="trackball.h" />
-		<Unit filename="viewer.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -1,6 +1,6 @@
 #include "../Header/Tools.h"
 
-const char* Util::projectPath = "E:/GameDev/Opengl/trunk/OpenglProject/";
+const char* Util::projectPath = "D:/Project/OpenglProject/trunk/OpenglProject/";
 
 void Util::PrintString(int count, char* str, ...)
 {

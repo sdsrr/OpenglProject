@@ -59,7 +59,7 @@ static void display(void)
 
 static void key(unsigned char key, int x, int y)
 {
-    Util::executeKeyFn(key, x, y, modelviewStack);
+    Util::ExecuteKeyFn(key, x, y, modelviewStack);
 }
 
 static void idle(void)

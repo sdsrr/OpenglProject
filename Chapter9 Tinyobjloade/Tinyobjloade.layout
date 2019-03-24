@@ -2,25 +2,32 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="viewer.cc" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="112" topLine="1" />
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Sources\Tinyobjloader.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Header\Tinyobjloader.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="15960" topLine="439" />
+			<Cursor1 position="284" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Header\Tinyobjloader.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Header\Tools.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2501" topLine="102" />
+			<Cursor1 position="1503" topLine="27" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Header\Tools.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Sources\Tinyobjloader.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1766" topLine="37" />
+			<Cursor1 position="293" topLine="0" />
 		</Cursor>
+		<Folding>
+			<Collapse line="354" />
+			<Collapse line="424" />
+			<Collapse line="485" />
+			<Collapse line="497" />
+			<Collapse line="509" />
+		</Folding>
 	</File>
 	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
