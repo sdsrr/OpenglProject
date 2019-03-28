@@ -14,7 +14,7 @@ GLMatrixStack modelviewMatrixStack;
 GLMatrixStack projectMatrixStack;
 GLGeometryTransform transformPipeline;
 
-static void resize(int width, int height)
+static void Resize(int width, int height)
 {
     glViewport(0, 0, width, height);
     frustum.SetPerspective(60, width/height, 1, 100);
@@ -23,7 +23,7 @@ static void resize(int width, int height)
     glutSwapBuffers();
 }
 
-static void key(unsigned char key, int x, int y)
+static void Key(unsigned char key, int x, int y)
 {
     //移动相机
     float speed = 0.5f;
@@ -50,11 +50,11 @@ static void key(unsigned char key, int x, int y)
     //移动相机
     m3dTranslationMatrix44(viewMatrix, -cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
 
-    Util::printmatrix44f(modelviewMatrixStack.GetMatrix());
+    Util::PrintMatrix44f(modelviewMatrixStack.GetMatrix());
     glutPostRedisplay();
 }
 
-static void idle(void)
+static void Idle(void)
 {
     glutPostRedisplay();
 }
@@ -64,7 +64,7 @@ M3DVector4f color = {0.0f, 0.5f ,1.0f ,1.0f};
 float lastTime = 0;
 
 //自己构造变换矩阵
-static void display_normal()
+static void Display_normal()
 {
     const double time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
     float delta = time - lastTime;
@@ -89,7 +89,7 @@ static void display_normal()
 }
 
 //使用几何变换管线
-static void display_transformpiple()
+static void Display_transformpiple()
 {
     const double time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
     float delta = time - lastTime;
@@ -154,11 +154,11 @@ int main(int argc, char *argv[])
     glutCreateWindow("coordinate system");
 
     //回调函数
-    glutReshapeFunc(resize);
-    //glutDisplayFunc(display_normal);
-    glutDisplayFunc(display_transformpiple);
-    glutKeyboardFunc(key);
-    glutIdleFunc(idle);
+    glutReshapeFunc(Resize);
+    //glutDisplayFunc(Display_normal);
+    glutDisplayFunc(Display_transformpiple);
+    glutKeyboardFunc(Key);
+    glutIdleFunc(Idle);
 
     if (GLEW_OK != glewInit())
     {

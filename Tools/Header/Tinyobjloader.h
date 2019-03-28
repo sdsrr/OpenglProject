@@ -28,17 +28,6 @@ typedef struct
     size_t material_id;
 } DrawObject;
 
-struct vec3
-{
-    float v[3];
-    vec3()
-    {
-        v[0] = 0.0f;
-        v[1] = 0.0f;
-        v[2] = 0.0f;
-    }
-};
-
 class Tinyobjloader
 {
 private:
@@ -47,12 +36,17 @@ private:
     std::map<std::string, GLuint> textures;
     std::vector<DrawObject> gDrawObjects;
 public:
-    void Draw();
+    void DrawGraph();
+    void DefaultDrawGraph();
+    void DrawLine(GLfloat r, GLfloat g, GLfloat b);
+    //根据顶点v0(xyz),v1(xyz),v2(xyz)计算法线N
     void CalcNormal(float N[3], float v0[3], float v1[3], float v2[3]);
-    void NormalizeVector(vec3 &v);
     bool HasSmoothingGroup(const tinyobj::shape_t& shape);
+    //计算三角形shape各个顶点的法线
     void ComputeSmoothingNormals(const tinyobj::attrib_t& attrib, const tinyobj::shape_t& shape, std::map<int, vec3>& smoothVertexNormals);
+    //加载model，返回包围盒的极小/极大点
     bool LoadObjAndConvert(float bmin[3], float bmax[3], const char* filename);
+    bool LoadObjAndConvert(const char* filename);
 };
 
 #endif // TINYOBJLOADER

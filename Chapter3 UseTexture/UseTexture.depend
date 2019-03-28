@@ -381,13 +381,13 @@
 1549175873 source:e:\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 
-1549868098 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1553402211 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1549847274 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1549847274 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1553698234 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -397,16 +397,26 @@
 	<string.h>
 	<GLTools.h>
 	<GLBatch.h>
+	<GLFrame.h>
 	<GLFrustum.h>
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
 	<iostream>
+	<cassert>
+	<cstdio>
+	<cstdlib>
+	<fstream>
+	<sstream>
+	<algorithm>
+	<cmath>
+	<map>
+	<vector>
 	<glut/glut.h>
 	<GL/glut.h>
 
-1549855156 source:e:\gamedev\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
+1553698763 source:e:\gamedev\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 
-1549855190 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1553698644 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 

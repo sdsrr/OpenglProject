@@ -20,6 +20,10 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <map>
+#include <vector>
 
 #ifdef __APPLE__
 #include <glut/glut.h>
@@ -29,7 +33,19 @@
 #endif
 
 #define random(x) (rand()%x)
+#define PI 3.1415926
 
+typedef int (*VoidFnDeldgate)();
+
+struct vec3
+{
+    float v[3] = {0,0,0};
+};
+
+struct vec2
+{
+    float v[2] = {0,0};
+};
 
 class Util
 {
@@ -42,10 +58,48 @@ public:
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
-    static void ExecuteKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack);
+    static bool CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb);
     static void CheckErrors(std::string desc);
+    // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);
+    //vector
+    static void NormalizeVector(vec3 &v);//单位化向量v
+    static void Roate(vec2& v, float angle);
+};
+
+enum MouseMotion
+{
+    MMNone,
+    MMLeftMousePress,
+    MMMedMousePress,
+    MMRightMousePress,
+};
+
+
+class NormalCamera
+{
+private:
+    float moveSpeed = 1;
+    float roateSpeed = 2;
+    float width, height, fov;
+    int prevMouseX, prevMouseY;
+    MouseMotion mouseMotion;
+
+    GLFrustum frustum;
+    GLMatrixStack modelviewStack;
+    GLMatrixStack projectStack;
+    GLGeometryTransform transformPiple;
+M3DMatrix44f tmp;
+public:
+    void OnUnInit();
+    void OnInit(float w, float h, float fov, float moveSp, float roateSp);
+    void KeyboardFn(unsigned char key, int x, int y);
+    void MouseClick(int button, int action, int x, int y);
+    void MotionFunc(int mouse_x, int mouse_y);
+    void Resize(int w, int h);
+    GLMatrixStack* GetModelviewStack();
+    const M3DMatrix44f& GetModelviewprojectMatrix();
 };
 
 #endif // TOOLS__

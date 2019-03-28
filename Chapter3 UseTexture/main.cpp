@@ -60,19 +60,10 @@ GLfloat texcoord[]={ 0.0f,0.0f, 1.0f,0.0f, 0,1.0f };
 M3DVector4f color={244.0f/255, 49.0f/255, 166.0f/255 ,0.0f};
 
 GLuint time;
-GLFrustum frustum;
-GLMatrixStack modelviewMatrixStack;
-GLMatrixStack projectMatrixStack;
-GLGeometryTransform tranformPipeline;
+NormalCamera normalCamera;
+GLMatrixStack* modelviewStack;
 
-static void resize(int width, int height)
-{
-    glViewport(0,0,width,height);
-    frustum.SetPerspective(50, width/height, 1, 100);
-    glutPostRedisplay();
-}
-
-static void display(void)
+static void Display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1,1,1,1);
@@ -89,47 +80,17 @@ static void display(void)
     */
 
     //use cubemap
-    shaderMgr.UseCubeMap(color, tranformPipeline.GetModelViewProjectionMatrix(), textureCubemap);
+    shaderMgr.UseCubeMap(color, normalCamera.GetModelviewprojectMatrix(), textureCubemap);
     cubeBatch.Draw();
 
     glutSwapBuffers();
 }
 
-
-static void key(unsigned char key, int x, int y)
-{
-    float speed = 0.5f;
-    switch(key)
-    {
-    case 'a':
-        modelviewMatrixStack.Translate(speed, 0, 0);
-        break;
-    case 'd':
-        modelviewMatrixStack.Translate(-speed, 0, 0);
-        break;
-	case 's':
-        modelviewMatrixStack.Translate(0, speed, 0);
-        break;
-    case 'w':
-        modelviewMatrixStack.Translate(0, -speed, 0);
-        break;
-	case 'e':
-        modelviewMatrixStack.Translate(0, 0, speed);
-        break;
-    case 'q':
-        modelviewMatrixStack.Translate(0, 0, -speed);
-        break;
-    }
-
-    glutPostRedisplay();
-}
-
-static void idle(void)
-{
-    glutPostRedisplay();
-}
-
-
+void KeyboardFn(unsigned char key, int x, int y){normalCamera.KeyboardFn(key, x, y);}
+void MouseClick(int button, int action, int x, int y){normalCamera.MouseClick(button, action, x, y);}
+void MotionFunc(int mouse_x, int mouse_y){normalCamera.MotionFunc(mouse_x, mouse_y);}
+void Resize(int w, int h){normalCamera.Resize(w, h);}
+void Idle(void){glutPostRedisplay();}
 
 void OnStartUp()
 {
@@ -174,12 +135,10 @@ void OnStartUp()
 
     gltMakeCube(cubeBatch, 1);
 
-    //init matrix
-    tranformPipeline.SetMatrixStacks(modelviewMatrixStack, projectMatrixStack);
-    frustum.SetPerspective(50, 640/480, 1, 100);
-    projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewMatrixStack.Translate(0,0,-5);
-
+    //init camera
+    normalCamera.OnInit(640, 480, 50, 1, 2);
+    modelviewStack = normalCamera.GetModelviewStack();
+    modelviewStack->Translate(0,0,-3);
 }
 
 void OnShutUp()
@@ -187,6 +146,7 @@ void OnShutUp()
     glDeleteTextures(1, &textureID);
     glDeleteTextures(29, texturesID);
     shaderMgr.OnUnInit();
+    normalCamera.OnUnInit();
 }
 
 int main(int argc, char *argv[])
@@ -197,11 +157,13 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
     glutCreateWindow("use texture");
+    glutDisplayFunc(Display);
+    glutIdleFunc(Idle);
+    glutKeyboardFunc(KeyboardFn);
+    glutReshapeFunc(Resize);
+    glutMotionFunc(MotionFunc);
+    glutMouseFunc(MouseClick);
 
-    glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(key);
-    glutIdleFunc(idle);
 
     glEnable(GL_DEPTH_TEST);
     if (glewInit() != GLEW_OK)

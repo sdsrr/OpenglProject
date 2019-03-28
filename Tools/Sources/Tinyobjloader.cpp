@@ -6,6 +6,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+bool Tinyobjloader::LoadObjAndConvert(const char* filename)
+{
+    float bmin[3],bmax[3];
+    return LoadObjAndConvert(bmin, bmax, filename);
+}
+
 bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* filename)
 {
     tinyobj::attrib_t attrib;
@@ -103,13 +109,11 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         if (comp == 3)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
-                         GL_UNSIGNED_BYTE, image);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
         }
         else if (comp == 4)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
-                         GL_UNSIGNED_BYTE, image);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         }
         else
         {
@@ -351,7 +355,39 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
     return true;
 }
 
-void Tinyobjloader::Draw()
+void Tinyobjloader::DrawGraph()
+{
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glPolygonMode(GL_BACK, GL_FILL);
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0, 1.0);
+    GLsizei stride = (3 + 3 + 3 + 2) * sizeof(float);
+    for (size_t i = 0; i < gDrawObjects.size(); i++)
+    {
+        DrawObject o = gDrawObjects[i];
+        if (o.vb_id < 1)
+        {
+            continue;
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, o.vb_id);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, stride, (const void*)0);
+        glNormalPointer(GL_FLOAT, stride, (const void*)(sizeof(float) * 3));
+        glColorPointer(3, GL_FLOAT, stride, (const void*)(sizeof(float) * 6));
+        glTexCoordPointer(2, GL_FLOAT, stride, (const void*)(sizeof(float) * 9));
+
+        glDrawArrays(GL_TRIANGLES, 0, 3 * o.numTriangles);
+        Util::CheckErrors("drawarrays");
+    }
+}
+
+void Tinyobjloader::DefaultDrawGraph()
 {
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_FILL);
@@ -391,13 +427,17 @@ void Tinyobjloader::Draw()
         Util::CheckErrors("drawarrays");
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+}
 
+void Tinyobjloader::DrawLine(GLfloat r, GLfloat g, GLfloat b)
+{
     // draw wireframe
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT, GL_LINE);
     glPolygonMode(GL_BACK, GL_LINE);
 
-    glColor3f(0.0f, 0.0f, 0.4f);
+    glColor3f(r,g,b);
+    GLsizei stride = (3 + 3 + 3 + 2) * sizeof(float);
     for (size_t i = 0; i < gDrawObjects.size(); i++)
     {
         DrawObject o = gDrawObjects[i];
@@ -445,10 +485,9 @@ void Tinyobjloader::ComputeSmoothingNormals(const tinyobj::attrib_t& attrib, con
             assert(vi[0] >= 0);
             assert(vi[1] >= 0);
             assert(vi[2] >= 0);
-
-            v[0][k] = attrib.vertices[3 * vi[0] + k];
-            v[1][k] = attrib.vertices[3 * vi[1] + k];
-            v[2][k] = attrib.vertices[3 * vi[2] + k];
+            v[0][k] = attrib.vertices[3 * vi[0] + k];//[x1,y1,z1]
+            v[1][k] = attrib.vertices[3 * vi[1] + k];//[x2,y2,z2]
+            v[2][k] = attrib.vertices[3 * vi[2] + k];//[x3,y3,z3]
         }
 
         // Compute the normal of the face
@@ -468,6 +507,7 @@ void Tinyobjloader::ComputeSmoothingNormals(const tinyobj::attrib_t& attrib, con
             }
             else
             {
+                //smoothVertexNormals[vertex]=normal
                 smoothVertexNormals[vi[i]].v[0] = normal[0];
                 smoothVertexNormals[vi[i]].v[1] = normal[1];
                 smoothVertexNormals[vi[i]].v[2] = normal[2];
@@ -478,7 +518,7 @@ void Tinyobjloader::ComputeSmoothingNormals(const tinyobj::attrib_t& attrib, con
     // Normalize the normals, that is, make them unit vectors
     for (iter = smoothVertexNormals.begin(); iter != smoothVertexNormals.end(); iter++)
     {
-        NormalizeVector(iter->second);
+        Util::NormalizeVector(iter->second);
     }
 }
 
@@ -494,18 +534,7 @@ bool Tinyobjloader::HasSmoothingGroup(const tinyobj::shape_t& shape)
     return false;
 }
 
-void Tinyobjloader::NormalizeVector(vec3 &v)
-{
-    float len2 = v.v[0] * v.v[0] + v.v[1] * v.v[1] + v.v[2] * v.v[2];
-    if (len2 > 0.0f)
-    {
-        float len = sqrtf(len2);
-        v.v[0] /= len;
-        v.v[1] /= len;
-        v.v[2] /= len;
-    }
-}
-
+//通过三个点v0,v1,v2计算法线N  N = normalize(cross(v1-v0, v2-v0))
 void Tinyobjloader::CalcNormal(float N[3], float v0[3], float v1[3], float v2[3])
 {
     float v10[3];

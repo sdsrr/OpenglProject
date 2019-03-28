@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1550312275 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1553402211 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1552110466 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1553698234 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -20,6 +20,15 @@
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
 	<iostream>
+	<cassert>
+	<cstdio>
+	<cstdlib>
+	<fstream>
+	<sstream>
+	<algorithm>
+	<cmath>
+	<map>
+	<vector>
 	<glut/glut.h>
 	<GL/glut.h>
 
@@ -373,14 +382,14 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1552110474 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1553698644 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
 1551270565 source:e:\gamedev\opengl\trunk\openglproject\vbo\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
 
-1551332653 source:e:\gamedev\opengl\trunk\openglproject\chapter7 vertexdata\main.cpp
+1553478452 source:e:\gamedev\opengl\trunk\openglproject\chapter7 vertexdata\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
 

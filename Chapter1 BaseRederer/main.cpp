@@ -10,12 +10,12 @@ GLfloat vertexs[] = {
 
 M3DVector4f color = {0,1,0,0};
 
-static void resize(int width, int height)
+static void Resize(int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-static void display(void)
+static void Display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -59,12 +59,12 @@ int main(int argc, char *argv[])
     //创建窗口
     glutCreateWindow("base renderer");
     //注册函数
-    glutReshapeFunc(resize);
-    glutDisplayFunc(display);
+    glutReshapeFunc(Resize);
+    glutDisplayFunc(Display);
     //初始化glew库
     if (glewInit() != GLEW_OK)
     {
-        Util::printstring(1,  (char*)"Failed to initialize GLEW.\n");
+        Util::PrintString(1,  (char*)"Failed to initialize GLEW.\n");
         return -1;
     }
     OnStartUp();

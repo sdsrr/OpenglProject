@@ -26,76 +26,41 @@ char* texturePath03 = (char*)"Chapter5 AnisotropicTextureFiltering/Texture/floor
 #define open_anisotropy 7
 #define close_anisotropy 8
 
-GLFrustum frustum;
-GLMatrixStack modelviewMatrix;
-GLMatrixStack projectMatrix;
-GLGeometryTransform transformPiple;
+NormalCamera normalCamera;
+GLMatrixStack* modelviewStack;
 
 float whiteCol[] = {1,1,1,1};
 float redCol[] = {1,0,0,1};
-static void resize(int width, int height)
-{
-    frustum.SetPerspective(50, width/height, 0.1f, 100);
-    glViewport(0, 0, width, height);
-    glutPostRedisplay();
-}
 
-static void display(void)
+static void Display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1, 1, 1, 1);
 
-    shaderMgr.UseTexture2d(whiteCol, transformPiple.GetModelViewProjectionMatrix(), texture01);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture01);
     //glShaderMgr.UseStockShader(GLT_SHADER_FLAT, transformPiple.GetModelViewProjectionMatrix(), redCol);
     leftPatch.Draw();
     rightPatch.Draw();
 
-    shaderMgr.UseTexture2d(whiteCol, transformPiple.GetModelViewProjectionMatrix(), texture02);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture02);
     upPatch.Draw();
 
-    shaderMgr.UseTexture2d(whiteCol, transformPiple.GetModelViewProjectionMatrix(), texture03);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture03);
     downPatch.Draw();
     glutSwapBuffers();
 }
 
 
-static void key(unsigned char key, int x, int y)
-{
-    float speed = 0.5f;
-    switch (key)
-    {
-    case 'a':
-        modelviewMatrix.Translate(speed,0,0);
-        break;
-    case 'd':
-        modelviewMatrix.Translate(-speed,0,0);
-        break;
-    case 'q':
-        modelviewMatrix.Translate(0,0,-speed);
-        break;
-    case 'e':
-        modelviewMatrix.Translate(0,0,speed);
-        break;
-    case 'z':
-        break;
-    case 'x':
-        break;
-    }
-
-    glutPostRedisplay();
-}
-
-static void idle(void)
+static void Idle(void)
 {
     glutPostRedisplay();
 }
 
-void onStartUp()
+void OnStartUp()
 {
-    frustum.SetPerspective(50, 640/480, 0.1f, 100);
-    transformPiple.SetMatrixStacks(modelviewMatrix, projectMatrix);
-    projectMatrix.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewMatrix.Translate(0,0,-1);
+    normalCamera.OnInit(640,480,50,2,1);
+    modelviewStack = normalCamera.GetModelviewStack();
+    modelviewStack->Translate(0,0,-1);
 
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
@@ -189,15 +154,16 @@ void onStartUp()
     downPatch.End();
 }
 
-void onShutup()
+void OnShutup()
 {
     shaderMgr.OnUnInit();
+    normalCamera.OnUnInit();
     glDeleteTextures(1, &texture01);
     glDeleteTextures(1, &texture02);
     glDeleteTextures(1, &texture03);
 }
 
-void changeTextureFilter(int textureId, int key)
+void ChangeTextureFilter(int textureId, int key)
 {
     glBindTexture(GL_TEXTURE_2D, textureId);
     switch(key)
@@ -234,12 +200,17 @@ void changeTextureFilter(int textureId, int key)
     }
 }
 
-void processMenu(int key)
+void ProcessMenu(int key)
 {
-    changeTextureFilter(texture01, key);
-    changeTextureFilter(texture02, key);
-    changeTextureFilter(texture03, key);
+    ChangeTextureFilter(texture01, key);
+    ChangeTextureFilter(texture02, key);
+    ChangeTextureFilter(texture03, key);
 }
+
+void KeyboardFn(unsigned char key, int x, int y){normalCamera.KeyboardFn(key, x, y);}
+void MouseClick(int button, int action, int x, int y){normalCamera.MouseClick(button, action, x, y);}
+void MotionFunc(int mouse_x, int mouse_y){normalCamera.MotionFunc(mouse_x, mouse_y);}
+void Resize(int w, int h){normalCamera.Resize(w, h);}
 
 int main(int argc, char *argv[])
 {
@@ -249,16 +220,17 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
     glutCreateWindow("anisotropic texture filtering");
-
-    glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(key);
-    glutIdleFunc(idle);
+    glutDisplayFunc(Display);
+    glutIdleFunc(Idle);
+    glutKeyboardFunc(KeyboardFn);
+    glutReshapeFunc(Resize);
+    glutMotionFunc(MotionFunc);
+    glutMouseFunc(MouseClick);
 
     glEnable(GL_DEPTH_TEST);
 
     //init menu
-    glutCreateMenu(processMenu);
+    glutCreateMenu(ProcessMenu);
     glutAddMenuEntry("linear", gl_linear);
     glutAddMenuEntry("nearest", gl_nearest);
     glutAddMenuEntry("linear_mipmap_linear", gl_linear_mipmap_linear);
@@ -275,9 +247,9 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    onStartUp();
+    OnStartUp();
     glutMainLoop();
-    onShutup();
+    OnShutup();
 
     return EXIT_SUCCESS;
 }

@@ -389,13 +389,13 @@
 1548071817 source:e:\gamedev\opengl\trunk\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
-1550312275 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1553402211 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1552110466 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1553698234 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -410,6 +410,15 @@
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
 	<iostream>
+	<cassert>
+	<cstdio>
+	<cstdlib>
+	<fstream>
+	<sstream>
+	<algorithm>
+	<cmath>
+	<map>
+	<vector>
 	<glut/glut.h>
 	<GL/glut.h>
 
@@ -418,7 +427,7 @@
 1552110474 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
-1553156629 source:e:\gamedev\opengl\trunk\openglproject\chapter1 baserederer\main.cpp
+1553698183 source:e:\gamedev\opengl\trunk\openglproject\chapter1 baserederer\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 

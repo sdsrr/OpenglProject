@@ -5,10 +5,8 @@
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 
-GLFrustum frustum;
-GLMatrixStack modelviewStack;
-GLMatrixStack projectStack;
-GLGeometryTransform transformPiple;
+NormalCamera normalCamera;
+GLMatrixStack* modelviewStack;
 
 const int MaxStarNum = 30;
 GLBatch points[MaxStarNum];
@@ -18,15 +16,7 @@ GLuint texture;
 char* texturePath = "Chapter6 SpritePoint/Texture/star.tga";
 float color[] = {1,1,1,1};
 
-
-static void resize(int width, int height)
-{
-    glViewport(0, 0, width, height);
-    frustum.SetPerspective(50, width/height, 0.1f, 100);
-    glutPostRedisplay();
-}
-
-static void display(void)
+static void Display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,1);
@@ -41,7 +31,7 @@ static void display(void)
         pointsSize[i][0]--;
         if (pointsSize[i][0] <= 0)
             pointsSize[i][0] = pointsSize[i][1];
-        shaderMgr.UseSpritePoint(transformPiple.GetModelViewProjectionMatrix(), texture, pointsSize[i][0]);
+        shaderMgr.UseSpritePoint(normalCamera.GetModelviewprojectMatrix(), texture, pointsSize[i][0]);
         points[i].Draw();
     }
 
@@ -51,23 +41,17 @@ static void display(void)
 }
 
 
-static void key(unsigned char key, int x, int y)
-{
-    Util::executeKeyFn(key, x, y, modelviewStack);
-}
-
-static void idle(void)
+static void Idle(void)
 {
     glutPostRedisplay();
 }
 
-void onStartup()
+void OnStartup()
 {
     //init matrix
-    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
-    frustum.SetPerspective(50, 640/480, 0.1f, 100);
-    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewStack.Translate(-2,-2,-12);
+    normalCamera.OnInit(640, 480, 50, 2, 1);
+    modelviewStack = normalCamera.GetModelviewStack();
+    modelviewStack->Translate(-2,-2,-12);
 
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
@@ -108,11 +92,17 @@ void onStartup()
     Util::LoadTGATexture(texturePath, GL_LINEAR, GL_CLAMP_TO_EDGE);
 }
 
-void onShutup()
+void OnShutup()
 {
     glDeleteTextures(1,&texture);
     shaderMgr.OnUnInit();
+    normalCamera.OnUnInit();
 }
+
+void KeyboardFn(unsigned char key, int x, int y){normalCamera.KeyboardFn(key, x, y);}
+void MouseClick(int button, int action, int x, int y){normalCamera.MouseClick(button, action, x, y);}
+void MotionFunc(int mouse_x, int mouse_y){normalCamera.MotionFunc(mouse_x, mouse_y);}
+void Resize(int w, int h){normalCamera.Resize(w, h);}
 
 int main(int argc, char *argv[])
 {
@@ -122,10 +112,12 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("sprite point");
 
-    glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(key);
-    glutIdleFunc(idle);
+    glutKeyboardFunc(KeyboardFn);
+    glutReshapeFunc(Resize);
+    glutMotionFunc(MotionFunc);
+    glutMouseFunc(MouseClick);
+    glutDisplayFunc(Display);
+    glutIdleFunc(Idle);
     // set point size
     //glPointSize(20);
 
@@ -135,9 +127,9 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    onStartup();
+    OnStartup();
     glutMainLoop();
-    onShutup();
+    OnShutup();
 
     return EXIT_SUCCESS;
 }

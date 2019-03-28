@@ -1,6 +1,6 @@
 #include "../Header/Tools.h"
 
-const char* Util::projectPath = "D:/Project/OpenglProject/trunk/OpenglProject/";
+const char* Util::projectPath = "E:/GameDev/Opengl/trunk/OpenglProject/";
 
 void Util::PrintString(int count, char* str, ...)
 {
@@ -35,33 +35,17 @@ void Util::PrintMatrix44f(const M3DMatrix44f matrix)
     std::cout<<'\n';
 }
 
-
-void Util::ExecuteKeyFn(unsigned char key, int x, int y, GLMatrixStack& modelviewStack)
+bool Util::CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb)
 {
-    float speed = 0.5f;
-    switch (key)
+    for (int n = 0; n < 4; n++)
     {
-        case 'a':
-            modelviewStack.Translate(speed,0,0);
-            break;
-        case 'd':
-            modelviewStack.Translate(-speed,0,0);
-            break;
-        case 'w':
-            modelviewStack.Translate(0,-speed,0);
-            break;
-        case 's':
-            modelviewStack.Translate(0,speed,0);
-            break;
-        case 'q':
-            modelviewStack.Translate(0,0,-speed);
-            break;
-        case 'e':
-            modelviewStack.Translate(0,0,speed);
-            break;
+        for (int m = 0; m < 4; m++)
+        {
+            if (matrixa[n+4*m] != matrixb[n*4+m])
+                return false;
+        }
     }
-
-    glutPostRedisplay();
+    return true;
 }
 
 void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
@@ -91,7 +75,7 @@ void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
        filter == GL_NEAREST_MIPMAP_LINEAR ||
        filter == GL_NEAREST_MIPMAP_NEAREST)
     */
-        glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Util::LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode)
@@ -169,30 +153,171 @@ char* Util::GetFullPath(const char* relativePath)
 
 void Util::CheckErrors(std::string desc)
 {
-  GLenum e = glGetError();
-  if (e != GL_NO_ERROR)
-  {
-    fprintf(stderr, "OpenGL error in \"%s\": %d (%d)\n", desc.c_str(), e, e);
-    exit(20);
-  }
+    GLenum e = glGetError();
+    if (e != GL_NO_ERROR)
+    {
+        fprintf(stderr, "OpenGL error in \"%s\": %d (%d)\n", desc.c_str(), e, e);
+        exit(20);
+    }
 }
 
 bool Util::FileExists(const std::string& abs_filename)
 {
-  bool ret;
-  FILE* fp = fopen(abs_filename.c_str(), "rb");
-  if (fp) {
-    ret = true;
-    fclose(fp);
-  } else {
-    ret = false;
-  }
-  return ret;
+    bool ret;
+    FILE* fp = fopen(abs_filename.c_str(), "rb");
+    if (fp)
+    {
+        ret = true;
+        fclose(fp);
+    }
+    else
+    {
+        ret = false;
+    }
+    return ret;
 }
 
 std::string Util::GetBaseDir(const std::string& filepath)
 {
-  if (filepath.find_last_of("/\\") != std::string::npos)
-    return filepath.substr(0, filepath.find_last_of("/\\"));
-  return "";
+    if (filepath.find_last_of("/\\") != std::string::npos)
+        return filepath.substr(0, filepath.find_last_of("/\\"));
+    return "";
+}
+
+void Util::NormalizeVector(vec3 &v)
+{
+    float len2 = v.v[0] * v.v[0] + v.v[1] * v.v[1] + v.v[2] * v.v[2];
+    if (len2 > 0.0f)
+    {
+        float len = sqrtf(len2);
+        v.v[0] /= len;
+        v.v[1] /= len;
+        v.v[2] /= len;
+    }
+}
+
+void Util::Roate(vec2& v, float angle)
+{
+    float cos = std::cos(angle/180*PI);
+    float sin = std::sin(angle/180*PI);
+    float x = v.v[0]*cos + v.v[1]*sin;
+    float y = -v.v[0]*sin + v.v[1]*cos;
+    v.v[0] = x;
+    v.v[1] = y;
+}
+
+
+
+void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)
+{
+    this->fov = fov;
+    this->height = h;
+    this->width = w;
+    this->moveSpeed = moveSp;
+    this->roateSpeed = roateSp;
+
+    frustum.SetPerspective(fov, width/height, 0.1f, 1000);
+    modelviewStack.LoadIdentity();
+    projectStack.LoadIdentity();
+    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
+}
+
+void NormalCamera::MouseClick(int button, int action, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON)
+    {
+        if (action == GLUT_DOWN) {
+            mouseMotion=MMLeftMousePress;
+        }
+        else if (action == GLUT_UP) {
+            mouseMotion = MMNone;
+        }
+    }
+    if (button == GLUT_RIGHT_BUTTON)
+    {
+        if (action == GLUT_DOWN) {
+            mouseMotion = MMRightMousePress;
+        }
+        else if (action == GLUT_UP) {
+            mouseMotion = MMNone;
+        }
+    }
+    if (button == GLUT_MIDDLE_BUTTON)
+    {
+        if (action == GLUT_DOWN) {
+            mouseMotion = MMMedMousePress;
+        }
+        else if (action == GLUT_UP) {
+            mouseMotion = MMNone;
+        }
+    }
+    prevMouseX = x;
+    prevMouseY = y;
+}
+
+void NormalCamera::KeyboardFn(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case 'a':
+        projectStack.Translate(moveSpeed,0,0);
+        break;
+    case 'd':
+        projectStack.Translate(-moveSpeed,0,0);
+        break;
+    case 'w':
+        projectStack.Translate(0,-moveSpeed,0);
+        break;
+    case 's':
+        projectStack.Translate(0,moveSpeed,0);
+        break;
+    case 'q':
+        projectStack.Translate(0,0,-moveSpeed);
+        break;
+    case 'e':
+        projectStack.Translate(0,0,moveSpeed);
+        break;
+    }
+    glutPostRedisplay();
+}
+
+void NormalCamera::MotionFunc(int mouse_x, int mouse_y)
+{
+    float deltaX = mouse_x - prevMouseX;
+    float deltaY = mouse_y - prevMouseY;
+
+    if (mouseMotion == MMRightMousePress)
+    {
+        projectStack.Rotate(deltaX/roateSpeed, 0, 1, 0);
+        projectStack.Rotate(deltaY/roateSpeed, 1, 0, 0);
+    }
+    //printf("%d  %d\n", mouse_x, mouse_y);
+    prevMouseX = mouse_x;
+    prevMouseY = mouse_y;
+}
+
+void NormalCamera::Resize(int w, int h)
+{
+    width = w;
+    height = h;
+    glViewport(0, 0, w, h);
+    frustum.SetPerspective(fov, width/height, 0.1f, 1000);
+    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
+    glutPostRedisplay();
+}
+
+const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
+{
+    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
+    return matrix;
+}
+
+GLMatrixStack* NormalCamera::GetModelviewStack()
+{
+    return &modelviewStack;
+}
+
+void NormalCamera::OnUnInit()
+{
+
 }

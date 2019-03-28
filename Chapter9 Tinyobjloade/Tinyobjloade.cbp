@@ -46,12 +46,12 @@
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
+		<Unit filename="../Tools/Header/UtilTimer.h" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />
 		<Unit filename="../Tools/Sources/Trackball.cpp" />
 		<Unit filename="main.cpp" />
-		<Unit filename="trackball.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

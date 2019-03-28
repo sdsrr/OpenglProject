@@ -28,6 +28,7 @@ static void resize(int width, int height)
 {
     glViewport(0, 0, width, height);
     frustum.SetPerspective(50, width/height, 0.1f, 100);
+    projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
     glutPostRedisplay();
 }
 
@@ -118,8 +119,6 @@ void onStartUp()
 
     tranformPipeline.SetMatrixStacks(modelviewMatrixStack, projectMatrixStack);
     frustum.SetPerspective(50, 640/480, 0.1f, 100);
-    projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewMatrixStack.Translate(0,0,0);
 
     // init cube
     gltMakeCube(cubeBatch, 1);
