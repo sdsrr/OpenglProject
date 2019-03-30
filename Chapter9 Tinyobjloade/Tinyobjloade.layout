@@ -9,7 +9,7 @@
 	</File>
 	<File name="..\Tools\Header\Tinyobjloader.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1390" topLine="14" />
+			<Cursor1 position="1357" topLine="11" />
 		</Cursor>
 	</File>
 	<File name="..\Tools\Header\Tools.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -29,17 +29,17 @@
 	</File>
 	<File name="..\Tools\Sources\Tinyobjloader.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="15157" topLine="356" />
+			<Cursor1 position="110" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Sources\Tools.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8964" topLine="259" />
+			<Cursor1 position="7622" topLine="247" />
 		</Cursor>
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1962" topLine="42" />
+			<Cursor1 position="1248" topLine="24" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

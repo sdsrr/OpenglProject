@@ -35,7 +35,7 @@
 #define random(x) (rand()%x)
 #define PI 3.1415926
 
-typedef int (*VoidFnDeldgate)();
+typedef void (*VoidDeldgate)();
 
 struct vec3
 {
@@ -100,6 +100,7 @@ public:
     void Resize(int w, int h);
     GLMatrixStack* GetModelviewStack();
     const M3DMatrix44f& GetModelviewprojectMatrix();
+    const M3DMatrix44f& GetModeviewMatrix();
 };
 
 #endif // TOOLS__

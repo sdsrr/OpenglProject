@@ -312,6 +312,12 @@ const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
     return matrix;
 }
 
+const M3DMatrix44f& NormalCamera::GetModeviewMatrix()
+{
+    const M3DMatrix44f& matrix = transformPiple.GetModelViewMatrix();
+    return matrix;
+}
+
 GLMatrixStack* NormalCamera::GetModelviewStack()
 {
     return &modelviewStack;

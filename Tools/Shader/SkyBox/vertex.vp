@@ -1,12 +1,12 @@
 #version 330
 
-layout (location = 0) in vec3 vVertex;
+layout (location = 0) in vec4 vVertex;
 
 uniform mat4 mvpMatrix;
 
 out vec3 texCoord;
 void main(void)
 {
-    texCoord = vVertex;
-    gl_Position = (vec4(vVertex,1) * mvpMatrix).xyww;
+    texCoord = vVertex.xyz;
+    gl_Position = (vVertex * mvpMatrix).xyww;
 }
