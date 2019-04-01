@@ -14,6 +14,7 @@
 #include <GLFrustum.h>
 #include <GLMatrixStack.h>
 #include <GLGeometryTransform.h>
+#include <StopWatch.h>
 #include <iostream>
 #include <cassert>
 #include <cstdio>
@@ -35,7 +36,7 @@
 #define random(x) (rand()%x)
 #define PI 3.1415926
 
-typedef void (*VoidDeldgate)();
+
 
 struct vec3
 {
@@ -60,6 +61,7 @@ public:
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
     static bool CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb);
     static void CheckErrors(std::string desc);
+    static void UpdateFrameRate();
     // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);
@@ -90,7 +92,6 @@ private:
     GLMatrixStack modelviewStack;
     GLMatrixStack projectStack;
     GLGeometryTransform transformPiple;
-M3DMatrix44f tmp;
 public:
     void OnUnInit();
     void OnInit(float w, float h, float fov, float moveSp, float roateSp);

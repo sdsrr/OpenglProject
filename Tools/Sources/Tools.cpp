@@ -161,6 +161,30 @@ void Util::CheckErrors(std::string desc)
     }
 }
 
+void Util::UpdateFrameRate()
+{
+	static int iFrames = 0;
+	static CStopWatch frameTimer;
+
+    // Reset the stopwatch on first time
+    if(iFrames == 0)
+    {
+        frameTimer.Reset();
+        iFrames++;
+    }
+    // Increment the frame count
+    iFrames++;
+
+    // Do periodic frame rate calculation
+    if (iFrames == 101)
+    {
+        float fps = 100.0f / frameTimer.GetElapsedSeconds();
+        frameTimer.Reset();
+        iFrames = 1;
+        printf("%.1f fps\n", fps);
+    }
+}
+
 bool Util::FileExists(const std::string& abs_filename)
 {
     bool ret;

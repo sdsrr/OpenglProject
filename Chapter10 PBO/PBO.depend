@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1553948687 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1554106086 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1553949041 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1554090294 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1553948652 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1554107361 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -19,6 +19,7 @@
 	<GLFrustum.h>
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
+	<StopWatch.h>
 	<iostream>
 	<cassert>
 	<cstdio>
@@ -528,7 +529,7 @@
 	<fstream>
 	<sstream>
 
-1553925650 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1554107289 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
 1553258502 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\trackball.cpp
@@ -537,7 +538,12 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1553948723 source:e:\gamedev\opengl\trunk\openglproject\chapter10 pbo\main.cpp
+1554108032 source:e:\gamedev\opengl\trunk\openglproject\chapter10 pbo\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
+	"../Tools/Header/UtilTimer.h"
+
+1304830080 d:\codeblocks\mingw\include\stopwatch.h
+	<windows.h>
+	<sys/time.h>
 

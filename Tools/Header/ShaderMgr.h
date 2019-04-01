@@ -3,14 +3,14 @@
 #include "Tools.h"
 enum ShaderType
 {
-    STSolid    = 1<<0,
-    STDiffuse  = 1<<1,
-    STTexture2d= 1<<2,
-    STTextureArray = 1<<3,
-    STCubemap = 1<<4,
-    STSkybox = 1<<5,
-    STTextureSprite = 1<<6,
-    STBlur = 1<<7,
+    STSolid,
+    STDiffuse,
+    STTexture2d,
+    STTextureArray,
+    STCubemap,
+    STSkybox,
+    STTextureSprite,
+    STBlur,
     STMax,
 };
 
@@ -18,6 +18,7 @@ enum ShaderType
 
 class ShaderMgr
 {
+    typedef void (ShaderMgr::*VoidDeldgate)();
 private:
     std::map<ShaderType, VoidDeldgate> initfunctions;
 
@@ -58,7 +59,7 @@ private:
 
 public:
     ShaderMgr();
-    void OnInit(int type);
+    void OnInit(int type=-1);
     void OnUnInit();
     void InitSolid();
     void InitDiffuse();
@@ -72,12 +73,12 @@ public:
     void UseSolidColor(M3DVector4f color);
     void UseDiffuse(M3DVector4f color, M3DMatrix44f mvpMatrix);
     void UseDiffuse(M3DVector4f color, const M3DMatrix44f mvpMatrix);
-    void UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture);
-    void UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint texture, GLuint time);
-    void UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint cubeMap);
-    void UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint cubeMap);
-    void UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint texture, GLfloat size);
-    void UseBlurShader(const M3DMatrix44f mvpMatrix);
+    void UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit);
+    void UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLuint time);
+    void UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit);
+    void UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint textureUnit);
+    void UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLfloat size);
+    void UseBlurShader(const M3DMatrix44f mvpMatrix, int textureUnit);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源

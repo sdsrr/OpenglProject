@@ -37,15 +37,19 @@ static void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1, 1, 1, 1);
 
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture01);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture01);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
     //glShaderMgr.UseStockShader(GLT_SHADER_FLAT, transformPiple.GetModelViewProjectionMatrix(), redCol);
     leftPatch.Draw();
     rightPatch.Draw();
 
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture02);
+    glBindTexture(GL_TEXTURE_2D, texture02);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
     upPatch.Draw();
 
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), texture03);
+    glBindTexture(GL_TEXTURE_2D, texture03);
+    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
     downPatch.Draw();
     glutSwapBuffers();
 }
@@ -65,6 +69,7 @@ void OnStartUp()
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
 
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1,&texture01);
     glBindTexture(GL_TEXTURE_2D, texture01);
     Util::LoadTGATexture(texturePath01, GL_LINEAR, GL_REPEAT);

@@ -1,27 +1,11 @@
 #version 330
-layout(location = 1) in vec4 vVertex;
-layout(location = 3) in vec2 vVertexCoord;
-
+layout (location = 0) in vec4 vVertex;
+layout (location = 3) in vec2 vTexCoord;
 
 uniform mat4 mvpMatrix;
-uniform sampler2D texture00;
-uniform sampler2D texture01;
-uniform sampler2D texture02;
-uniform sampler2D texture03;
-uniform sampler2D texture04;
-uniform sampler2D texture05;
-
-out vec4 color;
-
+out vec2 texCoord;
 void main(void)
 {
-    vec4 col00 = texture(texture00, vVertexCoord.st);
-    vec4 col01 = texture(texture01, vVertexCoord.st);
-    vec4 col02 = texture(texture02, vVertexCoord.st);
-    vec4 col03 = texture(texture03, vVertexCoord.st);
-    vec4 col04 = texture(texture04, vVertexCoord.st);
-    vec4 col05 = texture(texture05, vVertexCoord.st);
-
-    color = (col00 + col01 + col02 + col03 + col04 + col05)/6.0;
+    texCoord = vTexCoord;
     gl_Position = vVertex * mvpMatrix;
 }

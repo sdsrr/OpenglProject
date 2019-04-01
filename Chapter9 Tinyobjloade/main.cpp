@@ -74,7 +74,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    onStartup();
+    OnStartup();
     glutMainLoop();
-    onShutup();
+    OnShutup();
 }

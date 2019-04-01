@@ -58,7 +58,8 @@ static void display(void)
     // draw skybox only use camera roate matrix
     modelviewMatrixStack.PushMatrix();
         modelviewMatrixStack.MultMatrix(cameraRoateMatrix);
-        shaderMgr.UseSkyBox(tranformPipeline.GetModelViewProjectionMatrix(), textureId);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        shaderMgr.UseSkyBox(tranformPipeline.GetModelViewProjectionMatrix(), 0);
         glDisable(GL_CULL_FACE);
         cubeBatch.Draw();
         glEnable(GL_CULL_FACE);
@@ -126,7 +127,7 @@ void onStartUp()
     camera.MoveForward(-1);
 
     //init texture
-    glActiveTexture(0);
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
     Util::LoadTGACubemap(cubemap, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_CLAMP_TO_EDGE);

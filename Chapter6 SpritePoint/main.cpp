@@ -31,7 +31,7 @@ static void Display(void)
         pointsSize[i][0]--;
         if (pointsSize[i][0] <= 0)
             pointsSize[i][0] = pointsSize[i][1];
-        shaderMgr.UseSpritePoint(normalCamera.GetModelviewprojectMatrix(), texture, pointsSize[i][0]);
+        shaderMgr.UseSpritePoint(normalCamera.GetModelviewprojectMatrix(), 0, pointsSize[i][0]);
         points[i].Draw();
     }
 
@@ -86,8 +86,8 @@ void OnStartup()
     }
 
     //init tetxure
-    glActiveTexture(0);
-    glGenTextures(1,&texture);
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     Util::LoadTGATexture(texturePath, GL_LINEAR, GL_CLAMP_TO_EDGE);
 }

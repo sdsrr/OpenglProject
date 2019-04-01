@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1553402211 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1554042667 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1550312275 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1554042517 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1553698234 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1554034041 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -353,7 +353,7 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1553698644 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1553925650 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 
 1550303590 source:e:\gamedev\opengl\trunk\openglproject\spritepoint\main.cpp
@@ -448,10 +448,9 @@
 	"_winsock.h"
 	"wtypes.h"
 
-1552303480 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
+1554042758 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
-	<cstdlib>
 
 1437525942 c:\program files (x86)\codeblocks\mingw\include\gl\freeglut_std.h
 	<windows.h>

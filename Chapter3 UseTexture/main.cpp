@@ -70,17 +70,20 @@ static void Display(void)
     //消除cubemap采样可能出现的缝隙
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     //use texture2d
-    //shaderMgr.UseTexture2d(color, tranformPipeline.GetModelViewProjectionMatrix(), textureID);
+    //glBindTexture(GL_TEXTURE_2D, textureID);
+    //shaderMgr.UseTexture2d(color, tranformPipeline.GetModelViewProjectionMatrix(), 0);
 
     //use texture2d array
     /*
     GLuint tick = (time++)/16%29;
-    shaderMgr.UseTextureArray(color, tranformPipeline.GetModelViewProjectionMatrix(), textureArrayID, tick);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, textureArrayID);
+    shaderMgr.UseTextureArray(color, tranformPipeline.GetModelViewProjectionMatrix(), 0, tick);
     triangleBathch.Draw();
     */
 
     //use cubemap
-    shaderMgr.UseCubeMap(color, normalCamera.GetModelviewprojectMatrix(), textureCubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
+    shaderMgr.UseCubeMap(color, normalCamera.GetModelviewprojectMatrix(), 0);
     cubeBatch.Draw();
 
     glutSwapBuffers();
@@ -99,20 +102,18 @@ void OnStartUp()
     shaderMgr.OnInit();
 
     //load texture
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &textureID);
-    glActiveTexture(0);
     glBindTexture(GL_TEXTURE_2D, textureID);
     Util::LoadTGATexture(textures[0], GL_LINEAR, GL_CLAMP_TO_EDGE);
 
     //load texture array
     glGenTextures(1, &textureArrayID);
-    glActiveTexture(0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, textureArrayID);
     Util::LoadTGATextureArray(textures, 29, GL_LINEAR, GL_CLAMP_TO_EDGE);
 
     //load cubemap
     glGenTextures(1, &textureCubemap);
-    glActiveTexture(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
     Util::LoadTGACubemap(cubemap, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_CLAMP_TO_EDGE);
 
