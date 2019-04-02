@@ -1,0 +1,544 @@
+# depslib dependency file v1.0
+1554106086 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
+
+1554090294 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+	"Tools.h"
+
+1554107361 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<math3d.h>
+	<stdarg.h>
+	<string.h>
+	<GLTools.h>
+	<GLBatch.h>
+	<GLFrame.h>
+	<GLFrustum.h>
+	<GLMatrixStack.h>
+	<GLGeometryTransform.h>
+	<StopWatch.h>
+	<iostream>
+	<cassert>
+	<cstdio>
+	<cstdlib>
+	<fstream>
+	<sstream>
+	<algorithm>
+	<cmath>
+	<map>
+	<vector>
+	<glut/glut.h>
+	<GL/glut.h>
+
+1548158464 d:\codeblocks\mingw\include\windows.h
+	<winresrc.h>
+	<stdarg.h>
+	<windef.h>
+	<wincon.h>
+	<winbase.h>
+	<wingdi.h>
+	<winuser.h>
+	<winnls.h>
+	<winver.h>
+	<winnetwk.h>
+	<winreg.h>
+	<winsvc.h>
+	<cderr.h>
+	<dde.h>
+	<ddeml.h>
+	<dlgs.h>
+	<imm.h>
+	<lzexpand.h>
+	<mmsystem.h>
+	<nb30.h>
+	<rpc.h>
+	<shellapi.h>
+	<winperf.h>
+	<commdlg.h>
+	<winspool.h>
+	"_winsock.h"
+	<ole2.h>
+
+1548158464 d:\codeblocks\mingw\include\winresrc.h
+	<winuser.h>
+	<winnt.h>
+	<winver.h>
+	<dde.h>
+	<dlgs.h>
+	<commctrl.h>
+
+1548158464 d:\codeblocks\mingw\include\winuser.h
+	<windef.h>
+	<wingdi.h>
+	<stdarg.h>
+	<dbt.h>
+
+1548158464 d:\codeblocks\mingw\include\windef.h
+	<w32api.h>
+	<winnt.h>
+
+1548158464 d:\codeblocks\mingw\include\w32api.h
+	<sdkddkver.h>
+
+1548158464 d:\codeblocks\mingw\include\sdkddkver.h
+
+1548158464 d:\codeblocks\mingw\include\winnt.h
+	<windef.h>
+	<winerror.h>
+	<string.h>
+	<basetsd.h>
+	<pshpack4.h>
+	<poppack.h>
+
+1548158464 d:\codeblocks\mingw\include\winerror.h
+
+1548158450 d:\codeblocks\mingw\include\string.h
+	<_mingw.h>
+	<stddef.h>
+	<strings.h>
+	"strings.h"
+	"wchar.h"
+
+1548158450 d:\codeblocks\mingw\include\_mingw.h
+	<msvcrtver.h>
+	<w32api.h>
+	<features.h>
+
+1548158450 d:\codeblocks\mingw\include\msvcrtver.h
+	<_mingw.h>
+
+1553089538 d:\codeblocks\mingw\include\features.h
+
+1548158450 d:\codeblocks\mingw\include\strings.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\wchar.h
+	<_mingw.h>
+	<wctype.h>
+	<sys/types.h>
+	"stdio.h"
+	"stdlib.h"
+	"direct.h"
+	"sys/stat.h"
+	"conio.h"
+	"io.h"
+	"time.h"
+	"locale.h"
+	"process.h"
+
+1548158450 d:\codeblocks\mingw\include\wctype.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\sys\types.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\stdio.h
+	<_mingw.h>
+	<stddef.h>
+	"sys/types.h"
+	"stdarg.h"
+	<locale.h>
+
+1548158450 d:\codeblocks\mingw\include\locale.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\stdlib.h
+	<_mingw.h>
+	<stddef.h>
+	<locale.h>
+	"alloca.h"
+
+1548158450 d:\codeblocks\mingw\include\alloca.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\direct.h
+	"dos.h"
+
+1548158450 d:\codeblocks\mingw\include\dos.h
+	"io.h"
+
+1548158450 d:\codeblocks\mingw\include\io.h
+	<_mingw.h>
+	<sys/types.h>
+	"stdint.h"
+
+1548158450 d:\codeblocks\mingw\include\stdint.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\sys\stat.h
+	<sys/types.h>
+
+1548158450 d:\codeblocks\mingw\include\conio.h
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\time.h
+	<sys/types.h>
+	<_mingw.h>
+	<stddef.h>
+
+1548158450 d:\codeblocks\mingw\include\process.h
+	<_mingw.h>
+	<sys/types.h>
+	"stdint.h"
+
+1548158464 d:\codeblocks\mingw\include\basetsd.h
+
+1548158464 d:\codeblocks\mingw\include\pshpack4.h
+
+1548158464 d:\codeblocks\mingw\include\poppack.h
+
+1548158464 d:\codeblocks\mingw\include\wingdi.h
+	<windef.h>
+
+1548158464 d:\codeblocks\mingw\include\dbt.h
+	<windef.h>
+
+1548158464 d:\codeblocks\mingw\include\winver.h
+	<windef.h>
+
+1548158464 d:\codeblocks\mingw\include\dde.h
+
+1548158464 d:\codeblocks\mingw\include\dlgs.h
+
+1548158464 d:\codeblocks\mingw\include\commctrl.h
+	<winbase.h>
+	<prsht.h>
+
+1548158464 d:\codeblocks\mingw\include\winbase.h
+	<stdarg.h>
+	<windef.h>
+
+1548158464 d:\codeblocks\mingw\include\prsht.h
+	<winuser.h>
+
+1548158464 d:\codeblocks\mingw\include\wincon.h
+	<windef.h>
+	<wingdi.h>
+
+1548158464 d:\codeblocks\mingw\include\winnls.h
+
+1548158464 d:\codeblocks\mingw\include\winnetwk.h
+
+1548158464 d:\codeblocks\mingw\include\winreg.h
+	<winbase.h>
+	<reason.h>
+
+1548158464 d:\codeblocks\mingw\include\reason.h
+
+1548158464 d:\codeblocks\mingw\include\winsvc.h
+
+1548158464 d:\codeblocks\mingw\include\cderr.h
+
+1548158464 d:\codeblocks\mingw\include\ddeml.h
+
+1548158464 d:\codeblocks\mingw\include\imm.h
+
+1548158464 d:\codeblocks\mingw\include\lzexpand.h
+
+1548158464 d:\codeblocks\mingw\include\mmsystem.h
+
+1548158464 d:\codeblocks\mingw\include\nb30.h
+
+1548158464 d:\codeblocks\mingw\include\rpc.h
+	<windows.h>
+	<rpcdce.h>
+	<rpcnsi.h>
+	<rpcnterr.h>
+	<winerror.h>
+	<excpt.h>
+
+1548158464 d:\codeblocks\mingw\include\rpcdce.h
+	<basetyps.h>
+	<rpcdcep.h>
+
+1548158464 d:\codeblocks\mingw\include\basetyps.h
+
+1548158464 d:\codeblocks\mingw\include\rpcdcep.h
+
+1548158464 d:\codeblocks\mingw\include\rpcnsi.h
+
+1548158464 d:\codeblocks\mingw\include\rpcnterr.h
+
+1548158450 d:\codeblocks\mingw\include\excpt.h
+	<_mingw.h>
+	<windef.h>
+
+1548158464 d:\codeblocks\mingw\include\shellapi.h
+	<pshpack2.h>
+	<poppack.h>
+
+1548158464 d:\codeblocks\mingw\include\pshpack2.h
+
+1548158464 d:\codeblocks\mingw\include\winperf.h
+
+1548158464 d:\codeblocks\mingw\include\commdlg.h
+	<unknwn.h>
+	<prsht.h>
+
+1548158464 d:\codeblocks\mingw\include\unknwn.h
+	<windows.h>
+	<objfwd.h>
+	<wtypes.h>
+
+1548158464 d:\codeblocks\mingw\include\objfwd.h
+	<basetyps.h>
+
+1548158464 d:\codeblocks\mingw\include\wtypes.h
+	<rpc.h>
+	<rpcndr.h>
+
+1548158464 d:\codeblocks\mingw\include\rpcndr.h
+	<rpcnsip.h>
+	<objfwd.h>
+
+1548158464 d:\codeblocks\mingw\include\rpcnsip.h
+
+1548158464 d:\codeblocks\mingw\include\winspool.h
+
+1548158464 d:\codeblocks\mingw\include\_winsock.h
+	<sdkddkver.h>
+	<winsock2.h>
+	<winsock.h>
+
+1548158464 d:\codeblocks\mingw\include\winsock2.h
+	"winsock.h"
+	"nspapi.h"
+
+1548158464 d:\codeblocks\mingw\include\winsock.h
+	<windows.h>
+	<winerror.h>
+	<sys/bsdtypes.h>
+	<sys/time.h>
+	<mswsock.h>
+
+1548158450 d:\codeblocks\mingw\include\sys\bsdtypes.h
+	<_mingw.h>
+
+1548158450 d:\codeblocks\mingw\include\sys\time.h
+	<time.h>
+
+1548158464 d:\codeblocks\mingw\include\mswsock.h
+
+1548158464 d:\codeblocks\mingw\include\nspapi.h
+	"_winsock.h"
+	"wtypes.h"
+
+1548158464 d:\codeblocks\mingw\include\ole2.h
+	<winerror.h>
+	<objbase.h>
+	<olectlid.h>
+	<oleauto.h>
+	<oleidl.h>
+
+1548158464 d:\codeblocks\mingw\include\objbase.h
+	<rpc.h>
+	<rpcndr.h>
+	<stdlib.h>
+	<basetyps.h>
+	<wtypes.h>
+	<unknwn.h>
+	<objidl.h>
+	<cguid.h>
+
+1548158464 d:\codeblocks\mingw\include\objidl.h
+	<objfwd.h>
+
+1548158464 d:\codeblocks\mingw\include\cguid.h
+
+1548158464 d:\codeblocks\mingw\include\olectlid.h
+
+1548158464 d:\codeblocks\mingw\include\oleauto.h
+	<oaidl.h>
+
+1548158464 d:\codeblocks\mingw\include\oaidl.h
+	<windows.h>
+	<ole2.h>
+
+1548158464 d:\codeblocks\mingw\include\oleidl.h
+	<objfwd.h>
+
+1548158450 d:\codeblocks\mingw\include\math.h
+	<_mingw.h>
+
+1304830080 d:\codeblocks\mingw\include\math3d.h
+	<math.h>
+	<string.h>
+
+1304830080 d:\codeblocks\mingw\include\gltools.h
+	<windows.h>
+	<gl\glew.h>
+	<gl\gl.h>
+	<stdlib.h>
+	<TargetConditionals.h>
+	<OpenGLES/ES2/gl.h>
+	<OpenGLES/ES2/glext.h>
+	<GL/glew.h>
+	<OpenGL/gl.h>
+	<glew.h>
+	<stdio.h>
+	<math.h>
+	<math3d.h>
+	<GLBatch.h>
+	<GLTriangleBatch.h>
+
+1469329178 d:\codeblocks\mingw\include\gl\glew.h
+	<stddef.h>
+	<inttypes.h>
+	<stdint.h>
+	<inttypes.h>
+	<Availability.h>
+	<OpenGL/glu.h>
+	<GL/glu.h>
+
+1548158450 d:\codeblocks\mingw\include\inttypes.h
+	<_mingw.h>
+	<stdint.h>
+	<stddef.h>
+
+1548158464 d:\codeblocks\mingw\include\gl\glu.h
+	<stddef.h>
+	<GL/gl.h>
+
+1548158464 d:\codeblocks\mingw\include\gl\gl.h
+
+1304830080 d:\codeblocks\mingw\include\glbatch.h
+	<windows.h>
+	<gl\glew.h>
+	<gl\gl.h>
+	<TargetConditionals.h>
+	<OpenGLES/ES2/gl.h>
+	<OpenGLES/ES2/glext.h>
+	<GL/glew.h>
+	<OpenGL/gl.h>
+	<glew.h>
+	<math3d.h>
+	<GLBatchBase.h>
+
+1304830080 d:\codeblocks\mingw\include\glbatchbase.h
+
+1304830080 d:\codeblocks\mingw\include\gltrianglebatch.h
+	<windows.h>
+	<gl\glew.h>
+	<gl\gl.h>
+	<TargetConditionals.h>
+	<OpenGLES/ES2/gl.h>
+	<OpenGLES/ES2/glext.h>
+	<GL/glew.h>
+	<OpenGL/gl.h>
+	<glew.h>
+	<math3d.h>
+	<GLBatchBase.h>
+	<GLShaderManager.h>
+
+1304830080 d:\codeblocks\mingw\include\glshadermanager.h
+	<windows.h>
+	<gl\glew.h>
+	<gl\gl.h>
+	<TargetConditionals.h>
+	<OpenGLES/ES2/gl.h>
+	<OpenGLES/ES2/glext.h>
+	<GL/glew.h>
+	<OpenGL/gl.h>
+	<glew.h>
+
+1304830080 d:\codeblocks\mingw\include\glframe.h
+	<math3d.h>
+
+1304830080 d:\codeblocks\mingw\include\glfrustum.h
+	<math3d.h>
+	<GLFrame.h>
+
+1553695896 d:\codeblocks\mingw\include\glmatrixstack.h
+	<GLTools.h>
+	<math3d.h>
+	<GLFrame.h>
+
+1304830080 d:\codeblocks\mingw\include\glgeometrytransform.h
+	<GLTools.h>
+
+1304830080 d:\codeblocks\mingw\include\stopwatch.h
+	<windows.h>
+	<sys/time.h>
+
+903428686 d:\codeblocks\mingw\include\gl\glut.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1553605761 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
+	"../Header/Tinyobjloader.h"
+	"tiny_obj_loader.h"
+	"stb_image.h"
+
+1553602588 e:\gamedev\opengl\trunk\openglproject\tools\header\tinyobjloader.h
+	<algorithm>
+	<cassert>
+	<cmath>
+	<limits>
+	<map>
+	<vector>
+	"../Header/Tools.h"
+	"../Header/UtilTimer.h"
+	"stb_image.h"
+	"tiny_obj_loader.h"
+	<glut/glut.h>
+	<GL/glut.h>
+
+1553409511 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+	<windows.h>
+	<mmsystem.h>
+	<sys/time.h>
+	<ctime>
+
+1546613574 d:\codeblocks\mingw\include\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1548158450 d:\codeblocks\mingw\include\assert.h
+	<_mingw.h>
+
+1553408353 d:\codeblocks\mingw\include\tiny_obj_loader.h
+	<map>
+	<string>
+	<vector>
+	<cassert>
+	<cctype>
+	<cmath>
+	<cstddef>
+	<cstdlib>
+	<cstring>
+	<limits>
+	<utility>
+	<fstream>
+	<sstream>
+
+1554107289 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+	"../Header/Tools.h"
+
+1553258502 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\trackball.cpp
+	<math.h>
+	"../Header/trackball.h"
+
+1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
+

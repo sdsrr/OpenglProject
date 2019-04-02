@@ -11,6 +11,7 @@ enum ShaderType
     STSkybox,
     STTextureSprite,
     STBlur,
+    STTBO,
     STMax,
 };
 
@@ -57,6 +58,12 @@ private:
     GLint blur_iMatrix;
     GLint blurTexture[6];
 
+    GLint tboShader;
+    GLint tboShader_iMatrix;
+    GLint tboShader_iColorMap;
+    GLint tboShader_iMaxWidth;
+    GLint tboShader_iMaxHeight;
+
 public:
     ShaderMgr();
     void OnInit(int type=-1);
@@ -69,6 +76,7 @@ public:
     void InitTextureSkybox();
     void InitTextureSprite();
     void InitBlur();
+    void InitTbo();
 public:
     void UseSolidColor(M3DVector4f color);
     void UseDiffuse(M3DVector4f color, M3DMatrix44f mvpMatrix);
@@ -79,6 +87,7 @@ public:
     void UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint textureUnit);
     void UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLfloat size);
     void UseBlurShader(const M3DMatrix44f mvpMatrix, int textureUnit);
+    void UseTboShader(const M3DMatrix44f mvpMatrix, int maxWidth, int maxHeight, int textureUnit);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源

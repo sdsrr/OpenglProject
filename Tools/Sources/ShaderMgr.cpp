@@ -10,6 +10,16 @@ ShaderMgr::ShaderMgr()
     initfunctions[STSkybox] = (VoidDeldgate)&ShaderMgr::InitTextureSkybox;
     initfunctions[STTextureSprite] = (VoidDeldgate)&ShaderMgr::InitTextureSprite;
     initfunctions[STBlur] = (VoidDeldgate)&ShaderMgr::InitBlur;
+    initfunctions[STTBO] = (VoidDeldgate)&ShaderMgr::InitTbo;
+}
+
+void ShaderMgr::InitTbo()
+{
+    tboShader = LoadShader(Util::GetFullPath("Tools/Shader/TBO/vertex.vp"), Util::GetFullPath("Tools/Shader/TBO/fragment.fp"));
+    tboShader_iMatrix = glGetUniformLocation(tboShader, "mvpMatrix");
+    tboShader_iColorMap = glGetUniformLocation(tboShader, "colorMap");
+    tboShader_iMaxWidth = glGetUniformLocation(tboShader, "maxWidth");
+    tboShader_iMaxHeight = glGetUniformLocation(tboShader, "maxHeight");
 }
 
 void ShaderMgr::InitSolid()
@@ -266,4 +276,13 @@ void ShaderMgr::UseBlurShader(const M3DMatrix44f mvpMatrix, int textureUnit)
     for (int i = 0 ; i < 6; i++)
         glUniform1i(blurTexture[i], textureUnit + i);
     glUniformMatrix4fv(blur_iMatrix, 1, GL_TRUE, mvpMatrix);
+}
+
+void ShaderMgr::UseTboShader(const M3DMatrix44f mvpMatrix, int maxWidth, int maxHeight, int textureUnit)
+{
+    glUseProgram(tboShader);
+    glUniformMatrix4fv(tboShader_iMatrix, 1, GL_TRUE, mvpMatrix);
+    glUniform1i(tboShader_iColorMap, textureUnit);
+    glUniform1i(tboShader_iMaxWidth, maxWidth);
+    glUniform1i(tboShader_iMaxHeight, maxHeight);
 }

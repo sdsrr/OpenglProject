@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TBO" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/TBO" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="D:/CodeBlocks/MinGW/bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/TBO" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="D:/CodeBlocks/MinGW/bin" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="D:/CodeBlocks/MinGW/include" />
+		</Compiler>
+		<Linker>
+			<Add library="glut32" />
+			<Add library="opengl32" />
+			<Add library="glu32" />
+			<Add library="winmm" />
+			<Add library="gdi32" />
+			<Add directory="D:/CodeBlocks/MinGW/lib" />
+		</Linker>
+		<Unit filename="../Tools/Header/ShaderMgr.h" />
+		<Unit filename="../Tools/Header/Tinyobjloader.h" />
+		<Unit filename="../Tools/Header/Tools.h" />
+		<Unit filename="../Tools/Header/Trackball.h" />
+		<Unit filename="../Tools/Header/UtilTimer.h" />
+		<Unit filename="../Tools/Shader/TBO/fragment.fp" />
+		<Unit filename="../Tools/Shader/TBO/vertex.vp" />
+		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
+		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
+		<Unit filename="../Tools/Sources/Tools.cpp" />
+		<Unit filename="../Tools/Sources/Trackball.cpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

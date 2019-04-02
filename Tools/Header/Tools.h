@@ -35,7 +35,7 @@
 
 #define random(x) (rand()%x)
 #define PI 3.1415926
-
+#define Enum2String(x) (#x)
 
 
 struct vec3
