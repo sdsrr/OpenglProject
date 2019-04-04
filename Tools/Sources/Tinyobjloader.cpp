@@ -87,24 +87,23 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
             texture_filename = base_dir + mp->diffuse_texname;
             if (!Util::FileExists(texture_filename))
             {
-                std::cerr << "Unable to find file: " << mp->diffuse_texname
-                          << std::endl;
-                exit(1);
+                std::cerr << "Unable to find file: " << mp->diffuse_texname << std::endl;
+                continue;
             }
         }
 
-        unsigned char* image = stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
+        unsigned char* image = stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);//
         if (!image)
         {
-            std::cerr << "Unable to load texture: " << texture_filename
-                      << std::endl;
+            std::cerr << "Unable to load texture: " << texture_filename << std::endl;
             exit(1);
         }
-        std::cout << "Loaded texture: " << texture_filename << ", w = " << w
-                  << ", h = " << h << ", comp = " << comp << std::endl;
+        std::cout << "Loaded texture: " << texture_filename << ", w = " << w << ", h = " << h << ", comp = " << comp << ", size = " << strlen((const char*)image) << std::endl;
 
         glGenTextures(1, &texture_id);
         glBindTexture(GL_TEXTURE_2D, texture_id);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT),
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT),
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         if (comp == 3)
@@ -122,6 +121,7 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
         glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(image);
         textures.insert(std::make_pair(mp->diffuse_texname, texture_id));
+
     }
 
     bmin[0] = bmin[1] = bmin[2] = std::numeric_limits<float>::max();

@@ -1,10 +1,15 @@
 #version 330
 
-uniform vec4 color;
-in vec4 vertexCol;
+uniform vec4 diffuseColor;
+
+in vec4 color;
+in vec3 light;
+in vec3 normal;
+
 out vec4 vFragColor;
 
 void main(void)
 {
-    vFragColor = vertexCol + color;
+    float diffuse = max(0, dot(normalize(normal), normalize(light)));
+    vFragColor = color + diffuseColor * diffuse;
 }

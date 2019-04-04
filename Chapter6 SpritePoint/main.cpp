@@ -1,7 +1,7 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
 
-
+BaseShaderParam shaderParam;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 
@@ -26,12 +26,14 @@ static void Display(void)
     glEnable(GL_POINT_SPRITE_ARB);
     glEnable(GL_PROGRAM_POINT_SIZE);
 
+    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    shaderParam.colorMap[0] = 0;
     for (int i = 0; i < MaxStarNum; i++)
     {
         pointsSize[i][0]--;
         if (pointsSize[i][0] <= 0)
             pointsSize[i][0] = pointsSize[i][1];
-        shaderMgr.UseSpritePoint(normalCamera.GetModelviewprojectMatrix(), 0, pointsSize[i][0]);
+        shaderMgr.UseSpritePoint(shaderParam, pointsSize[i][0]);
         points[i].Draw();
     }
 

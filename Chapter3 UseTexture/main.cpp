@@ -4,6 +4,7 @@ GLShaderManager shaderMgr_;
 ShaderMgr shaderMgr;
 GLBatch triangleBathch;
 GLBatch cubeBatch;
+BaseShaderParam shaderParam;
 
 GLuint textureID;
 GLuint textureArrayID;
@@ -83,7 +84,10 @@ static void Display(void)
 
     //use cubemap
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
-    shaderMgr.UseCubeMap(color, normalCamera.GetModelviewprojectMatrix(), 0);
+    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    shaderParam.SetDiffuseColor(color);
+    shaderParam.colorMap[0] = 0;
+    shaderMgr.UseCubeMap(shaderParam);
     cubeBatch.Draw();
 
     glutSwapBuffers();

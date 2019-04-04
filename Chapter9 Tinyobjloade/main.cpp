@@ -10,10 +10,13 @@ ShaderMgr shaderMgr;
 M3DVector4f green = {0,1,0,0};
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
+GLfloat lightPosition[] = {-100, 100, -100,1};
+BaseShaderParam shaderParam;
 
 static void OnStartup()
 {
     //load model data
+    glActiveTexture(GL_TEXTURE0);
     modelObj.LoadObjAndConvert(modelName);
 
     normalCamera.OnInit(640, 480, 50, 2, 1);
@@ -33,13 +36,16 @@ static void Display(void)
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-
     modelviewStack->PushMatrix();
         modelviewStack->Translate(0,0,-100);
-        shaderMgr.UseDiffuse(green, normalCamera.GetModelviewprojectMatrix());
-        modelObj.DrawGraph();
+        shaderParam.SetDiffuseColor(green);
+        shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+        shaderParam.SetMVMatrix(normalCamera.GetModeviewMatrix());
+        shaderParam.SetLightPostion(lightPosition);
+        shaderParam.SetNormalMatrix(normalCamera.GetNormalMatrix());
+        shaderParam.colorMap[0] = 0;
+        shaderMgr.UseTexture2d(shaderParam);
+        modelObj.DefaultDrawGraph();
     modelviewStack->PopMatrix();
     glutSwapBuffers();
 }
@@ -67,6 +73,7 @@ int main(int argc, char** argv)
     glutMouseFunc(MouseClick);
     glutIdleFunc(Idle);
     glutDisplayFunc(Display);
+    glEnable(GL_DEPTH_TEST);
 
     if (glewInit() != GLEW_OK)
     {

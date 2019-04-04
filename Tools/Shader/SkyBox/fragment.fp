@@ -1,9 +1,9 @@
 #version 330
 
-uniform samplerCube colorMap;
+uniform samplerCube colorMap00;
 in vec3 texCoord;
 out vec4 vFragColor;
 void main(void)
 {
-    vFragColor = texture(colorMap, texCoord);
+    vFragColor = texture(colorMap00, texCoord);
 }

@@ -4,6 +4,7 @@ GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 GLBatch cubeBatch;
 GLTriangleBatch sphereBatch;
+BaseShaderParam shaderParam;
 
 GLFrame camera;
 GLFrustum frustum;
@@ -58,8 +59,10 @@ static void display(void)
     // draw skybox only use camera roate matrix
     modelviewMatrixStack.PushMatrix();
         modelviewMatrixStack.MultMatrix(cameraRoateMatrix);
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        shaderMgr.UseSkyBox(tranformPipeline.GetModelViewProjectionMatrix(), 0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+        shaderParam.SetMVPMatrix(tranformPipeline.GetModelViewProjectionMatrix());
+        shaderParam.colorMap[0] = 0;
+        shaderMgr.UseSkyBox(shaderParam);
         glDisable(GL_CULL_FACE);
         cubeBatch.Draw();
         glEnable(GL_CULL_FACE);

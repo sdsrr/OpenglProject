@@ -8,6 +8,7 @@ GLBatch triangle;
 GLBatch screenQuad;
 GLTriangleBatch torus;
 
+BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
@@ -19,7 +20,7 @@ void* pixelBuffer;
 
 M3DVector4f whiteCol = {1,1,1,1};
 M3DVector4f redCol = {1,0,0,1};
-GLboolean openPbo = true;
+GLboolean openPbo = false;
 
 unsigned int GetCurTexture()
 {
@@ -39,7 +40,10 @@ static void Display()
     modelviewStack->Translate(0,0,-15);
     modelviewStack->Rotate(angle+=2,0,1,0);
     glActiveTexture(GL_TEXTURE0);
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
+    param.SetDiffuseColor(whiteCol);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    param.colorMap[0] = 0;
+    shaderMgr.UseTexture2d(param);
     torus.Draw();
     modelviewStack->PopMatrix();
     timer.start();
@@ -60,10 +64,17 @@ static void Display()
         ///绘制triangle
         modelviewStack->PushMatrix();
         modelviewStack->Translate(0,0,-2);
-        shaderMgr.UseBlurShader(normalCamera.GetModelviewprojectMatrix(), 0);
-        triangle.Draw();
-        modelviewStack->PopMatrix();
 
+        param.colorMap[0] = 1;
+        param.colorMap[1] = 2;
+        param.colorMap[2] = 3;
+        param.colorMap[3] = 4;
+        param.colorMap[4] = 5;
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+        shaderMgr.UseBlurShader(param);
+        triangle.Draw();
+
+        modelviewStack->PopMatrix();
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     }
     else
@@ -78,8 +89,16 @@ static void Display()
         ///绘制triangle
         modelviewStack->PushMatrix();
         modelviewStack->Translate(0,0,-2);
-        shaderMgr.UseBlurShader(normalCamera.GetModelviewprojectMatrix(), 0);
+
+        param.colorMap[0] = 1;
+        param.colorMap[1] = 2;
+        param.colorMap[2] = 3;
+        param.colorMap[3] = 4;
+        param.colorMap[4] = 5;
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+        shaderMgr.UseBlurShader(param);
         triangle.Draw();
+
         modelviewStack->PopMatrix();
     }
 

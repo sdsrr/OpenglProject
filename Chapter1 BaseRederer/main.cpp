@@ -1,6 +1,7 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 
+BaseShaderParam shaderParam;
 ShaderMgr shaderMgr;
 GLfloat vertexs[] = {
     -0.5f, -0.5f, 0.0f,
@@ -27,8 +28,8 @@ static void Display(void)
     //解释顶点数组数据解析方式
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
-
-    shaderMgr.UseSolidColor(color);
+    shaderParam.SetDiffuseColor(color);
+    shaderMgr.UseSolidColor(shaderParam);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glutSwapBuffers();

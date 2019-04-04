@@ -1,6 +1,7 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
 
+BaseShaderParam param;
 ShaderMgr shaderMgr;
 GLShaderManager glShaderMgr;
 
@@ -36,7 +37,9 @@ static void Display(void)
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(1,1,1,1);
 
-    shaderMgr.UseDiffuse(color, normalCamera.GetModelviewprojectMatrix());
+    param.SetDiffuseColor(color);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    shaderMgr.UseDiffuse(param);
     rectangle.Draw();
 
     glBindVertexArray(vao);

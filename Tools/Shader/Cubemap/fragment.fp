@@ -2,10 +2,10 @@
 
 in vec3 texCoords;
 
-uniform samplerCube cubeMap;
-uniform vec4 color;
+uniform samplerCube colorMap00;
+uniform vec4 diffuseColor;
 out vec4 vFragColor;
 void main(void)
 {
-    vFragColor = texture(cubeMap, texCoords);
+    vFragColor = texture(colorMap00, texCoords);
 }

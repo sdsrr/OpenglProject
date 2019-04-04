@@ -1,5 +1,30 @@
 #include "../Header/ShaderMgr.h"
 
+BaseShader::BaseShader(const char* vp, const char* fp)
+{
+    this->vp = vp;
+    this->fp = fp;
+}
+
+void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
+void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
+void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetNormalMatrix(const M3DMatrix44f matrix){memcpy(normalMatrix, matrix, 16*sizeof(float));};
+void BaseShaderParam::SetLightPostion(GLfloat position[3]){memcpy(lightPosition, position, 3*sizeof(float));}
+void BaseShaderParam::SetCameraPosition(GLfloat x, GLfloat y, GLfloat z)
+{
+    cameraPosition[0] = x;
+    cameraPosition[1] = y;
+    cameraPosition[2] = z;
+}
+void BaseShaderParam::SetLightPostion(GLfloat x, GLfloat y, GLfloat z)
+{
+    lightPosition[0] = x;
+    lightPosition[1] = y;
+    lightPosition[2] = z;
+}
+
 ShaderMgr::ShaderMgr()
 {
     initfunctions[STSolid] = (VoidDeldgate)&ShaderMgr::InitSolid;
@@ -13,19 +38,35 @@ ShaderMgr::ShaderMgr()
     initfunctions[STTBO] = (VoidDeldgate)&ShaderMgr::InitTbo;
 }
 
+void ShaderMgr::InitBaseShader(BaseShader* shader)
+{
+    shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->fp));
+    shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
+    shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
+    shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
+    shader->lightPosition = glGetUniformLocation(shader->id, "lightPosition");
+    shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
+    shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
+
+    shader->colorMap[0] = glGetUniformLocation(shader->id, "colorMap00");
+    shader->colorMap[1] = glGetUniformLocation(shader->id, "colorMap01");
+    shader->colorMap[2] = glGetUniformLocation(shader->id, "colorMap02");
+    shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
+    shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
+    shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
 void ShaderMgr::InitTbo()
 {
-    tboShader = LoadShader(Util::GetFullPath("Tools/Shader/TBO/vertex.vp"), Util::GetFullPath("Tools/Shader/TBO/fragment.fp"));
-    tboShader_iMatrix = glGetUniformLocation(tboShader, "mvpMatrix");
-    tboShader_iColorMap = glGetUniformLocation(tboShader, "colorMap");
-    tboShader_iMaxWidth = glGetUniformLocation(tboShader, "maxWidth");
-    tboShader_iMaxHeight = glGetUniformLocation(tboShader, "maxHeight");
+    InitBaseShader(tboShader);
+    tboShader_iMaxWidth = glGetUniformLocation(tboShader->id, "maxWidth");
+    tboShader_iMaxHeight = glGetUniformLocation(tboShader->id, "maxHeight");
 }
 
 void ShaderMgr::InitSolid()
 {
     //单色
-    solidShader = LoadShader(Util::GetFullPath("Tools/Shader/SolidColor/vertex.vp"), Util::GetFullPath("Tools/Shader/SolidColor/fragment.fp"));
+    InitBaseShader(solidShader);
     //若为-1表示未取得index可能变量未使用被优化掉了
     //printf("%d  %d  %d", textureSprite_iMatrix, textureSprite_iColor, textureSprite_iColorMap);
 }
@@ -33,67 +74,45 @@ void ShaderMgr::InitSolid()
 void ShaderMgr::InitDiffuse()
 {
     //漫反射
-    diffuseShader = LoadShader(Util::GetFullPath("Tools/Shader/Diffuse/vertex.vp"), Util::GetFullPath("Tools/Shader/Diffuse/fragment.fp"));
-    diffuseShader_iMatrix = glGetUniformLocation(diffuseShader, "mvpMatrix");
-    diffuseShader_iColor = glGetUniformLocation(diffuseShader, "color");
+    InitBaseShader(diffuseShader);
 }
 
 void ShaderMgr::InitTexture2d()
 {
     //2d纹理
-    texture2dShader = LoadShader(Util::GetFullPath("Tools/Shader/Texture2D/vertex.vp"), Util::GetFullPath("Tools/Shader/Texture2D/fragment.fp"));
-    texture2dShader_iMatrix = glGetUniformLocation(texture2dShader, "mvpMatrix");
-    texture2dShader_iColor = glGetUniformLocation(texture2dShader, "color");
-    texture2dShader_iColorMap = glGetUniformLocation(texture2dShader, "colorMap");
+    InitBaseShader(texture2dShader);
 }
 
 void ShaderMgr::InitTextureArray()
 {
     //2d纹理数组
-    texture2dArrayShader = LoadShader(Util::GetFullPath("Tools/Shader/TextureArray/vertex.vp"), Util::GetFullPath("Tools/Shader/TextureArray/fragment.fp"));
-    texture2dArrayShader_iMatrix = glGetUniformLocation(texture2dArrayShader, "mvpMatrix");
-    texture2dArrayShader_iColor = glGetUniformLocation(texture2dArrayShader, "color");
-    texture2dArrayShader_iColorMap = glGetUniformLocation(texture2dArrayShader, "colorMap");
-    texture2dArrayShader_iTime = glGetUniformLocation(texture2dArrayShader, "time");
+    InitBaseShader(texture2dArrayShader);
+    texture2dArrayShader_iTime = glGetUniformLocation(texture2dArrayShader->id, "time");
 }
 
 void ShaderMgr::InitCubemap()
 {
     //cubemap
-    textureCubeMapShader = LoadShader(Util::GetFullPath("Tools/Shader/Cubemap/vertex.vp"), Util::GetFullPath("Tools/Shader/Cubemap/fragment.fp"));
-    textureCubeMapShader_iMatrix = glGetUniformLocation(textureCubeMapShader, "mvpMatrix");
-    textureCubeMapShader_iColor = glGetUniformLocation(textureCubeMapShader, "color");
-    textureCubeMapShader_iCubeMap = glGetUniformLocation(textureCubeMapShader, "cubeMap");
+    InitBaseShader(cubeMapShader);
 }
 
 void ShaderMgr::InitTextureSkybox()
 {
     //skybox
-    textureSkybox = LoadShader(Util::GetFullPath("Tools/Shader/SkyBox/vertex.vp"), Util::GetFullPath("Tools/Shader/SkyBox/fragment.fp"));
-    textureSkybox_iCubeMap = glGetUniformLocation(textureSkybox, "colorMap");
-    textureSkybox_iMatrix = glGetUniformLocation(textureSkybox, "mvpMatrix");
+    InitBaseShader(textureSkybox);
 }
 
 void ShaderMgr::InitTextureSprite()
 {
     //spritepoint
-    textureSprite = LoadShader(Util::GetFullPath("Tools/Shader/SpritePoint/vertex.vp"), Util::GetFullPath("Tools/Shader/SpritePoint/fragment.fp"));
-    textureSprite_iMatrix = glGetUniformLocation(textureSprite, "mvpMatrix");
-    textureSprite_iColorMap = glGetUniformLocation(textureSprite, "colorMap");
-    textureSprite_iSize = glGetUniformLocation(textureSprite, "size");
+    InitBaseShader(textureSprite);
+    textureSprite_iSize = glGetUniformLocation(textureSprite->id, "size");
 }
 
 void ShaderMgr::InitBlur()
 {
     //blur
-    blurShader = LoadShader(Util::GetFullPath("Tools/Shader/Blur/vertex.vp"), Util::GetFullPath("Tools/Shader/Blur/fragment.fp"));
-    blur_iMatrix = glGetUniformLocation(blurShader, "mvpMatrix");
-    blurTexture[0] = glGetUniformLocation(blurShader, "texture00");
-    blurTexture[1] = glGetUniformLocation(blurShader, "texture01");
-    blurTexture[2] = glGetUniformLocation(blurShader, "texture02");
-    blurTexture[3] = glGetUniformLocation(blurShader, "texture03");
-    blurTexture[4] = glGetUniformLocation(blurShader, "texture04");
-    blurTexture[5] = glGetUniformLocation(blurShader, "texture05");
+    InitBaseShader(blurShader);
 }
 
 void ShaderMgr::OnInit(int type)
@@ -111,14 +130,14 @@ void ShaderMgr::OnInit(int type)
 
 void ShaderMgr::OnUnInit()
 {
-    glDeleteProgram(solidShader);
-    glDeleteProgram(diffuseShader);
-    glDeleteProgram(texture2dShader);
-    glDeleteProgram(texture2dArrayShader);
-    glDeleteProgram(textureCubeMapShader);
-    glDeleteProgram(textureSkybox);
-    glDeleteProgram(textureSprite);
-    glDeleteProgram(blurShader);
+    glDeleteProgram(solidShader->id);
+    glDeleteProgram(diffuseShader->id);
+    glDeleteProgram(texture2dShader->id);
+    glDeleteProgram(texture2dArrayShader->id);
+    glDeleteProgram(cubeMapShader->id);
+    glDeleteProgram(textureSkybox->id);
+    glDeleteProgram(textureSprite->id);
+    glDeleteProgram(blurShader->id);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -209,80 +228,85 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
     return program;
 }
 
-void ShaderMgr::UseSolidColor(M3DVector4f color)
+void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param, bool print)
 {
-    glUseProgram(solidShader);
+    if (shader != NULL)
+    {
+        glUseProgram(shader->id);
+        glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
+        glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
+        glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
+        glUniform3fv(shader->lightPosition, 1, param.lightPosition);
+        glUniform3fv(shader->cameraPosition, 1, param.cameraPosition);
+        glUniform4fv(shader->diffuseColor, 1, param.diffuseColor);
+        for (int i=0; i<6; i++)
+            glUniform1i(shader->colorMap[i], param.colorMap[i]);
+
+        if (print)
+        {
+            printf("mvpMatrix %d\n", shader->mvpMatrix);
+            Util::PrintMatrix44f(param.mvpMatrix);
+            printf("mvMatrix %d\n", shader->mvMatrix);
+            Util::PrintMatrix44f(param.mvMatrix);
+            printf("normalMatrix %d\n", shader->normalMatrix);
+            Util::PrintMatrix44f(param.normalMatrix);
+            printf("colorMap00 %d %d\n", shader->colorMap[0], param.colorMap[0]);
+            printf("colorMap01 %d %d\n", shader->colorMap[1], param.colorMap[1]);
+            printf("colorMap02 %d %d\n", shader->colorMap[2], param.colorMap[2]);
+            printf("colorMap03 %d %d\n", shader->colorMap[3], param.colorMap[3]);
+            printf("colorMap04 %d %d\n", shader->colorMap[4], param.colorMap[4]);
+            printf("colorMap05 %d %d\n\n", shader->colorMap[5], param.colorMap[5]);
+        }
+
+    }
 }
 
-void ShaderMgr::UseDiffuse(M3DVector4f color, const M3DMatrix44f mvpMatrix)
+void ShaderMgr::UseSolidColor(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(solidShader, param);
+}
+
+void ShaderMgr::UseDiffuse(const BaseShaderParam& param)
 {
     //调用useprogram之后设置参数
-    glUseProgram(diffuseShader);
-    glUniformMatrix4fv(diffuseShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform4fv(diffuseShader_iColor, 1, color);
+    InitBaseShaderParam(diffuseShader, param);
 }
 
-void ShaderMgr::UseDiffuse(M3DVector4f color, M3DMatrix44f mvpMatrix)
+void ShaderMgr::UseTexture2d(const BaseShaderParam& param)
 {
-    //调用useprogram之后设置参数
-    glUseProgram(diffuseShader);
-    glUniformMatrix4fv(diffuseShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform4fv(diffuseShader_iColor, 1, color);
+    InitBaseShaderParam(texture2dShader, param);
 }
 
-void ShaderMgr::UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit)
+void ShaderMgr::UseTextureArray(const BaseShaderParam& param, GLuint time)
 {
-    glUseProgram(texture2dShader);
-    glUniformMatrix4fv(texture2dShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform4fv(texture2dShader_iColor, 1, color);
-    glUniform1i(texture2dShader_iColorMap, textureUnit);
-}
-
-void ShaderMgr::UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLuint time)
-{
-    glUseProgram(texture2dArrayShader);
-    glUniformMatrix4fv(texture2dArrayShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform4fv(texture2dArrayShader_iColor,1,color);
+    InitBaseShaderParam(texture2dArrayShader, param);
     glUniform1f(texture2dArrayShader_iTime, time);
-    glUniform1i(texture2dShader_iColorMap, textureUnit);
 }
 
-void ShaderMgr::UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit)
+void ShaderMgr::UseCubeMap(const BaseShaderParam& param)
 {
-    glUseProgram(textureCubeMapShader);
-    glUniformMatrix4fv(textureCubeMapShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform4fv(textureCubeMapShader_iColor, 1, color);
-    glUniform1i(textureCubeMapShader_iCubeMap, textureUnit);
+    InitBaseShaderParam(cubeMapShader, param);
 }
 
-void ShaderMgr::UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint textureUnit)
+void ShaderMgr::UseSkyBox(const BaseShaderParam& param)
 {
-    glUseProgram(textureSkybox);
-    glUniform1i(textureSkybox_iCubeMap, textureUnit);
-    glUniformMatrix4fv(textureSkybox_iMatrix, 1, GL_TRUE, mvpMatrix);
+    InitBaseShaderParam(textureSkybox, param, true);
 }
 
-void ShaderMgr::UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLfloat size)
+void ShaderMgr::UseSpritePoint(const BaseShaderParam& param, GLfloat size)
 {
-    glUseProgram(textureSprite);
-    glUniform1i(textureSprite_iColorMap, textureUnit);
+    InitBaseShaderParam(textureSprite, param);
     glUniform1f(textureSprite_iSize, size);
-    glUniformMatrix4fv(textureSprite_iMatrix, 1, GL_TRUE, mvpMatrix);
 }
 
-void ShaderMgr::UseBlurShader(const M3DMatrix44f mvpMatrix, int textureUnit)
+void ShaderMgr::UseBlurShader(const BaseShaderParam& param)
 {
-    glUseProgram(blurShader);
-    for (int i = 0 ; i < 6; i++)
-        glUniform1i(blurTexture[i], textureUnit + i);
-    glUniformMatrix4fv(blur_iMatrix, 1, GL_TRUE, mvpMatrix);
+    InitBaseShaderParam(blurShader, param);
 }
 
-void ShaderMgr::UseTboShader(const M3DMatrix44f mvpMatrix, int maxWidth, int maxHeight, int textureUnit)
+void ShaderMgr::UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight)
 {
-    glUseProgram(tboShader);
-    glUniformMatrix4fv(tboShader_iMatrix, 1, GL_TRUE, mvpMatrix);
-    glUniform1i(tboShader_iColorMap, textureUnit);
+    InitBaseShaderParam(tboShader, param);
     glUniform1i(tboShader_iMaxWidth, maxWidth);
     glUniform1i(tboShader_iMaxHeight, maxHeight);
 }

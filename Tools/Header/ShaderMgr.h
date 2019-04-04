@@ -15,7 +15,44 @@ enum ShaderType
     STMax,
 };
 
+class BaseShader
+{
+public:
+    GLuint id;
+    GLint mvMatrix;
+    GLint mvpMatrix;
+    GLint normalMatrix;
+    GLint diffuseColor;
+    GLint lightPosition;
+    GLint cameraPosition;
+    GLint colorMap[6];
+    const char* vp;
+    const char* fp;
+public:
+    BaseShader(const char* vp, const char* fp);
+};
 
+class BaseShaderParam
+{
+public:
+    M3DVector4f environmentColor;
+    M3DVector4f diffuseColor;
+    M3DMatrix44f mvpMatrix;
+    M3DMatrix44f mvMatrix;
+    M3DMatrix33f normalMatrix;
+    GLint colorMap[6];
+    GLfloat lightPosition[3];
+    GLfloat cameraPosition[3];
+public:
+    void SetDiffuseColor(M3DVector4f color);
+    void SetEnvironmentColor(M3DVector4f color);
+    void SetMVPMatrix(const M3DMatrix44f matrix);
+    void SetMVMatrix(const M3DMatrix44f matrix);
+    void SetNormalMatrix(const M3DMatrix44f matrix);
+    void SetCameraPosition(GLfloat x, GLfloat y, GLfloat z);
+    void SetLightPostion(GLfloat x, GLfloat y, GLfloat z);
+    void SetLightPostion(GLfloat position[3]);
+};
 
 class ShaderMgr
 {
@@ -23,44 +60,22 @@ class ShaderMgr
 private:
     std::map<ShaderType, VoidDeldgate> initfunctions;
 
-    GLuint solidShader;
+    BaseShader* solidShader = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
+    BaseShader* diffuseShader = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
+    BaseShader* texture2dShader = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
 
-    GLuint diffuseShader;
-    GLint diffuseShader_iMatrix;
-    GLint diffuseShader_iColor;
-
-    GLuint texture2dShader;
-    GLint texture2dShader_iMatrix;
-    GLint texture2dShader_iColor;
-    GLint texture2dShader_iColorMap;
-
-    GLint texture2dArrayShader;
-    GLint texture2dArrayShader_iMatrix;
-    GLint texture2dArrayShader_iColor;
-    GLint texture2dArrayShader_iColorMap;
+    BaseShader* texture2dArrayShader = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
     GLint texture2dArrayShader_iTime;
 
-    GLint textureCubeMapShader;
-    GLint textureCubeMapShader_iMatrix;
-    GLint textureCubeMapShader_iColor;
-    GLint textureCubeMapShader_iCubeMap;
+    BaseShader* cubeMapShader = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
+    BaseShader* textureSkybox = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
 
-    GLint textureSkybox;
-    GLint textureSkybox_iCubeMap;
-    GLint textureSkybox_iMatrix;
-
-    GLint textureSprite;
-    GLint textureSprite_iColorMap;
-    GLint textureSprite_iMatrix;
+    BaseShader* textureSprite = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
     GLint textureSprite_iSize;
 
-    GLint blurShader;
-    GLint blur_iMatrix;
-    GLint blurTexture[6];
+    BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
 
-    GLint tboShader;
-    GLint tboShader_iMatrix;
-    GLint tboShader_iColorMap;
+    BaseShader* tboShader = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     GLint tboShader_iMaxWidth;
     GLint tboShader_iMaxHeight;
 
@@ -77,17 +92,18 @@ public:
     void InitTextureSprite();
     void InitBlur();
     void InitTbo();
+    void InitBaseShader(BaseShader* shader);
+    void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param, bool print=false);
 public:
-    void UseSolidColor(M3DVector4f color);
-    void UseDiffuse(M3DVector4f color, M3DMatrix44f mvpMatrix);
-    void UseDiffuse(M3DVector4f color, const M3DMatrix44f mvpMatrix);
-    void UseTexture2d(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit);
-    void UseTextureArray(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLuint time);
-    void UseCubeMap(M3DVector4f color, const M3DMatrix44f mvpMatrix, GLuint textureUnit);
-    void UseSkyBox(const M3DMatrix44f mvpMatrix, GLuint textureUnit);
-    void UseSpritePoint(const M3DMatrix44f mvpMatrix, GLuint textureUnit, GLfloat size);
-    void UseBlurShader(const M3DMatrix44f mvpMatrix, int textureUnit);
-    void UseTboShader(const M3DMatrix44f mvpMatrix, int maxWidth, int maxHeight, int textureUnit);
+    void UseSolidColor(const BaseShaderParam& param);
+    void UseDiffuse(const BaseShaderParam& param);
+    void UseTexture2d(const BaseShaderParam& param);
+    void UseTextureArray(const BaseShaderParam& param, GLuint time);
+    void UseCubeMap(const BaseShaderParam& param);
+    void UseSkyBox(const BaseShaderParam& param);
+    void UseSpritePoint(const BaseShaderParam& param, GLfloat size);
+    void UseBlurShader(const BaseShaderParam& param);
+    void UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源

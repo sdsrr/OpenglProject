@@ -1,8 +1,8 @@
 #version 330
-in  vec4 fragCol;
+uniform vec4 diffuseColor;
 out vec4 vFragColor;
 
 void main(void)
 {
-    vFragColor = fragCol;
+    vFragColor = diffuseColor;
 }

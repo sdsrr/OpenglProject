@@ -102,6 +102,7 @@ public:
     GLMatrixStack* GetModelviewStack();
     const M3DMatrix44f& GetModelviewprojectMatrix();
     const M3DMatrix44f& GetModeviewMatrix();
+    const M3DMatrix33f& GetNormalMatrix();
 };
 
 #endif // TOOLS__

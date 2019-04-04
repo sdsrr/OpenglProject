@@ -26,6 +26,7 @@ char* texturePath03 = (char*)"Chapter5 AnisotropicTextureFiltering/Texture/floor
 #define open_anisotropy 7
 #define close_anisotropy 8
 
+BaseShaderParam param;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
 
@@ -39,17 +40,20 @@ static void Display(void)
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture01);
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    param.SetDiffuseColor(whiteCol);
+    param.colorMap[0] = 0;
+    shaderMgr.UseTexture2d(param);
     //glShaderMgr.UseStockShader(GLT_SHADER_FLAT, transformPiple.GetModelViewProjectionMatrix(), redCol);
     leftPatch.Draw();
     rightPatch.Draw();
 
     glBindTexture(GL_TEXTURE_2D, texture02);
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
+    shaderMgr.UseTexture2d(param);
     upPatch.Draw();
 
     glBindTexture(GL_TEXTURE_2D, texture03);
-    shaderMgr.UseTexture2d(whiteCol, normalCamera.GetModelviewprojectMatrix(), 0);
+    shaderMgr.UseTexture2d(param);
     downPatch.Draw();
     glutSwapBuffers();
 }

@@ -1,6 +1,7 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 
+BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
@@ -13,7 +14,7 @@ GLfloat angle;
 GLBatch triangle;
 const char* filepath = "Chapter11 TBO/Marble.tga";
 const char* datapath = "Chapter11 TBO/LumTan.data";
-bool useTexture = true;
+bool useTexture = false;
 int maxWidth = 0;
 int maxHeight = 0;
 
@@ -62,7 +63,9 @@ void Display(void)
     modelviewStack->PushMatrix();
     modelviewStack->Translate(0,0,-20);
     //glBindTexture(GL_TEXTURE_BUFFER, texture);
-    shaderMgr.UseTboShader(normalCamera.GetModelviewprojectMatrix(), maxWidth, maxHeight, 0);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    param.colorMap[0] = 0;
+    shaderMgr.UseTboShader(param, maxWidth, maxHeight);
     triangle.Draw();
     modelviewStack->PopMatrix();
 

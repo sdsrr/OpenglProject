@@ -1,42 +1,24 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 
-BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
 
 GLfloat angle;
-GLTriangleBatch triangle;
-GLfloat color[] = {154/255.0, 68/255.0, 187/255.0, 1};
-GLfloat lightPostion[] = {0,0,0};
+GLBatch triangle;
 
 void Display(void)
 {
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0,0,-10);
-    modelviewStack->Rotate(angle+=2, 0,1,0);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    param.SetMVMatrix(normalCamera.GetModeviewMatrix());
-    param.SetLightPostion(lightPostion);
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-    param.SetDiffuseColor(color);
-    shaderMgr.UseDiffuse(param);
-    triangle.Draw();
-    modelviewStack->PopMatrix();
-
     glutSwapBuffers();
 }
 
 void OnStartUp()
 {
-    gltMakeCylinder(triangle, 1, 2, 3, 30, 30);
-
-    // init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
@@ -62,6 +44,7 @@ int main(int argc, char *argv[])
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("fbo");
+
 
     glutKeyboardFunc(KeyboardFn);
     glutReshapeFunc(Resize);
