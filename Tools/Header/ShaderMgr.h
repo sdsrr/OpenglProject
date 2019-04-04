@@ -12,19 +12,21 @@ enum ShaderType
     STTextureSprite,
     STBlur,
     STTBO,
+    STFBO,
     STMax,
 };
 
 class BaseShader
 {
 public:
-    GLuint id;
+    GLuint id = -1;
     GLint mvMatrix;
     GLint mvpMatrix;
     GLint normalMatrix;
     GLint diffuseColor;
     GLint lightPosition;
     GLint cameraPosition;
+    GLint environmentColor;
     GLint colorMap[6];
     const char* vp;
     const char* fp;
@@ -41,8 +43,8 @@ public:
     M3DMatrix44f mvMatrix;
     M3DMatrix33f normalMatrix;
     GLint colorMap[6];
-    GLfloat lightPosition[3];
-    GLfloat cameraPosition[3];
+    GLfloat lightPosition[4];
+    GLfloat cameraPosition[4];
 public:
     void SetDiffuseColor(M3DVector4f color);
     void SetEnvironmentColor(M3DVector4f color);
@@ -63,17 +65,16 @@ private:
     BaseShader* solidShader = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
     BaseShader* diffuseShader = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
     BaseShader* texture2dShader = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
+    BaseShader* cubeMapShader = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
+    BaseShader* textureSkybox = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
+    BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
+    BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
 
     BaseShader* texture2dArrayShader = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
     GLint texture2dArrayShader_iTime;
 
-    BaseShader* cubeMapShader = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
-    BaseShader* textureSkybox = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
-
     BaseShader* textureSprite = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
     GLint textureSprite_iSize;
-
-    BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
 
     BaseShader* tboShader = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     GLint tboShader_iMaxWidth;
@@ -92,8 +93,9 @@ public:
     void InitTextureSprite();
     void InitBlur();
     void InitTbo();
+    void InitFBO();
     void InitBaseShader(BaseShader* shader);
-    void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param, bool print=false);
+    void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
     void UseSolidColor(const BaseShaderParam& param);
     void UseDiffuse(const BaseShaderParam& param);
@@ -104,10 +106,12 @@ public:
     void UseSpritePoint(const BaseShaderParam& param, GLfloat size);
     void UseBlurShader(const BaseShaderParam& param);
     void UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight);
+    void DrawToFBO(const BaseShaderParam& param);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源
     bool LoadShaderFile(const char* file, GLuint shader);
+    void PrintBaseShader(BaseShader* shader, BaseShaderParam* param);
 };
 
 #endif // SHADERMGR__

@@ -1,10 +1,24 @@
 #version 330
 layout(location = 0) in vec4 vVertex;
+layout(location = 1) in vec4 vColor;
+layout(location = 2) in vec3 vNormal;
 layout(location = 3) in vec2 vTexCoord;
 
 uniform mat4 mvpMatrix;
+uniform mat4 mvMatrix;
+uniform mat3 normalMatrix;
+uniform vec4 lightPostion;
+
+out vec2 texCoord;
+out vec3 normal;
+out vec3 light;
+out vec4 color;
 
 void main(void)
 {
+    light = (lightPostion - vVertex * mvMatrix).xyz;
+    normal = vNormal * normalMatrix;
+    color = vColor;
+    texCoord = vTexCoord;
     gl_Position = vVertex * mvpMatrix;
 }

@@ -36,6 +36,7 @@ ShaderMgr::ShaderMgr()
     initfunctions[STTextureSprite] = (VoidDeldgate)&ShaderMgr::InitTextureSprite;
     initfunctions[STBlur] = (VoidDeldgate)&ShaderMgr::InitBlur;
     initfunctions[STTBO] = (VoidDeldgate)&ShaderMgr::InitTbo;
+    initfunctions[STFBO] = (VoidDeldgate)&ShaderMgr::InitFBO;
 }
 
 void ShaderMgr::InitBaseShader(BaseShader* shader)
@@ -47,6 +48,7 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->lightPosition = glGetUniformLocation(shader->id, "lightPosition");
     shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
     shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
+    shader->environmentColor = glGetUniformLocation(shader->id, "encironmentColor");
 
     shader->colorMap[0] = glGetUniformLocation(shader->id, "colorMap00");
     shader->colorMap[1] = glGetUniformLocation(shader->id, "colorMap01");
@@ -54,6 +56,12 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
     shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
     shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
+void ShaderMgr::InitFBO()
+{
+    InitBaseShader(fboShader);
+    PrintBaseShader(fboShader, NULL);
 }
 
 void ShaderMgr::InitTbo()
@@ -138,6 +146,8 @@ void ShaderMgr::OnUnInit()
     glDeleteProgram(textureSkybox->id);
     glDeleteProgram(textureSprite->id);
     glDeleteProgram(blurShader->id);
+    glDeleteProgram(tboShader->id);
+    glDeleteProgram(fboShader->id);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -228,7 +238,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
     return program;
 }
 
-void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param, bool print)
+void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param)
 {
     if (shader != NULL)
     {
@@ -236,28 +246,33 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
         glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
         glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
-        glUniform3fv(shader->lightPosition, 1, param.lightPosition);
-        glUniform3fv(shader->cameraPosition, 1, param.cameraPosition);
+        glUniform4fv(shader->lightPosition, 1, param.lightPosition);
+        glUniform4fv(shader->cameraPosition, 1, param.cameraPosition);
         glUniform4fv(shader->diffuseColor, 1, param.diffuseColor);
         for (int i=0; i<6; i++)
             glUniform1i(shader->colorMap[i], param.colorMap[i]);
+    }
+}
 
-        if (print)
-        {
-            printf("mvpMatrix %d\n", shader->mvpMatrix);
-            Util::PrintMatrix44f(param.mvpMatrix);
-            printf("mvMatrix %d\n", shader->mvMatrix);
-            Util::PrintMatrix44f(param.mvMatrix);
-            printf("normalMatrix %d\n", shader->normalMatrix);
-            Util::PrintMatrix44f(param.normalMatrix);
-            printf("colorMap00 %d %d\n", shader->colorMap[0], param.colorMap[0]);
-            printf("colorMap01 %d %d\n", shader->colorMap[1], param.colorMap[1]);
-            printf("colorMap02 %d %d\n", shader->colorMap[2], param.colorMap[2]);
-            printf("colorMap03 %d %d\n", shader->colorMap[3], param.colorMap[3]);
-            printf("colorMap04 %d %d\n", shader->colorMap[4], param.colorMap[4]);
-            printf("colorMap05 %d %d\n\n", shader->colorMap[5], param.colorMap[5]);
-        }
-
+void ShaderMgr::PrintBaseShader(BaseShader* shader, BaseShaderParam* param)
+{
+    if (shader != NULL)
+    {
+        M3DMatrix44f identity;
+        m3dLoadIdentity44(identity);
+        printf("shader id %d\n", shader->id);
+        printf("mvpMatrix %d\n", shader->mvpMatrix);
+        Util::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
+        printf("mvMatrix %d\n", shader->mvMatrix);
+        Util::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
+        printf("normalMatrix %d\n", shader->normalMatrix);
+        Util::PrintMatrix44f(param != NULL ? param->normalMatrix : identity);
+        printf("colorMap00 %d %d\n", shader->colorMap[0], param != NULL ? param->colorMap[0] : -1);
+        printf("colorMap01 %d %d\n", shader->colorMap[1], param != NULL ? param->colorMap[1] : -1);
+        printf("colorMap02 %d %d\n", shader->colorMap[2], param != NULL ? param->colorMap[2] : -1);
+        printf("colorMap03 %d %d\n", shader->colorMap[3], param != NULL ? param->colorMap[3] : -1);
+        printf("colorMap04 %d %d\n", shader->colorMap[4], param != NULL ? param->colorMap[4] : -1);
+        printf("colorMap05 %d %d\n\n", shader->colorMap[5], param != NULL ? param->colorMap[5] : -1);
     }
 }
 
@@ -290,7 +305,7 @@ void ShaderMgr::UseCubeMap(const BaseShaderParam& param)
 
 void ShaderMgr::UseSkyBox(const BaseShaderParam& param)
 {
-    InitBaseShaderParam(textureSkybox, param, true);
+    InitBaseShaderParam(textureSkybox, param);
 }
 
 void ShaderMgr::UseSpritePoint(const BaseShaderParam& param, GLfloat size)
@@ -309,4 +324,9 @@ void ShaderMgr::UseTboShader(const BaseShaderParam& param, int maxWidth, int max
     InitBaseShaderParam(tboShader, param);
     glUniform1i(tboShader_iMaxWidth, maxWidth);
     glUniform1i(tboShader_iMaxHeight, maxHeight);
+}
+
+void ShaderMgr::DrawToFBO(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(fboShader, param);
 }

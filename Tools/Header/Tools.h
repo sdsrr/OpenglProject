@@ -57,11 +57,13 @@ public:
     static void PrintMatrix44f(M3DMatrix44f matrix);
     static void PrintMatrix44f(const M3DMatrix44f matrix);
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
+    static void LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
     static bool CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb);
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();
+    static void CheckFBO();
     // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);

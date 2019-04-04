@@ -1,4 +1,6 @@
 #include "../Header/Tools.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 const char* Util::projectPath = "E:/GameDev/Opengl/trunk/OpenglProject/";
 
@@ -48,6 +50,32 @@ bool Util::CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb)
     return true;
 }
 
+void Util::LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode)
+{
+    int width,height,comp;
+    unsigned char* pBits = stbi_load(filepath, &width, &height, &comp, STBI_default);
+    if (pBits == NULL)
+    {
+        printf("load %s failed...\n", filepath);
+        return;
+    }
+    //环绕模式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+    //过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+    if (comp == 3)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pBits);
+    else if (comp == 4)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pBits);
+    else
+        printf("load %s failed...\n", filepath);
+    printf("load %s success width=%d height=%d comp=%d\n", filepath, width, height, comp);
+    stbi_image_free(pBits);
+}
+
 void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
 {
     GLenum eFormat;
@@ -69,13 +97,9 @@ void Util::LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode)
     glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, eFormat, GL_UNSIGNED_BYTE, pBits);
     //printf("path:%s width:%d  height:%d", filepath, width, height);
     free(pBits);
-    /*
-    if(filter == GL_LINEAR_MIPMAP_LINEAR ||
-       filter == GL_LINEAR_MIPMAP_NEAREST ||
-       filter == GL_NEAREST_MIPMAP_LINEAR ||
-       filter == GL_NEAREST_MIPMAP_NEAREST)
-    */
-    glGenerateMipmap(GL_TEXTURE_2D);
+
+    if(filter == GL_LINEAR_MIPMAP_LINEAR || filter == GL_LINEAR_MIPMAP_NEAREST || filter == GL_NEAREST_MIPMAP_LINEAR || filter == GL_NEAREST_MIPMAP_NEAREST)
+        glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Util::LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode)
@@ -230,6 +254,37 @@ void Util::Roate(vec2& v, float angle)
     v.v[1] = y;
 }
 
+void Util::CheckFBO()
+{
+    GLenum fboStatus = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+    switch (fboStatus)
+    {
+    case GL_FRAMEBUFFER_COMPLETE:
+        printf("fbo work....\n");
+        break;
+    case GL_FRAMEBUFFER_UNDEFINED:
+        printf("窗口不存在\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        printf("绑定点映射错误\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        printf("至少要有一个rbo绑定到fbo\n");
+        break;
+    case GL_FRAMEBUFFER_UNSUPPORTED:
+        printf("rbo数据格式与绑定点不匹配\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+        printf("确保每个绑定点的采样数量相同\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+        printf("确保每个绑定点的层次数量相同\n");
+        break;
+    default:
+        printf("error id %d \n", fboStatus);
+        break;
+    }
+}
 
 
 void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)

@@ -3,9 +3,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 bool Tinyobjloader::LoadObjAndConvert(const char* filename)
 {
     float bmin[3],bmax[3];
@@ -76,10 +73,6 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
         if (textures.find(mp->diffuse_texname) != textures.end())
             continue;
 
-        GLuint texture_id;
-        int w, h;
-        int comp;
-
         std::string texture_filename = mp->diffuse_texname;
         if (!Util::FileExists(texture_filename))
         {
@@ -92,36 +85,13 @@ bool Tinyobjloader::LoadObjAndConvert(float bmin[3], float bmax[3], const char* 
             }
         }
 
-        unsigned char* image = stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);//
-        if (!image)
-        {
-            std::cerr << "Unable to load texture: " << texture_filename << std::endl;
-            exit(1);
-        }
-        std::cout << "Loaded texture: " << texture_filename << ", w = " << w << ", h = " << h << ", comp = " << comp << ", size = " << strlen((const char*)image) << std::endl;
-
+        // create texture
+        GLuint texture_id;
         glGenTextures(1, &texture_id);
         glBindTexture(GL_TEXTURE_2D, texture_id);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT),
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT),
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        if (comp == 3)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-        }
-        else if (comp == 4)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-        }
-        else
-        {
-            assert(0);  // TODO
-        }
+        Util::LoadJPGTexture(texture_filename.c_str(), GL_LINEAR, GL_CLAMP);
         glBindTexture(GL_TEXTURE_2D, 0);
-        stbi_image_free(image);
         textures.insert(std::make_pair(mp->diffuse_texname, texture_id));
-
     }
 
     bmin[0] = bmin[1] = bmin[2] = std::numeric_limits<float>::max();
