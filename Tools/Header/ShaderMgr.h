@@ -24,7 +24,7 @@ public:
     GLint mvpMatrix;
     GLint normalMatrix;
     GLint diffuseColor;
-    GLint lightPosition;
+    GLint lightDirection;
     GLint cameraPosition;
     GLint environmentColor;
     GLint colorMap[6];
@@ -43,7 +43,7 @@ public:
     M3DMatrix44f mvMatrix;
     M3DMatrix33f normalMatrix;
     GLint colorMap[6];
-    GLfloat lightPosition[4];
+    GLfloat lightDirection[3];
     GLfloat cameraPosition[4];
 public:
     void SetDiffuseColor(M3DVector4f color);
@@ -52,8 +52,8 @@ public:
     void SetMVMatrix(const M3DMatrix44f matrix);
     void SetNormalMatrix(const M3DMatrix44f matrix);
     void SetCameraPosition(GLfloat x, GLfloat y, GLfloat z);
-    void SetLightPostion(GLfloat x, GLfloat y, GLfloat z);
-    void SetLightPostion(GLfloat position[3]);
+    void SetLightDirection(GLfloat x, GLfloat y, GLfloat z);
+    void SetLightDirection(GLfloat position[3]);
 };
 
 class ShaderMgr
@@ -79,6 +79,11 @@ private:
     BaseShader* tboShader = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     GLint tboShader_iMaxWidth;
     GLint tboShader_iMaxHeight;
+
+public:
+    static GLfloat white[];
+    static GLfloat ondine[];
+
 
 public:
     ShaderMgr();
@@ -111,7 +116,7 @@ public:
     GLuint LoadShader(const char* vertex, const char* fragment);
     //º”‘ÿshader◊ ‘¥
     bool LoadShaderFile(const char* file, GLuint shader);
-    void PrintBaseShader(BaseShader* shader, BaseShaderParam* param);
+    void PrintBaseShader(BaseShader* shader, const BaseShaderParam* param);
 };
 
 #endif // SHADERMGR__

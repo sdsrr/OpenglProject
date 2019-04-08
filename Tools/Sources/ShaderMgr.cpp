@@ -11,19 +11,22 @@ void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentC
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetNormalMatrix(const M3DMatrix44f matrix){memcpy(normalMatrix, matrix, 16*sizeof(float));};
-void BaseShaderParam::SetLightPostion(GLfloat position[3]){memcpy(lightPosition, position, 3*sizeof(float));}
+void BaseShaderParam::SetLightDirection(GLfloat direction[3]){memcpy(lightDirection, direction, 3*sizeof(float));}
 void BaseShaderParam::SetCameraPosition(GLfloat x, GLfloat y, GLfloat z)
 {
     cameraPosition[0] = x;
     cameraPosition[1] = y;
     cameraPosition[2] = z;
 }
-void BaseShaderParam::SetLightPostion(GLfloat x, GLfloat y, GLfloat z)
+void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
 {
-    lightPosition[0] = x;
-    lightPosition[1] = y;
-    lightPosition[2] = z;
+    lightDirection[0] = x;
+    lightDirection[1] = y;
+    lightDirection[2] = z;
 }
+
+GLfloat ShaderMgr::white[] = {1,1,1,1};
+GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
 
 ShaderMgr::ShaderMgr()
 {
@@ -45,10 +48,10 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
     shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
     shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
-    shader->lightPosition = glGetUniformLocation(shader->id, "lightPosition");
+    shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
     shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
     shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
-    shader->environmentColor = glGetUniformLocation(shader->id, "encironmentColor");
+    shader->environmentColor = glGetUniformLocation(shader->id, "environmentColor");
 
     shader->colorMap[0] = glGetUniformLocation(shader->id, "colorMap00");
     shader->colorMap[1] = glGetUniformLocation(shader->id, "colorMap01");
@@ -61,7 +64,7 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
 void ShaderMgr::InitFBO()
 {
     InitBaseShader(fboShader);
-    PrintBaseShader(fboShader, NULL);
+    //PrintBaseShader(fboShader, NULL);
 }
 
 void ShaderMgr::InitTbo()
@@ -246,15 +249,16 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
         glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
         glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
-        glUniform4fv(shader->lightPosition, 1, param.lightPosition);
+        glUniform3fv(shader->lightDirection, 1, param.lightDirection);
         glUniform4fv(shader->cameraPosition, 1, param.cameraPosition);
         glUniform4fv(shader->diffuseColor, 1, param.diffuseColor);
+        glUniform4fv(shader->environmentColor, 1, param.environmentColor);
         for (int i=0; i<6; i++)
             glUniform1i(shader->colorMap[i], param.colorMap[i]);
     }
 }
 
-void ShaderMgr::PrintBaseShader(BaseShader* shader, BaseShaderParam* param)
+void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param)
 {
     if (shader != NULL)
     {

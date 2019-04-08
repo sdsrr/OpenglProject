@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1554688598 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
-	"../Header/ShaderMgr.h"
+1554707418 source:e:\gamedev\opengl\trunk\openglproject\rendertexwithfbo\main.cpp
+	"../Tools/Header/ShaderMgr.h"
+	"../Tools/Header/Tools.h"
 
-1554688650 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1554707593 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1554381983 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1554728133 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -475,6 +476,9 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
+1554707727 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
+
 1554382646 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
 	"../Header/Tinyobjloader.h"
 	"tiny_obj_loader.h"
@@ -532,7 +536,7 @@
 	<fstream>
 	<sstream>
 
-1554383016 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1554728138 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -542,7 +546,7 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1554693568 source:e:\gamedev\opengl\trunk\openglproject\chapter12 fbo\main.cpp
+1554727079 source:e:\gamedev\opengl\trunk\openglproject\chapter13 rendertexwithfbo\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 

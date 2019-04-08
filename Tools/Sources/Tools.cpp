@@ -339,21 +339,27 @@ void NormalCamera::KeyboardFn(unsigned char key, int x, int y)
     switch (key)
     {
     case 'a':
+        camera.TranslateWorld(moveSpeed,0,0);
         projectStack.Translate(moveSpeed,0,0);
         break;
     case 'd':
+        camera.TranslateWorld(-moveSpeed,0,0);
         projectStack.Translate(-moveSpeed,0,0);
         break;
     case 'w':
+        camera.TranslateWorld(0,-moveSpeed,0);
         projectStack.Translate(0,-moveSpeed,0);
         break;
     case 's':
+        camera.TranslateWorld(0,moveSpeed,0);
         projectStack.Translate(0,moveSpeed,0);
         break;
     case 'q':
+        camera.TranslateWorld(0,0,-moveSpeed);
         projectStack.Translate(0,0,-moveSpeed);
         break;
     case 'e':
+        camera.TranslateWorld(0,0,moveSpeed);
         projectStack.Translate(0,0,moveSpeed);
         break;
     }
@@ -369,6 +375,8 @@ void NormalCamera::MotionFunc(int mouse_x, int mouse_y)
     {
         projectStack.Rotate(deltaX/roateSpeed, 0, 1, 0);
         projectStack.Rotate(deltaY/roateSpeed, 1, 0, 0);
+        camera.RotateLocal(deltaX/roateSpeed, 0, 1, 0);
+        camera.RotateLocal(deltaY/roateSpeed, 1, 0, 0);
     }
     //printf("%d  %d\n", mouse_x, mouse_y);
     prevMouseX = mouse_x;
@@ -383,6 +391,29 @@ void NormalCamera::Resize(int w, int h)
     frustum.SetPerspective(fov, width/height, 0.1f, 1000);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
     glutPostRedisplay();
+
+}
+
+void NormalCamera::GetCameraForward(M3DVector3f forward)
+{
+    camera.GetForwardVector(forward);
+}
+
+void NormalCamera::GetCameraPostion(M3DVector3f position)
+{
+    camera.GetOrigin(position);
+}
+
+const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix(GLfloat cameraPos[3], GLfloat cameraRoate[4])
+{
+    //使用设置的相机位置数据
+    projectStack.PushMatrix();
+    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
+    projectStack.Translate(cameraPos[0], cameraPos[1], cameraPos[2]);
+    projectStack.Rotate(cameraRoate[0], cameraRoate[1], cameraRoate[2], cameraRoate[3]);
+    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
+    projectStack.PopMatrix();
+    return matrix;
 }
 
 const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
@@ -391,7 +422,7 @@ const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
     return matrix;
 }
 
-const M3DMatrix44f& NormalCamera::GetModeviewMatrix()
+const M3DMatrix44f& NormalCamera::GetModelviewMatrix()
 {
     const M3DMatrix44f& matrix = transformPiple.GetModelViewMatrix();
     return matrix;
@@ -399,7 +430,7 @@ const M3DMatrix44f& NormalCamera::GetModeviewMatrix()
 
 const M3DMatrix33f& NormalCamera::GetNormalMatrix()
 {
-    const M3DMatrix33f& matrix = transformPiple.GetNormalMatrix();
+    const M3DMatrix33f& matrix = transformPiple.GetNormalMatrix(true);
     return matrix;
 }
 

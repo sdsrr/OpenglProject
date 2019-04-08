@@ -11,5 +11,6 @@ out vec4 vFragColor;
 void main(void)
 {
     float diffuse = max(0, dot(normalize(normal), normalize(light)));
-    vFragColor = color + diffuseColor * diffuse;
+    vFragColor = diffuseColor * diffuse;
+    //vFragColor = vec4(diffuse,diffuse,diffuse,1);
 }

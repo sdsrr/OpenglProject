@@ -9,7 +9,7 @@ uniform mat4 mvpMatrix;
 uniform mat4 mvMatrix;
 //将normal从模型空间转化到世界空间
 uniform mat3 normalMatrix;
-uniform vec4 lightPosition;
+uniform vec3 lightDirection;
 
 out vec4 color;
 out vec3 normal;
@@ -18,7 +18,7 @@ out vec3 light;
 void main(void)
 {
     color = vColor;
-    light = (vVertex * mvMatrix - lightPosition).xyz;
-    normal = normalMatrix * vNormal;
+    light = lightDirection;
+    normal = vNormal * normalMatrix;
     gl_Position = vVertex * mvpMatrix;
 }

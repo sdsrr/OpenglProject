@@ -9,12 +9,11 @@ GLMatrixStack* modelviewStack;
 
 GLfloat angle;
 GLTriangleBatch triangle;
-GLfloat color[] = {154/255.0, 68/255.0, 187/255.0, 1};
-GLfloat whiteCol[] = {1,1,1,1};
-GLfloat lightPostion[] = {0,0,0};
+
+GLfloat lightPostion[] = {0,100,0};
 
 GLuint fbo;
-GLuint rbo[3];
+GLuint rbo[4];
 GLenum fboBuffers[]={GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 GLenum windowsBuffers[]={GL_FRONT_LEFT};
 
@@ -23,8 +22,12 @@ const char* filepath = "Chapter12 FBO/MoonLike.tga";
 
 void Display(void)
 {
+    //绘制到fbo
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //设置gl_fragdata[]与缓冲区映射关系
+    glDrawBuffers(3, fboBuffers);
 
     modelviewStack->PushMatrix();
     modelviewStack->Translate(0,0,-10);
@@ -34,13 +37,29 @@ void Display(void)
         param.SetMVMatrix(normalCamera.GetModeviewMatrix());
         param.SetLightPostion(lightPostion);
         param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetDiffuseColor(whiteCol);
+        param.SetEnvironmentColor(ShaderMgr::ondine);
         param.colorMap[0] = 0;
         //shaderMgr.UseDiffuse(param);
         shaderMgr.DrawToFBO(param);
         triangle.Draw();
     modelviewStack->PopMatrix();
 
+    //还原默认fbo
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDrawBuffers(1, windowsBuffers);
+    //glViewport(0, 0, 640, 480);
+
+    //将fbo中数据绘制到窗口
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glBlitFramebuffer(0, 0, 640, 480, 0, 0, 320, 240, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    glReadBuffer(GL_COLOR_ATTACHMENT1);
+    glBlitFramebuffer(0, 0, 640, 480, 320, 240, 640, 480, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    glReadBuffer(GL_COLOR_ATTACHMENT2);
+    glBlitFramebuffer(0, 0, 640, 480, 320, 0, 640, 240, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     glutSwapBuffers();
 }
 
@@ -51,7 +70,11 @@ void OnStartUp()
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
     //将rbo设置为颜色缓冲区绑到fbo上
-    glGenRenderbuffers(3, rbo);
+    glGenRenderbuffers(4, rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo[3]);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, 640, 480);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo[3]);
+
     for (int i = 0 ; i < 3; i++)
     {
         glBindRenderbuffer(GL_RENDERBUFFER, rbo[i]);
@@ -59,12 +82,6 @@ void OnStartUp()
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_RENDERBUFFER, rbo[i]);
     }
 
-    //设置gl_fragdata[]与缓冲区映射关系
-    glDrawBuffers(3, fboBuffers);
-
-    //还原绘制缓冲区为屏幕
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    glDrawBuffers(1, windowsBuffers);
     Util::CheckFBO();
     gltMakeCylinder(triangle, 1, 2, 3, 30, 30);
 
@@ -86,6 +103,7 @@ void OnShutUp()
 {
     glDeleteTextures(1, &texture2d);
     glDeleteFramebuffers(1, &fbo);
+    glDeleteRenderbuffers(4, rbo);
     shaderMgr.OnUnInit();
     normalCamera.OnUnInit();
 }
