@@ -164,7 +164,7 @@ void OnStartUp()
     }
 
     // init pixel buffer
-    glCreateBuffers(1, &pixelBufferObj);
+    glGenBuffers(1, &pixelBufferObj);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferObj);
     glBufferData(GL_PIXEL_PACK_BUFFER, bufferSize, pixelBuffer, GL_DYNAMIC_COPY);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);

@@ -10,7 +10,7 @@ GLMatrixStack* modelviewStack;
 GLfloat angle;
 GLTriangleBatch triangle;
 
-GLfloat lightPostion[] = {0,100,0};
+GLfloat lightDirection[] = {0,100,0};
 
 GLuint fbo;
 GLuint rbo[4];
@@ -34,8 +34,8 @@ void Display(void)
     modelviewStack->Rotate(angle+=2, 0,1,0);
         glBindTexture(GL_TEXTURE_2D, texture2d);
         param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModeviewMatrix());
-        param.SetLightPostion(lightPostion);
+        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
+        param.SetLightDirection(lightDirection);
         param.SetNormalMatrix(normalCamera.GetNormalMatrix());
         param.SetEnvironmentColor(ShaderMgr::ondine);
         param.colorMap[0] = 0;

@@ -26,6 +26,10 @@
 #include <map>
 #include <vector>
 
+// OpenEXR headers
+#include <ImfRgbaFile.h>
+#include <ImfArray.h>
+
 #ifdef __APPLE__
 #include <glut/glut.h>
 #else
@@ -60,6 +64,8 @@ public:
     static void LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
+    static void LoadOpenEXR(char*filepath, GLenum filter, GLenum wrapMode, int& texWidth, int& texHeight);
+
     static bool CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb);
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();

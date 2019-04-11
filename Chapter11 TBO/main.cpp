@@ -83,7 +83,7 @@ void OnStartUp()
     glBindTexture(GL_TEXTURE_BUFFER, texture);
 
     //int tbo
-    glCreateBuffers(1, &tbo);
+    glGenBuffers(1, &tbo);
     glBindBuffer(GL_TEXTURE_BUFFER, tbo);
     if (useTexture)
     {

@@ -40,6 +40,9 @@ ShaderMgr::ShaderMgr()
     initfunctions[STBlur] = (VoidDeldgate)&ShaderMgr::InitBlur;
     initfunctions[STTBO] = (VoidDeldgate)&ShaderMgr::InitTbo;
     initfunctions[STFBO] = (VoidDeldgate)&ShaderMgr::InitFBO;
+    initfunctions[STHDR] = (VoidDeldgate)&ShaderMgr::InitHDR;
+    initfunctions[STBLOOR] = (VoidDeldgate)&ShaderMgr::InitBloor;
+
 }
 
 void ShaderMgr::InitBaseShader(BaseShader* shader)
@@ -61,9 +64,27 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
 }
 
+void ShaderMgr::InitBloor()
+{
+    InitBaseShader(bloorNormalShader);
+    InitBaseShader(bloorBrightShader);
+    InitBaseShader(bloorBlurShader);
+    InitBaseShader(bloorMixShader);
+}
+
+void ShaderMgr::InitHDR()
+{
+    InitBaseShader(hdrShader);
+    hdrShader_iExposure = glGetUniformLocation(hdrShader->id, "exposure");
+}
+
 void ShaderMgr::InitFBO()
 {
     InitBaseShader(fboShader);
+    glBindFragDataLocation(fboShader->id,0,"originColor");
+    glBindFragDataLocation(fboShader->id,1,"grayColor");
+    glBindFragDataLocation(fboShader->id,2,"luminanceColor");
+    glLinkProgram(fboShader->id);
     //PrintBaseShader(fboShader, NULL);
 }
 
@@ -333,4 +354,30 @@ void ShaderMgr::UseTboShader(const BaseShaderParam& param, int maxWidth, int max
 void ShaderMgr::DrawToFBO(const BaseShaderParam& param)
 {
     InitBaseShaderParam(fboShader, param);
+}
+
+void ShaderMgr::UseHDR(const BaseShaderParam& param, float exposure)
+{
+    InitBaseShaderParam(hdrShader, param);
+    glUniform1f(hdrShader_iExposure, exposure);
+}
+
+void ShaderMgr::UseBloorNormal(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(bloorNormalShader, param);
+}
+
+void ShaderMgr::UseBloorBright(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(bloorBrightShader, param);
+}
+
+void ShaderMgr::UseBloorBlur(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(bloorBlurShader, param);
+}
+
+void ShaderMgr::UseBloorMix(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(bloorMixShader, param);
 }

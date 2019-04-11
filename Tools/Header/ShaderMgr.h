@@ -13,6 +13,8 @@ enum ShaderType
     STBlur,
     STTBO,
     STFBO,
+    STHDR,
+    STBLOOR,
     STMax,
 };
 
@@ -80,6 +82,14 @@ private:
     GLint tboShader_iMaxWidth;
     GLint tboShader_iMaxHeight;
 
+    BaseShader* hdrShader = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
+    GLint hdrShader_iExposure;
+
+    BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
+    BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
+    BaseShader* bloorBlurShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/blur.fp");
+    BaseShader* bloorMixShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/mix.fp");
+
 public:
     static GLfloat white[];
     static GLfloat ondine[];
@@ -99,6 +109,8 @@ public:
     void InitBlur();
     void InitTbo();
     void InitFBO();
+    void InitHDR();
+    void InitBloor();
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
@@ -112,6 +124,13 @@ public:
     void UseBlurShader(const BaseShaderParam& param);
     void UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight);
     void DrawToFBO(const BaseShaderParam& param);
+    void UseHDR(const BaseShaderParam& param, float exposure);
+
+    void UseBloorNormal(const BaseShaderParam& param);
+    void UseBloorBright(const BaseShaderParam& param);
+    void UseBloorBlur(const BaseShaderParam& param);
+    void UseBloorMix(const BaseShaderParam& param);
+
     //创建shader
     GLuint LoadShader(const char* vertex, const char* fragment);
     //加载shader资源
