@@ -3,9 +3,9 @@
 uniform sampler2D colorMap00;
 
 in vec2 texCoord;
-out vec4 vFragColor;
+out vec4 baseColor;
 
 void main(void)
 {
-    vFragColor = texture(colorMap00, texCoord);
+    baseColor = texture(colorMap00, texCoord);
 }

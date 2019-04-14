@@ -89,6 +89,8 @@ private:
     BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
     BaseShader* bloorBlurShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/blur.fp");
     BaseShader* bloorMixShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/mix.fp");
+    GLuint bloorBrightShader_iBrightLimit;
+    GLint bloorMixShader_iExposure;
 
 public:
     static GLfloat white[];
@@ -126,10 +128,10 @@ public:
     void DrawToFBO(const BaseShaderParam& param);
     void UseHDR(const BaseShaderParam& param, float exposure);
 
-    void UseBloorNormal(const BaseShaderParam& param);
-    void UseBloorBright(const BaseShaderParam& param);
+    void UseBloorBase(const BaseShaderParam& param);
+    void UseBloorBright(const BaseShaderParam& param, float brightLimit);
     void UseBloorBlur(const BaseShaderParam& param);
-    void UseBloorMix(const BaseShaderParam& param);
+    void UseBloorMix(const BaseShaderParam& param, float exposure);
 
     //´´½¨shader
     GLuint LoadShader(const char* vertex, const char* fragment);

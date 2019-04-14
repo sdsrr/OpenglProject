@@ -47,8 +47,11 @@
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
 		<Unit filename="../Tools/Header/UtilTimer.h" />
-		<Unit filename="../Tools/Shader/Blur/fragment.fp" />
-		<Unit filename="../Tools/Shader/Blur/vertex.vp" />
+		<Unit filename="../Tools/Shader/Bloor/blur.fp" />
+		<Unit filename="../Tools/Shader/Bloor/bright.fp" />
+		<Unit filename="../Tools/Shader/Bloor/mix.fp" />
+		<Unit filename="../Tools/Shader/Bloor/normal.fp" />
+		<Unit filename="../Tools/Shader/Bloor/vertex.vp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />

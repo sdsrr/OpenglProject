@@ -70,6 +70,12 @@ void ShaderMgr::InitBloor()
     InitBaseShader(bloorBrightShader);
     InitBaseShader(bloorBlurShader);
     InitBaseShader(bloorMixShader);
+
+    glBindFragDataLocation(bloorNormalShader->id, 0, "baseColor");
+    glBindFragDataLocation(bloorBrightShader->id, 0, "brightColor");
+    glBindFragDataLocation(bloorBlurShader->id, 0, "blurColor");
+    bloorMixShader_iExposure = glGetUniformLocation(bloorMixShader->id, "exposure");
+    bloorBrightShader_iBrightLimit = glGetUniformLocation(bloorBrightShader->id, "brightLimit");
 }
 
 void ShaderMgr::InitHDR()
@@ -362,14 +368,15 @@ void ShaderMgr::UseHDR(const BaseShaderParam& param, float exposure)
     glUniform1f(hdrShader_iExposure, exposure);
 }
 
-void ShaderMgr::UseBloorNormal(const BaseShaderParam& param)
+void ShaderMgr::UseBloorBase(const BaseShaderParam& param)
 {
     InitBaseShaderParam(bloorNormalShader, param);
 }
 
-void ShaderMgr::UseBloorBright(const BaseShaderParam& param)
+void ShaderMgr::UseBloorBright(const BaseShaderParam& param, float brightLimit)
 {
     InitBaseShaderParam(bloorBrightShader, param);
+    glUniform1f(bloorBrightShader_iBrightLimit, brightLimit);
 }
 
 void ShaderMgr::UseBloorBlur(const BaseShaderParam& param)
@@ -377,7 +384,8 @@ void ShaderMgr::UseBloorBlur(const BaseShaderParam& param)
     InitBaseShaderParam(bloorBlurShader, param);
 }
 
-void ShaderMgr::UseBloorMix(const BaseShaderParam& param)
+void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure)
 {
     InitBaseShaderParam(bloorMixShader, param);
+    glUniform1f(bloorMixShader_iExposure, exposure);
 }
