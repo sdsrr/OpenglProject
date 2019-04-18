@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1555077679 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1555556711 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1555077702 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1555556722 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1554803313 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1555503882 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -676,7 +676,7 @@
 	<fstream>
 	<sstream>
 
-1554863206 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1555555214 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -686,7 +686,7 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1555075423 source:e:\gamedev\opengl\trunk\openglproject\chapter15 bloor\main.cpp
+1555556610 source:e:\gamedev\opengl\trunk\openglproject\chapter15 bloor\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 

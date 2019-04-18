@@ -325,16 +325,18 @@ void Util::CheckFBO()
     }
 }
 
-
-void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)
+void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp, bool perspective)
 {
     this->fov = fov;
     this->height = h;
     this->width = w;
     this->moveSpeed = moveSp;
     this->roateSpeed = roateSp;
-
-    frustum.SetPerspective(fov, width/height, 0.1f, 1000);
+    this->perspective = perspective;
+    if (perspective)
+        frustum.SetPerspective(fov, w/h, 0.1f, 1000);
+    else
+        frustum.SetOrthographic(-w/2.0, w/2.0, -h/2.0, h/2.0, -1000, 1000);
     modelviewStack.LoadIdentity();
     projectStack.LoadIdentity();
     transformPiple.SetMatrixStacks(modelviewStack, projectStack);
@@ -427,10 +429,12 @@ void NormalCamera::Resize(int w, int h)
     width = w;
     height = h;
     glViewport(0, 0, w, h);
-    frustum.SetPerspective(fov, width/height, 0.1f, 1000);
+    if (perspective)
+        frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
+    else
+        frustum.SetOrthographic(-width/2.0, width/2.0, -height/2.0, height/2.0, -1000, 1000);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
     glutPostRedisplay();
-
 }
 
 void NormalCamera::GetCameraForward(M3DVector3f forward)

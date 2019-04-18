@@ -9,5 +9,5 @@ out vec2 texCoord;
 void main(void)
 {
     texCoord = vTexCoord;
-    gl_Position = vVertex*mvpMatrix;
+    gl_Position = vVertex * mvpMatrix;
 }

@@ -91,6 +91,8 @@ private:
     BaseShader* bloorMixShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/mix.fp");
     GLuint bloorBrightShader_iBrightLimit;
     GLint bloorMixShader_iExposure;
+    GLint bloorMixShader_iBlurLevel;
+    GLint bloorBlurShader_iOffset;
 
 public:
     static GLfloat white[];
@@ -130,8 +132,8 @@ public:
 
     void UseBloorBase(const BaseShaderParam& param);
     void UseBloorBright(const BaseShaderParam& param, float brightLimit);
-    void UseBloorBlur(const BaseShaderParam& param);
-    void UseBloorMix(const BaseShaderParam& param, float exposure);
+    void UseBloorBlur(const BaseShaderParam& param, float offset[25]);
+    void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
 
     //´´½¨shader
     GLuint LoadShader(const char* vertex, const char* fragment);

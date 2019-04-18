@@ -98,12 +98,13 @@ private:
 
     GLFrame camera;
     GLFrustum frustum;
+    GLboolean perspective;
     GLMatrixStack modelviewStack;
     GLMatrixStack projectStack;
     GLGeometryTransform transformPiple;
 public:
     void OnUnInit();
-    void OnInit(float w, float h, float fov, float moveSp, float roateSp);
+    void OnInit(float w, float h, float fov, float moveSp, float roateSp,bool perspective=true);
     void KeyboardFn(unsigned char key, int x, int y);
     void MouseClick(int button, int action, int x, int y);
     void MotionFunc(int mouse_x, int mouse_y);

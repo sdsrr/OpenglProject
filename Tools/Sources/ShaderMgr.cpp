@@ -75,7 +75,9 @@ void ShaderMgr::InitBloor()
     glBindFragDataLocation(bloorBrightShader->id, 0, "brightColor");
     glBindFragDataLocation(bloorBlurShader->id, 0, "blurColor");
     bloorMixShader_iExposure = glGetUniformLocation(bloorMixShader->id, "exposure");
+    bloorMixShader_iBlurLevel = glGetUniformLocation(bloorMixShader->id, "blurLevel");
     bloorBrightShader_iBrightLimit = glGetUniformLocation(bloorBrightShader->id, "brightLimit");
+    bloorBlurShader_iOffset = glGetUniformLocation(bloorBlurShader->id, "offset");
 }
 
 void ShaderMgr::InitHDR()
@@ -379,13 +381,15 @@ void ShaderMgr::UseBloorBright(const BaseShaderParam& param, float brightLimit)
     glUniform1f(bloorBrightShader_iBrightLimit, brightLimit);
 }
 
-void ShaderMgr::UseBloorBlur(const BaseShaderParam& param)
+void ShaderMgr::UseBloorBlur(const BaseShaderParam& param, float offset[25])
 {
     InitBaseShaderParam(bloorBlurShader, param);
+    glUniform2fv(bloorBlurShader_iOffset, 25, offset);
 }
 
-void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure)
+void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel)
 {
     InitBaseShaderParam(bloorMixShader, param);
+    glUniform1f(bloorMixShader_iBlurLevel, blurLevel);
     glUniform1f(bloorMixShader_iExposure, exposure);
 }

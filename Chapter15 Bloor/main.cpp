@@ -8,8 +8,8 @@ GLMatrixStack* modelviewStack;
 BaseShaderParam param;
 
 GLint tickCount = 0;
-GLfloat angle;
-GLBatch triangles[3];
+GLfloat angle = 0;
+GLBatch screenQuards[5];
 
 GLuint textures[1];
 GLuint normalFbo;
@@ -20,14 +20,30 @@ GLuint brightFbo;
 GLuint brightDepthRbo;
 GLuint brightTexture;
 
-GLuint blurFbo;
-GLuint blurDepthRbo;
-GLuint blurTexture;
+GLuint blurFbo[5];
+GLuint blurDepthRbo[5];
+GLuint blurTexture[5];
 GLfloat exposure = 5;
-GLfloat brightLimit = 0.5f;
+GLfloat brightLimit = 0.1f;
+GLfloat blurLevel = 1.0;
 
+float offset[50];
 static const GLenum windowBuff[] = {GL_BACK_LEFT};
 static const GLenum fboBuffs[] = {GL_COLOR_ATTACHMENT0};
+
+void GenerateOffset(GLuint width, GLuint height)
+{
+	float xInc = 1.0f / (GLfloat)(width);
+	float yInc = 1.0f / (GLfloat)(height);
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			offset[(((i*5)+j)*2)+0] = (-2.0f * xInc) + ((GLfloat)i * xInc);
+			offset[(((i*5)+j)*2)+1] = (-2.0f * yInc) + ((GLfloat)j * yInc);
+		}
+	}
+}
 
 void Display(void)
 {
@@ -38,35 +54,36 @@ void Display(void)
     param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
     param.SetMVMatrix(normalCamera.GetModelviewMatrix());
 
-    //正常渲染到texture[0]
+    //正常渲染到normalTexture(1)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, normalFbo);
     glDrawBuffers(1, fboBuffs);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     param.colorMap[0] = 0;
     shaderMgr.UseBloorBase(param);
-    triangles[0].Draw();
+    screenQuards[0].Draw();
 
-
-    //对texture[0]曝光获得高亮部分,输出到texture[1]
+    //对normalTexture(1)曝光获得高亮部分,输出到brightTexture(2)
     param.colorMap[0] = 1;
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, brightFbo);
     glDrawBuffers(1, fboBuffs);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shaderMgr.UseBloorBright(param, brightLimit);
-    triangles[1].Draw();
+    screenQuards[1].Draw();
 
-/*
-    //对texture[1]多次模糊输出到texture[2]
-    param.colorMap[0] = 2;
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blurFbo);
-    glDrawBuffers(1, fboBuffs);
-    glClearColor(1,1,1,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaderMgr.UseBloorBlur(param, 0.6f);
-    triangle.Draw();
-*/
+    //对brightTexture(2)模糊输出到blurTexture(3,4,5,6,7)
+    for (int i = 0 ; i < 5; i++)
+    {
+        param.colorMap[0] = 2 + i;
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blurFbo[i]);
+        glDrawBuffers(1, fboBuffs);
+        glClearColor(1,1,1,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        shaderMgr.UseBloorBlur(param, offset);
+        screenQuards[2].Draw();
+    }
+
     //将三张texture混合输出到屏幕
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDrawBuffers(1, windowBuff);
@@ -74,11 +91,11 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     param.colorMap[0] = 1;
     param.colorMap[1] = 2;
-    param.colorMap[2] = 3;
-    shaderMgr.UseBloorMix(param, exposure);
-    triangles[2].Draw();
-    modelviewStack->PopMatrix();
+    param.colorMap[2] = 7;
+    shaderMgr.UseBloorMix(param, exposure, std::min(1.0f, std::max(0.0f, blurLevel)));
+    screenQuards[3].Draw();
 
+    modelviewStack->PopMatrix();
     glutSwapBuffers();
 }
 
@@ -109,19 +126,19 @@ void CreateFBOTexture(GLuint* fbo, GLuint* rbo, GLuint* texture, GLuint textureU
 void OnStartUp()
 {
     //init triangle
-    for (int i = 0 ; i < 3; i++)
+    for (int i = 0; i < 5; i++)
     {
-        GLBatch triangle = triangles[i];
-        triangle.Begin(GL_TRIANGLE_STRIP, 6, 1);
-        triangle.MultiTexCoord2f(0,0,0);
-        triangle.Vertex3f(0,0,0);
-        triangle.MultiTexCoord2f(0,1,0);
-        triangle.Vertex3f(10,0,0);
-        triangle.MultiTexCoord2f(0,1,1);
-        triangle.Vertex3f(10,10,0);
-        triangle.MultiTexCoord2f(0,0,1);
-        triangle.Vertex3f(0,10,0);
-        triangle.End();
+        GLBatch* screenQuard = &screenQuards[i];
+        screenQuard->Begin(GL_TRIANGLE_STRIP, 6, 1);
+        screenQuard->MultiTexCoord2f(0,0,0);
+        screenQuard->Vertex3f(0,0,0);
+        screenQuard->MultiTexCoord2f(0,1,0);
+        screenQuard->Vertex3f(10,0,0);
+        screenQuard->MultiTexCoord2f(0,1,1);
+        screenQuard->Vertex3f(10,10,0);
+        screenQuard->MultiTexCoord2f(0,0,1);
+        screenQuard->Vertex3f(0,10,0);
+        screenQuard->End();
     }
 
     //init hdr texture
@@ -129,18 +146,20 @@ void OnStartUp()
     glGenTextures(1, textures);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textures[0]);
-    Util::LoadOpenEXR(Util::GetFullPath("Chapter15 Bloor/Ocean.exr"), GL_LINEAR, GL_REPEAT, width, height);
+    Util::LoadOpenEXR(Util::GetFullPath("Chapter15 Bloor/Ocean.exr"), GL_LINEAR, GL_CLAMP_TO_EDGE, width, height);
 
     //init camera,shadermgr
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit(1<<STHDR | 1<<STTexture2d | 1<<STBLOOR);
-    normalCamera.OnInit(640, 480, 50, 1, 2);
+    normalCamera.OnInit(600, 600, 53.2, 1, 2);
     modelviewStack = normalCamera.GetModelviewStack();
 
     //init fbo,texture
-    CreateFBOTexture(&normalFbo, &normalDepthRbo, &normalTexture, GL_TEXTURE1, 640, 480);
-    CreateFBOTexture(&brightFbo, &brightDepthRbo, &brightTexture, GL_TEXTURE2, 640, 480);
-    CreateFBOTexture(&blurFbo, &blurDepthRbo, &blurTexture, GL_TEXTURE3, 640, 480);
+    for (int i = 0 ; i < 5; i++)
+        CreateFBOTexture(&blurFbo[i], &blurDepthRbo[i], &blurTexture[i], GL_TEXTURE3 + i, 600, 600);
+    CreateFBOTexture(&normalFbo, &normalDepthRbo, &normalTexture, GL_TEXTURE1, 600, 600);
+    CreateFBOTexture(&brightFbo, &brightDepthRbo, &brightTexture, GL_TEXTURE2, 600, 600);
+    GenerateOffset(600, 600);
 }
 
 void OnShutUp()
@@ -148,15 +167,15 @@ void OnShutUp()
     //del texture
     glDeleteTextures(1, &normalTexture);
     glDeleteTextures(1, &brightTexture);
-    glDeleteTextures(1, &blurTexture);
+    glDeleteTextures(5, blurTexture);
     //del render buffer
     glDeleteBuffers(1, &normalDepthRbo);
     glDeleteBuffers(1, &brightDepthRbo);
-    glDeleteBuffers(1, &blurDepthRbo);
+    glDeleteBuffers(5, blurDepthRbo);
     //del frame buffer
     glDeleteFramebuffers(1, &normalFbo);
     glDeleteFramebuffers(1, &brightFbo);
-    glDeleteFramebuffers(1, &blurFbo);
+    glDeleteFramebuffers(5, blurFbo);
 
     glDeleteTextures(1, textures);
     shaderMgr.OnUnInit();
@@ -169,6 +188,10 @@ void ChangeExposure(unsigned char key)
         exposure += 1;
     else if (key == 'x')
         exposure -= 1;
+    else if (key == 'c')
+        blurLevel += 0.05f;
+    else if (key == 'v')
+        blurLevel -= 0.05f;
 }
 
 void KeyboardFn(unsigned char key, int x, int y)
@@ -184,7 +207,7 @@ void Resize(int w, int h) {normalCamera.Resize(w, h);}
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(640,480);
+    glutInitWindowSize(600,600);
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("hdr bloor");
