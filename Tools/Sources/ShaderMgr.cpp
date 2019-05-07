@@ -42,6 +42,7 @@ ShaderMgr::ShaderMgr()
     initfunctions[STFBO] = (VoidDeldgate)&ShaderMgr::InitFBO;
     initfunctions[STHDR] = (VoidDeldgate)&ShaderMgr::InitHDR;
     initfunctions[STBLOOR] = (VoidDeldgate)&ShaderMgr::InitBloor;
+    initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitMsaa;
 
 }
 
@@ -62,6 +63,11 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
     shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
     shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
+void ShaderMgr::InitMsaa()
+{
+    InitBaseShader(msaaShader);
 }
 
 void ShaderMgr::InitBloor()
@@ -392,4 +398,9 @@ void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure, float 
     InitBaseShaderParam(bloorMixShader, param);
     glUniform1f(bloorMixShader_iBlurLevel, blurLevel);
     glUniform1f(bloorMixShader_iExposure, exposure);
+}
+
+void ShaderMgr::UseMsaa(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(msaaShader, param);
 }

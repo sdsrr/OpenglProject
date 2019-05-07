@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1554795328 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1557216121 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1554795032 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1557216082 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1554728133 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1555503882 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -30,6 +30,8 @@
 	<cmath>
 	<map>
 	<vector>
+	<ImfRgbaFile.h>
+	<ImfArray.h>
 	<glut/glut.h>
 	<GL/glut.h>
 
@@ -532,7 +534,7 @@
 	<fstream>
 	<sstream>
 
-1554728138 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1555555214 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -545,4 +547,146 @@
 1554794139 source:e:\gamedev\opengl\trunk\openglproject\chapter12 fbo\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
+
+1407636225 d:\codeblocks\mingw\include\imfrgbafile.h
+	"ImfHeader.h"
+	"ImfFrameBuffer.h"
+	"ImfRgba.h"
+	"ImathVec.h"
+	"ImathBox.h"
+	"half.h"
+	"ImfThreading.h"
+	<string>
+	"ImfNamespace.h"
+	"ImfForward.h"
+
+1407636224 d:\codeblocks\mingw\include\imfheader.h
+	"ImfLineOrder.h"
+	"ImfCompression.h"
+	"ImfName.h"
+	"ImfTileDescription.h"
+	"ImfInt64.h"
+	"ImathVec.h"
+	"ImathBox.h"
+	"IexBaseExc.h"
+	"ImfForward.h"
+	"ImfNamespace.h"
+	"ImfExport.h"
+	<map>
+	<iosfwd>
+	<string>
+
+1407636224 d:\codeblocks\mingw\include\imflineorder.h
+	"ImfNamespace.h"
+
+1407636224 d:\codeblocks\mingw\include\imfnamespace.h
+	"OpenEXRConfig.h"
+
+1554817759 d:\codeblocks\mingw\include\openexrconfig.h
+
+1407644636 d:\codeblocks\mingw\include\imfcompression.h
+	"ImfNamespace.h"
+
+1407636224 d:\codeblocks\mingw\include\imfname.h
+	<string.h>
+	"ImfNamespace.h"
+
+1407636225 d:\codeblocks\mingw\include\imftiledescription.h
+	"ImfNamespace.h"
+
+1407636224 d:\codeblocks\mingw\include\imfint64.h
+	"ImathInt64.h"
+	"ImfNamespace.h"
+
+1407636220 d:\codeblocks\mingw\include\imathint64.h
+	"ImathNamespace.h"
+	<limits.h>
+
+1407636220 d:\codeblocks\mingw\include\imathnamespace.h
+	"IlmBaseConfig.h"
+
+1554812441 d:\codeblocks\mingw\include\ilmbaseconfig.h
+
+1548158450 d:\codeblocks\mingw\include\limits.h
+	<_mingw.h>
+
+1407636220 d:\codeblocks\mingw\include\imathvec.h
+	"ImathExc.h"
+	"ImathLimits.h"
+	"ImathMath.h"
+	"ImathNamespace.h"
+	<iostream>
+
+1407636219 d:\codeblocks\mingw\include\imathexc.h
+	"ImathNamespace.h"
+	"IexBaseExc.h"
+	"ImathExport.h"
+
+1407636218 d:\codeblocks\mingw\include\iexbaseexc.h
+	"IexNamespace.h"
+	"IexExport.h"
+	<string>
+	<exception>
+	<sstream>
+
+1407636218 d:\codeblocks\mingw\include\iexnamespace.h
+	"IlmBaseConfig.h"
+
+1407636218 d:\codeblocks\mingw\include\iexexport.h
+
+1407636219 d:\codeblocks\mingw\include\imathexport.h
+
+1407636220 d:\codeblocks\mingw\include\imathlimits.h
+	"ImathNamespace.h"
+	<float.h>
+	<limits.h>
+
+1548158450 d:\codeblocks\mingw\include\float.h
+	<_mingw.h>
+
+1407636220 d:\codeblocks\mingw\include\imathmath.h
+	"ImathPlatform.h"
+	"ImathLimits.h"
+	"ImathNamespace.h"
+	<math.h>
+
+1407636220 d:\codeblocks\mingw\include\imathplatform.h
+	<math.h>
+
+1407636219 d:\codeblocks\mingw\include\imathbox.h
+	"ImathVec.h"
+	"ImathNamespace.h"
+
+1407636224 d:\codeblocks\mingw\include\imfforward.h
+	"ImfNamespace.h"
+
+1407636224 d:\codeblocks\mingw\include\imfexport.h
+
+1407636224 d:\codeblocks\mingw\include\imfframebuffer.h
+	"ImfName.h"
+	"ImfPixelType.h"
+	"ImfExport.h"
+	"ImfNamespace.h"
+	<map>
+	<string>
+
+1407636225 d:\codeblocks\mingw\include\imfpixeltype.h
+	"ImfNamespace.h"
+
+1407636225 d:\codeblocks\mingw\include\imfrgba.h
+	"half.h"
+	"ImfNamespace.h"
+
+1407636218 d:\codeblocks\mingw\include\half.h
+	"halfExport.h"
+	<iostream>
+
+1407636218 d:\codeblocks\mingw\include\halfexport.h
+
+1407636225 d:\codeblocks\mingw\include\imfthreading.h
+	"ImfExport.h"
+	"ImfNamespace.h"
+
+1407644636 d:\codeblocks\mingw\include\imfarray.h
+	"ImfForward.h"
 

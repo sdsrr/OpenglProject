@@ -7,7 +7,7 @@ layout(location = 3) in vec2 vTexCoord;
 uniform mat4 mvpMatrix;
 uniform mat4 mvMatrix;
 uniform mat3 normalMatrix;
-uniform vec4 lightPostion;
+uniform vec4 lightDirection;
 
 out vec2 texCoord;
 out vec3 normal;
@@ -16,7 +16,7 @@ out vec4 color;
 
 void main(void)
 {
-    light = (lightPostion - vVertex * mvMatrix).xyz;
+    light = lightDirection.xyz;
     normal = vNormal * normalMatrix;
     color = vColor;
     texCoord = vTexCoord;

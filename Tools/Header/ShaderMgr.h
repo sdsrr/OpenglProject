@@ -15,6 +15,7 @@ enum ShaderType
     STFBO,
     STHDR,
     STBLOOR,
+    STMSAA,
     STMax,
 };
 
@@ -71,6 +72,7 @@ private:
     BaseShader* textureSkybox = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
     BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
     BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
+    BaseShader* msaaShader = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
 
     BaseShader* texture2dArrayShader = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
     GLint texture2dArrayShader_iTime;
@@ -115,6 +117,7 @@ public:
     void InitFBO();
     void InitHDR();
     void InitBloor();
+    void InitMsaa();
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
@@ -134,6 +137,7 @@ public:
     void UseBloorBright(const BaseShaderParam& param, float brightLimit);
     void UseBloorBlur(const BaseShaderParam& param, float offset[25]);
     void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
+    void UseMsaa(const BaseShaderParam& param);
 
     //´´½¨shader
     GLuint LoadShader(const char* vertex, const char* fragment);
