@@ -6,6 +6,13 @@ BaseShader::BaseShader(const char* vp, const char* fp)
     this->fp = fp;
 }
 
+BaseShader::BaseShader(const char* vp, const char* gp, const char* fp)
+{
+    this->vp = vp;
+    this->fp = fp;
+    this->gp = gp;
+}
+
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
@@ -43,12 +50,13 @@ ShaderMgr::ShaderMgr()
     initfunctions[STHDR] = (VoidDeldgate)&ShaderMgr::InitHDR;
     initfunctions[STBLOOR] = (VoidDeldgate)&ShaderMgr::InitBloor;
     initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitMsaa;
+    initfunctions[STGEOMETRY] = (VoidDeldgate)&ShaderMgr::InitGeometry;
 
 }
 
 void ShaderMgr::InitBaseShader(BaseShader* shader)
 {
-    shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->fp));
+    shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
     shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
     shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
     shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
@@ -63,6 +71,12 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
     shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
     shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
+void ShaderMgr::InitGeometry()
+{
+    InitBaseShader(geometryShader);
+    geometryShader_iDelta = glGetUniformLocation(geometryShader->id, "delta");
 }
 
 void ShaderMgr::InitMsaa()
@@ -186,6 +200,8 @@ void ShaderMgr::OnUnInit()
     glDeleteProgram(blurShader->id);
     glDeleteProgram(tboShader->id);
     glDeleteProgram(fboShader->id);
+    glDeleteProgram(msaaShader->id);
+    glDeleteProgram(geometryShader->id);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -215,9 +231,10 @@ bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
     return true;
 }
 
-GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
+GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, const char* fileFragment)
 {
     // create vertex/fragment shader
+    GLuint geometryShader = -1;
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -264,14 +281,44 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileFragment)
         return 0;
     }
 
+    // init geometry shader
+    if (fileGeometry != NULL)
+    {
+        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+        if (LoadShaderFile(fileGeometry, geometryShader) == false)
+        {
+            Util::PrintString(3, (char*)"the geometry shader at ", fileGeometry, (char*)" not fond.");
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+            glDeleteShader(geometryShader);
+            return 0;
+        }
+        GLint result03 = GL_TRUE;
+        glCompileShader(geometryShader);
+        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &result03);
+        if (result03 == GL_FALSE)
+        {
+            char logs[1024];
+            glGetShaderInfoLog(geometryShader, 1024, NULL, logs);
+            Util::PrintString(2, (char*)"geometry shader compile faile ", logs);
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+            glDeleteShader(geometryShader);
+            return 0;
+        }
+    }
+
     //link
     GLuint program = glCreateProgram();
+    glAttachShader(program, geometryShader);
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
+
     glLinkProgram(program);
 
     //delete vertex/fragment shader
     glDeleteShader(vertexShader);
+    glDeleteShader(geometryShader);
     glDeleteShader(fragmentShader);
     return program;
 }
@@ -403,4 +450,10 @@ void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure, float 
 void ShaderMgr::UseMsaa(const BaseShaderParam& param)
 {
     InitBaseShaderParam(msaaShader, param);
+}
+
+void ShaderMgr::DrawNormal(const BaseShaderParam& param, float delta)
+{
+    InitBaseShaderParam(geometryShader, param);
+    glUniform1f(geometryShader_iDelta, delta);
 }

@@ -206,6 +206,8 @@ void Util::LoadOpenEXR(char*filepath, GLenum filter, GLenum wrapMode, int& texWi
 
 char* Util::GetFullPath(const char* relativePath)
 {
+    if (relativePath == NULL)
+        return NULL;
     static int index;
     static char fullPath[256][256];
     strcpy(fullPath[index], projectPath);

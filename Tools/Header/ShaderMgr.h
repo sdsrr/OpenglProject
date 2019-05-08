@@ -16,6 +16,7 @@ enum ShaderType
     STHDR,
     STBLOOR,
     STMSAA,
+    STGEOMETRY,
     STMax,
 };
 
@@ -31,10 +32,12 @@ public:
     GLint cameraPosition;
     GLint environmentColor;
     GLint colorMap[6];
-    const char* vp;
-    const char* fp;
+    const char* vp = NULL;
+    const char* fp = NULL;
+    const char* gp = NULL;
 public:
     BaseShader(const char* vp, const char* fp);
+    BaseShader(const char* vp, const char* gp, const char* fp);
 };
 
 class BaseShaderParam
@@ -73,6 +76,9 @@ private:
     BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
     BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
     BaseShader* msaaShader = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
+
+    BaseShader* geometryShader = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
+    GLfloat geometryShader_iDelta;
 
     BaseShader* texture2dArrayShader = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
     GLint texture2dArrayShader_iTime;
@@ -118,6 +124,7 @@ public:
     void InitHDR();
     void InitBloor();
     void InitMsaa();
+    void InitGeometry();
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
@@ -138,9 +145,10 @@ public:
     void UseBloorBlur(const BaseShaderParam& param, float offset[25]);
     void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
     void UseMsaa(const BaseShaderParam& param);
+    void DrawNormal(const BaseShaderParam& param, float delta);
 
     //创建shader
-    GLuint LoadShader(const char* vertex, const char* fragment);
+    GLuint LoadShader(const char* vertex, const char* geometry, const char* fragment);
     //加载shader资源
     bool LoadShaderFile(const char* file, GLuint shader);
     void PrintBaseShader(BaseShader* shader, const BaseShaderParam* param);
