@@ -1,0 +1,40 @@
+#version 330
+
+layout(location = 0) in vec4 vVertex;
+layout(location = 2) in vec3 vNormal;
+layout(location = 3) in vec2 vTexCoord;
+
+/*
+uniform struct
+{
+    mat4 mvpMatrix;
+    mat4 mvMatrix;
+    mat4 normalMatrix;
+} data;
+*/
+
+int lineCount = 200;
+float period = 1f;
+float period_noise = 10;
+
+uniform mat4 mvMatrix;
+uniform mat4 projectMatrix;
+uniform sampler2D colorMap01;
+uniform int instance;
+
+out float r;
+out vec2 texcoord;
+
+void main(void)
+{
+    texcoord = vTexCoord;
+    vec4 position = vVertex * mvMatrix;
+
+    float deltaX = float(instance / lineCount);
+    float deltaZ = float(instance - lineCount * deltaX);
+    vec4 noiseCol = texture(colorMap01, vec2(deltaX / 10000 * lineCount, deltaZ / lineCount));
+
+    position.x += deltaX * period + period_noise * noiseCol.r;
+    position.z += deltaZ * period + period_noise * noiseCol.g;
+    gl_Position = position * projectMatrix;
+}

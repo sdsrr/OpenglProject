@@ -71,7 +71,7 @@ void Util::LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode)
     else if (comp == 4)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pBits);
     else
-        printf("load %s failed...\n", filepath);
+        printf("error comp load %s failed...\n", filepath);
     printf("load %s success width=%d height=%d comp=%d\n", filepath, width, height, comp);
     stbi_image_free(pBits);
 }
@@ -464,6 +464,12 @@ const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix(GLfloat cameraPos[3]
 const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
 {
     const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
+    return matrix;
+}
+
+const M3DMatrix44f& NormalCamera::GetProjectMatrix()
+{
+    const M3DMatrix44f& matrix = transformPiple.GetProjectionMatrix();
     return matrix;
 }
 

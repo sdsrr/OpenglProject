@@ -17,6 +17,7 @@ enum ShaderType
     STBLOOR,
     STMSAA,
     STGEOMETRY,
+    STGRASSINSTANCE,
     STMax,
 };
 
@@ -26,6 +27,7 @@ public:
     GLuint id = -1;
     GLint mvMatrix;
     GLint mvpMatrix;
+    GLuint projectMatrix;
     GLint normalMatrix;
     GLint diffuseColor;
     GLint lightDirection;
@@ -47,6 +49,7 @@ public:
     M3DVector4f diffuseColor;
     M3DMatrix44f mvpMatrix;
     M3DMatrix44f mvMatrix;
+    M3DMatrix44f projectMatrix;
     M3DMatrix33f normalMatrix;
     GLint colorMap[6];
     GLfloat lightDirection[3];
@@ -56,6 +59,7 @@ public:
     void SetEnvironmentColor(M3DVector4f color);
     void SetMVPMatrix(const M3DMatrix44f matrix);
     void SetMVMatrix(const M3DMatrix44f matrix);
+    void SetProjectMatrix(const M3DMatrix44f matrix);
     void SetNormalMatrix(const M3DMatrix44f matrix);
     void SetCameraPosition(GLfloat x, GLfloat y, GLfloat z);
     void SetLightDirection(GLfloat x, GLfloat y, GLfloat z);
@@ -76,6 +80,9 @@ private:
     BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
     BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
     BaseShader* msaaShader = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
+
+    BaseShader* grassShader = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
+    GLint grassShader_iInstance;
 
     BaseShader* geometryShader = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
     GLfloat geometryShader_iDelta;
@@ -125,6 +132,7 @@ public:
     void InitBloor();
     void InitMsaa();
     void InitGeometry();
+    void InitGrassInstance();
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
@@ -146,7 +154,7 @@ public:
     void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
     void UseMsaa(const BaseShaderParam& param);
     void DrawNormal(const BaseShaderParam& param, float delta);
-
+    void DrawGrass(const BaseShaderParam& param, GLint instance);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* geometry, const char* fragment);
     //加载shader资源

@@ -16,6 +16,7 @@ BaseShader::BaseShader(const char* vp, const char* gp, const char* fp)
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(projectMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetNormalMatrix(const M3DMatrix44f matrix){memcpy(normalMatrix, matrix, 16*sizeof(float));};
 void BaseShaderParam::SetLightDirection(GLfloat direction[3]){memcpy(lightDirection, direction, 3*sizeof(float));}
@@ -51,6 +52,7 @@ ShaderMgr::ShaderMgr()
     initfunctions[STBLOOR] = (VoidDeldgate)&ShaderMgr::InitBloor;
     initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitMsaa;
     initfunctions[STGEOMETRY] = (VoidDeldgate)&ShaderMgr::InitGeometry;
+    initfunctions[STGRASSINSTANCE] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
 
 }
 
@@ -59,6 +61,7 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
     shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
     shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
+    shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
     shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
     shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
     shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
@@ -71,6 +74,12 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
     shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
     shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
+void ShaderMgr::InitGrassInstance()
+{
+    InitBaseShader(grassShader);
+    grassShader_iInstance = glGetUniformLocation(grassShader->id, "instance");
 }
 
 void ShaderMgr::InitGeometry()
@@ -330,6 +339,7 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUseProgram(shader->id);
         glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
         glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
+        glUniformMatrix4fv(shader->projectMatrix, 1, GL_TRUE, param.projectMatrix);
         glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
         glUniform3fv(shader->lightDirection, 1, param.lightDirection);
         glUniform4fv(shader->cameraPosition, 1, param.cameraPosition);
@@ -347,12 +357,19 @@ void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param
         M3DMatrix44f identity;
         m3dLoadIdentity44(identity);
         printf("shader id %d\n", shader->id);
+
         printf("mvpMatrix %d\n", shader->mvpMatrix);
         Util::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
+
         printf("mvMatrix %d\n", shader->mvMatrix);
         Util::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
+
         printf("normalMatrix %d\n", shader->normalMatrix);
         Util::PrintMatrix44f(param != NULL ? param->normalMatrix : identity);
+
+        printf("projectMatrix %d\n", shader->projectMatrix);
+        Util::PrintMatrix44f(param != NULL ? param->projectMatrix : identity);
+
         printf("colorMap00 %d %d\n", shader->colorMap[0], param != NULL ? param->colorMap[0] : -1);
         printf("colorMap01 %d %d\n", shader->colorMap[1], param != NULL ? param->colorMap[1] : -1);
         printf("colorMap02 %d %d\n", shader->colorMap[2], param != NULL ? param->colorMap[2] : -1);
@@ -456,4 +473,10 @@ void ShaderMgr::DrawNormal(const BaseShaderParam& param, float delta)
 {
     InitBaseShaderParam(geometryShader, param);
     glUniform1f(geometryShader_iDelta, delta);
+}
+
+void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance)
+{
+    InitBaseShaderParam(grassShader, param);
+    glUniform1i(grassShader_iInstance, instance);
 }

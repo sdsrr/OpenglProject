@@ -146,4 +146,25 @@ private:
 #endif
 #endif
 };
+
+class FrameTimer
+{
+private:
+    int baseTime = 0;
+    int nowTime = 0;
+    int tickCount = 0;
+public:
+    void Update()
+    {
+        nowTime = glutGet(GLUT_ELAPSED_TIME);
+        tickCount++;
+        if (nowTime - baseTime >= 1000)
+        {
+            printf("frame count %d \n", tickCount);
+            baseTime = nowTime;
+            tickCount = 0;
+        }
+    }
+};
+
 #endif
