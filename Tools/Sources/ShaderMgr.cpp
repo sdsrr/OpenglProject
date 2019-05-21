@@ -36,6 +36,27 @@ void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
 GLfloat ShaderMgr::white[] = {1,1,1,1};
 GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
 
+void ShaderMgr::InitBaseShader(BaseShader* shader)
+{
+    shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
+    shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
+    shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
+    shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
+    shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
+    shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
+    shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
+    shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
+    shader->environmentColor = glGetUniformLocation(shader->id, "environmentColor");
+    shader->time = glGetUniformLocation(shader->id, "time");
+
+    shader->colorMap[0] = glGetUniformLocation(shader->id, "colorMap00");
+    shader->colorMap[1] = glGetUniformLocation(shader->id, "colorMap01");
+    shader->colorMap[2] = glGetUniformLocation(shader->id, "colorMap02");
+    shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
+    shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
+    shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
+}
+
 ShaderMgr::ShaderMgr()
 {
     initfunctions[STSolid] = (VoidDeldgate)&ShaderMgr::InitSolid;
@@ -56,30 +77,11 @@ ShaderMgr::ShaderMgr()
 
 }
 
-void ShaderMgr::InitBaseShader(BaseShader* shader)
-{
-    shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
-    shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
-    shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
-    shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
-    shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
-    shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
-    shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
-    shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
-    shader->environmentColor = glGetUniformLocation(shader->id, "environmentColor");
-
-    shader->colorMap[0] = glGetUniformLocation(shader->id, "colorMap00");
-    shader->colorMap[1] = glGetUniformLocation(shader->id, "colorMap01");
-    shader->colorMap[2] = glGetUniformLocation(shader->id, "colorMap02");
-    shader->colorMap[3] = glGetUniformLocation(shader->id, "colorMap03");
-    shader->colorMap[4] = glGetUniformLocation(shader->id, "colorMap04");
-    shader->colorMap[5] = glGetUniformLocation(shader->id, "colorMap05");
-}
-
 void ShaderMgr::InitGrassInstance()
 {
     InitBaseShader(grassShader);
     grassShader_iInstance = glGetUniformLocation(grassShader->id, "instance");
+    grassShader_iTime = glGetUniformLocation(grassShader->id, "time");
 }
 
 void ShaderMgr::InitGeometry()
@@ -345,6 +347,7 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUniform4fv(shader->cameraPosition, 1, param.cameraPosition);
         glUniform4fv(shader->diffuseColor, 1, param.diffuseColor);
         glUniform4fv(shader->environmentColor, 1, param.environmentColor);
+        glUniform1i(shader->time, param.deltatime);
         for (int i=0; i<6; i++)
             glUniform1i(shader->colorMap[i], param.colorMap[i]);
     }
@@ -475,8 +478,9 @@ void ShaderMgr::DrawNormal(const BaseShaderParam& param, float delta)
     glUniform1f(geometryShader_iDelta, delta);
 }
 
-void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance)
+void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance, float time)
 {
     InitBaseShaderParam(grassShader, param);
     glUniform1i(grassShader_iInstance, instance);
+    glUniform1f(grassShader_iTime, time);
 }

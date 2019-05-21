@@ -7,27 +7,47 @@ GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
+GLMatrixStack* projectStack;
 
-GLuint textures[2];
+GLuint textures[3];
 GLfloat angle;
-GLBatch grassBatch;
+GLuint vaos[2];
+GLuint vbos[2];
 GLboolean bUseGpuInstance = false;
-GLuint maxCount = 10000;
+GLuint maxCount = 100000;
 FrameTimer timer;
+
+int deltaTime = 0;
+bool add = true;
+float tickCount = 0;
 
 void Display(void)
 {
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (bUseGpuInstance)
-    {
+    projectStack->PushMatrix();
+    projectStack->Translate(-30, 5, -80);
+    projectStack->Rotate(10, 1, 0, 0);
 
-    }
-    else
-    {
-        modelviewStack->PushMatrix();
-        modelviewStack->Translate(0, 0, -5);
+    //draw ground
+    modelviewStack->PushMatrix();
+    modelviewStack->Rotate(90, 1, 0, 0);
+    modelviewStack->Scale(500, 200, 1);
+        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+        param.SetProjectMatrix(normalCamera.GetProjectMatrix());
+        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
+        param.SetDiffuseColor(ShaderMgr::white);
+        param.colorMap[0] = 2;
+        shaderMgr.UseTexture2d(param);
+        glBindVertexArray(vaos[0]);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+    modelviewStack->PopMatrix();
+
+    // draw grass
+    modelviewStack->PushMatrix();
+    modelviewStack->Translate(0, 0, -5);
         param.SetMVMatrix(normalCamera.GetModelviewMatrix());
         param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
         param.SetProjectMatrix(normalCamera.GetProjectMatrix());
@@ -35,54 +55,83 @@ void Display(void)
         param.SetDiffuseColor(ShaderMgr::white);
         param.colorMap[0] = 0;
         param.colorMap[1] = 1;
-        for (int i = 0; i < maxCount; i++)
+        if (bUseGpuInstance)
         {
-            shaderMgr.DrawGrass(param, i);
-            grassBatch.Draw();
+            shaderMgr.DrawGrass(param, 0, tickCount/20.0f);
+            glBindVertexArray(vaos[1]);
+            glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 6, maxCount);
         }
-        modelviewStack->PopMatrix();
-    }
+        else
+        {
+            for (int i = 0; i < maxCount; i++)
+            {
+                shaderMgr.DrawGrass(param, i, tickCount/20.0f);
+                glBindVertexArray(vaos[1]);
+                glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+            }
+        }
+    modelviewStack->PopMatrix();
+    projectStack->PopMatrix();
 
-    timer.Update();
+    deltaTime += timer.Update();
+    if (deltaTime >= 100)
+    {
+        if (add)
+            tickCount++;
+        else
+            tickCount--;
+        if (tickCount >= 5)
+            add = false;
+        if (tickCount <= -5)
+            add = true;
+        deltaTime = 0;
+    }
     glutSwapBuffers();
 }
 
 void OnStartUp()
 {
     //init textures
-    glGenTextures(2, textures);
+    glGenTextures(3, textures);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textures[0]);
-    //Util::LoadTGATexture("Chapter18 GPUInstance/grass.png", GL_LINEAR, GL_CLAMP);
     Util::LoadJPGTexture(Util::GetFullPath("Chapter18 GPUInstance/grass.png"), GL_LINEAR, GL_CLAMP);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[1]);
     Util::LoadJPGTexture(Util::GetFullPath("Chapter18 GPUInstance/noise.png"), GL_LINEAR, GL_CLAMP);
 
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    Util::LoadJPGTexture(Util::GetFullPath("Chapter18 GPUInstance/marble.tga"), GL_LINEAR, GL_CLAMP);
+
     // init triangle
-    grassBatch.Begin(GL_TRIANGLE_STRIP, 6, 1);
-    grassBatch.MultiTexCoord2f(0,1,1);
-    grassBatch.Normal3f(0,0,1);
-    grassBatch.Vertex3f(0,0,0);
+    float vertices[] = {0,0,0,1, 0,0,1, 1,1,
+                        1,0,0,1, 0,0,1, 0,1,
+                        0,1,0,1, 0,0,1, 1,0,
+                        1,1,0,1, 0,0,1, 0,0};
+    glGenVertexArrays(2, vaos);
+    glGenBuffers(2, vbos);
+    for (int i = 0 ; i < 2; i++)
+    {
+        glBindVertexArray(vaos[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(4*sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7*sizeof(float)));
+        glEnableVertexAttribArray(3);
+    }
 
-    grassBatch.MultiTexCoord2f(0,0,1);
-    grassBatch.Normal3f(0,0,1);
-    grassBatch.Vertex3f(1,0,0);
-
-    grassBatch.MultiTexCoord2f(0,1,0);
-    grassBatch.Normal3f(0,0,1);
-    grassBatch.Vertex3f(0,1,0);
-
-    grassBatch.MultiTexCoord2f(0,0,0);
-    grassBatch.Normal3f(0,0,1);
-    grassBatch.Vertex3f(1,1,0);
-    grassBatch.End();
     // init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
     modelviewStack = normalCamera.GetModelviewStack();
+    projectStack = normalCamera.GetProjectStack();
+    param.deltatime = 10;
 }
 
 void OnShutUp()
@@ -112,8 +161,8 @@ int main(int argc, char *argv[])
     glutMouseFunc(MouseClick);
     glutDisplayFunc(Display);
     glutIdleFunc(Idle);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

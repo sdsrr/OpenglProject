@@ -153,8 +153,9 @@ private:
     int baseTime = 0;
     int nowTime = 0;
     int tickCount = 0;
+    int lastTime = 0;
 public:
-    void Update()
+    int Update()
     {
         nowTime = glutGet(GLUT_ELAPSED_TIME);
         tickCount++;
@@ -164,6 +165,9 @@ public:
             baseTime = nowTime;
             tickCount = 0;
         }
+        int delta = nowTime - lastTime;
+        lastTime = nowTime;
+        return delta;
     }
 };
 

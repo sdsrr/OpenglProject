@@ -113,9 +113,10 @@ public:
     void GetCameraForward(M3DVector3f forward);
     void GetCameraPostion(M3DVector3f position);
     GLMatrixStack* GetModelviewStack();
+    GLMatrixStack* GetProjectStack();
+
     const M3DMatrix44f& GetProjectMatrix();
     const M3DMatrix44f& GetModelviewprojectMatrix();
-    const M3DMatrix44f& GetModelviewprojectMatrix(GLfloat cameraPos[3], GLfloat cameraRoate[4]);
     const M3DMatrix44f& GetModelviewMatrix();
     const M3DMatrix33f& GetNormalMatrix();
 };

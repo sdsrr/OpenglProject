@@ -27,12 +27,13 @@ public:
     GLuint id = -1;
     GLint mvMatrix;
     GLint mvpMatrix;
-    GLuint projectMatrix;
+    GLint projectMatrix;
     GLint normalMatrix;
     GLint diffuseColor;
     GLint lightDirection;
     GLint cameraPosition;
     GLint environmentColor;
+    GLint time;
     GLint colorMap[6];
     const char* vp = NULL;
     const char* fp = NULL;
@@ -51,6 +52,7 @@ public:
     M3DMatrix44f mvMatrix;
     M3DMatrix44f projectMatrix;
     M3DMatrix33f normalMatrix;
+    int deltatime;
     GLint colorMap[6];
     GLfloat lightDirection[3];
     GLfloat cameraPosition[4];
@@ -83,6 +85,7 @@ private:
 
     BaseShader* grassShader = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
     GLint grassShader_iInstance;
+    GLint grassShader_iTime;
 
     BaseShader* geometryShader = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
     GLfloat geometryShader_iDelta;
@@ -118,6 +121,7 @@ public:
     ShaderMgr();
     void OnInit(int type=-1);
     void OnUnInit();
+    void Update();
     void InitSolid();
     void InitDiffuse();
     void InitTexture2d();
@@ -154,7 +158,7 @@ public:
     void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
     void UseMsaa(const BaseShaderParam& param);
     void DrawNormal(const BaseShaderParam& param, float delta);
-    void DrawGrass(const BaseShaderParam& param, GLint instance);
+    void DrawGrass(const BaseShaderParam& param, GLint instance, float time);
     //创建shader
     GLuint LoadShader(const char* vertex, const char* geometry, const char* fragment);
     //加载shader资源

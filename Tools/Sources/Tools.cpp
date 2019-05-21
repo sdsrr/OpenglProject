@@ -406,6 +406,10 @@ void NormalCamera::KeyboardFn(unsigned char key, int x, int y)
         projectStack.Translate(0,0,moveSpeed);
         break;
     }
+
+    //M3DVector3f ma;
+    //camera.GetOrigin(ma);
+    //printf("%f %f %f\n",ma[0], ma[1], ma[2]);
     glutPostRedisplay();
 }
 
@@ -449,18 +453,6 @@ void NormalCamera::GetCameraPostion(M3DVector3f position)
     camera.GetOrigin(position);
 }
 
-const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix(GLfloat cameraPos[3], GLfloat cameraRoate[4])
-{
-    //使用设置的相机位置数据
-    projectStack.PushMatrix();
-    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
-    projectStack.Translate(cameraPos[0], cameraPos[1], cameraPos[2]);
-    projectStack.Rotate(cameraRoate[0], cameraRoate[1], cameraRoate[2], cameraRoate[3]);
-    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
-    projectStack.PopMatrix();
-    return matrix;
-}
-
 const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
 {
     const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
@@ -488,6 +480,11 @@ const M3DMatrix33f& NormalCamera::GetNormalMatrix()
 GLMatrixStack* NormalCamera::GetModelviewStack()
 {
     return &modelviewStack;
+}
+
+GLMatrixStack* NormalCamera::GetProjectStack()
+{
+    return &projectStack;
 }
 
 void NormalCamera::OnUnInit()
