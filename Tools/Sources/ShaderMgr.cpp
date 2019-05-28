@@ -74,7 +74,18 @@ ShaderMgr::ShaderMgr()
     initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitMsaa;
     initfunctions[STGEOMETRY] = (VoidDeldgate)&ShaderMgr::InitGeometry;
     initfunctions[STGRASSINSTANCE] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
+    initfunctions[STFEEDBACK] = (VoidDeldgate)&ShaderMgr::InitFeedback;
+    initfunctions[STWRITEFEEDBACK] = (VoidDeldgate)&ShaderMgr::InitWriteFeedback;
+}
 
+void ShaderMgr::InitWriteFeedback()
+{
+    InitBaseShader(writeFeedbackShader);
+}
+
+void ShaderMgr::InitFeedback()
+{
+    InitBaseShader(feedbackShader);
 }
 
 void ShaderMgr::InitGrassInstance()
@@ -201,6 +212,9 @@ void ShaderMgr::OnInit(int type)
 
 void ShaderMgr::OnUnInit()
 {
+    glDeleteProgram(grassShader->id);
+    glDeleteProgram(writeFeedbackShader->id);
+    glDeleteProgram(feedbackShader->id);
     glDeleteProgram(solidShader->id);
     glDeleteProgram(diffuseShader->id);
     glDeleteProgram(texture2dShader->id);
@@ -244,52 +258,35 @@ bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
 
 GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, const char* fileFragment)
 {
-    // create vertex/fragment shader
     GLuint geometryShader = -1;
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint vertexShader = -1;
+    GLuint fragmentShader = -1;
 
-    // load file
-    if (LoadShaderFile(fileVertex, vertexShader) == false)
+    // init vertex shader
+    if (fileVertex != NULL)
     {
-        Util::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return 0;
-    }
-
-    if (LoadShaderFile(fileFragment, fragmentShader) == false)
-    {
-        Util::PrintString(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return 0;
-    }
-
-    // compile
-    glCompileShader(fragmentShader);
-    glCompileShader(vertexShader);
-    GLint result01 = GL_TRUE;
-    GLint result02 = GL_TRUE;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &result01);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &result02);
-    if (result01 == GL_FALSE)
-    {
-        char logs[1024];
-        glGetShaderInfoLog(vertexShader, 1024, NULL, logs);
-        Util::PrintString(2, (char*)"vertext shader compile faile ", logs);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return 0;
-    }
-    if (result02 == GL_FALSE)
-    {
-        char logs[1024];
-        glGetShaderInfoLog(fragmentShader, 1024, NULL, logs);
-        Util::PrintString(2, (char*)"fragment shader compile faile ", logs);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return 0;
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        // load file
+        if (LoadShaderFile(fileVertex, vertexShader) == false)
+        {
+            Util::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+            return 0;
+        }
+        // compile
+        GLint result = GL_TRUE;
+        glCompileShader(vertexShader);
+        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &result);
+        if (result == GL_FALSE)
+        {
+            char logs[1024];
+            glGetShaderInfoLog(vertexShader, 1024, NULL, logs);
+            Util::PrintString(2, (char*)"vertext shader compile faile ", logs);
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+            return 0;
+        }
     }
 
     // init geometry shader
@@ -304,10 +301,10 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
             glDeleteShader(geometryShader);
             return 0;
         }
-        GLint result03 = GL_TRUE;
+        GLint result = GL_TRUE;
         glCompileShader(geometryShader);
-        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &result03);
-        if (result03 == GL_FALSE)
+        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &result);
+        if (result == GL_FALSE)
         {
             char logs[1024];
             glGetShaderInfoLog(geometryShader, 1024, NULL, logs);
@@ -315,6 +312,31 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glDeleteShader(geometryShader);
+            return 0;
+        }
+    }
+
+    // init fragment shader
+    if (fileFragment != NULL)
+    {
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        if (LoadShaderFile(fileFragment, fragmentShader) == false)
+        {
+            Util::PrintString(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+            return 0;
+        }
+        GLint result = GL_TRUE;
+        glCompileShader(fragmentShader);
+        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &result);
+        if (result == GL_FALSE)
+        {
+            char logs[1024];
+            glGetShaderInfoLog(fragmentShader, 1024, NULL, logs);
+            Util::PrintString(2, (char*)"fragment shader compile faile ", logs);
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
             return 0;
         }
     }
@@ -483,4 +505,19 @@ void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance, float ti
     InitBaseShaderParam(grassShader, param);
     glUniform1i(grassShader_iInstance, instance);
     glUniform1f(grassShader_iTime, time);
+}
+
+void ShaderMgr::UseFeedbackBuffer(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(feedbackShader, param);
+}
+
+void ShaderMgr::WriteFeedbackBuffer(const BaseShaderParam& param)
+{
+    InitBaseShaderParam(writeFeedbackShader, param);
+}
+
+GLuint ShaderMgr::GetShaderId(ShaderType type)
+{
+     return writeFeedbackShader->id;
 }

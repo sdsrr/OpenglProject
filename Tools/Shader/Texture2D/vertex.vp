@@ -1,6 +1,7 @@
 #version 330
 
 layout (location = 0) in vec4 vVertex;
+layout (location = 2) in vec3 vNormal;
 layout (location = 3) in vec2 vCoords;
 
 uniform mat4 mvpMatrix;

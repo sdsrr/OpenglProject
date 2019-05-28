@@ -13,7 +13,7 @@ GLuint textures[3];
 GLfloat angle;
 GLuint vaos[2];
 GLuint vbos[2];
-GLboolean bUseGpuInstance = false;
+GLboolean bUseGpuInstance = true;
 GLuint maxCount = 100000;
 FrameTimer timer;
 
@@ -42,7 +42,7 @@ void Display(void)
         param.colorMap[0] = 2;
         shaderMgr.UseTexture2d(param);
         glBindVertexArray(vaos[0]);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     modelviewStack->PopMatrix();
 
     // draw grass
@@ -59,7 +59,7 @@ void Display(void)
         {
             shaderMgr.DrawGrass(param, 0, tickCount/20.0f);
             glBindVertexArray(vaos[1]);
-            glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 6, maxCount);
+            glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, maxCount);
         }
         else
         {
@@ -67,7 +67,7 @@ void Display(void)
             {
                 shaderMgr.DrawGrass(param, i, tickCount/20.0f);
                 glBindVertexArray(vaos[1]);
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+                glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
             }
         }
     modelviewStack->PopMatrix();

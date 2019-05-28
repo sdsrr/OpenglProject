@@ -18,6 +18,8 @@ enum ShaderType
     STMSAA,
     STGEOMETRY,
     STGRASSINSTANCE,
+    STFEEDBACK,
+    STWRITEFEEDBACK,
     STMax,
 };
 
@@ -82,6 +84,8 @@ private:
     BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
     BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
     BaseShader* msaaShader = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
+    BaseShader* feedbackShader = new BaseShader("Tools/Shader/FeedBack/vertex.vp", "Tools/Shader/FeedBack/fragment.fp");
+    BaseShader* writeFeedbackShader = new BaseShader("Tools/Shader/FeedBack/vertex_out.vp", NULL);
 
     BaseShader* grassShader = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
     GLint grassShader_iInstance;
@@ -137,9 +141,12 @@ public:
     void InitMsaa();
     void InitGeometry();
     void InitGrassInstance();
+    void InitFeedback();
+    void InitWriteFeedback();
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
+    GLuint GetShaderId(ShaderType type);
     void UseSolidColor(const BaseShaderParam& param);
     void UseDiffuse(const BaseShaderParam& param);
     void UseTexture2d(const BaseShaderParam& param);
@@ -152,11 +159,13 @@ public:
     void DrawToFBO(const BaseShaderParam& param);
     void UseHDR(const BaseShaderParam& param, float exposure);
 
+    void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);
     void UseBloorBright(const BaseShaderParam& param, float brightLimit);
     void UseBloorBlur(const BaseShaderParam& param, float offset[25]);
     void UseBloorMix(const BaseShaderParam& param, float exposure, float blurLevel);
     void UseMsaa(const BaseShaderParam& param);
+    void UseFeedbackBuffer(const BaseShaderParam& param);
     void DrawNormal(const BaseShaderParam& param, float delta);
     void DrawGrass(const BaseShaderParam& param, GLint instance, float time);
     //´´½¨shader

@@ -381,13 +381,13 @@
 1549175873 source:e:\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 
-1554367226 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1558618132 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1554367249 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1558601162 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1554296995 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1558354422 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -412,12 +412,46 @@
 	<cmath>
 	<map>
 	<vector>
+	<ImfRgbaFile.h>
+	<ImfArray.h>
 	<glut/glut.h>
 	<GL/glut.h>
 
-1553698763 source:e:\gamedev\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
+1558619199 source:e:\gamedev\opengl\trunk\openglproject\chapter3 usetexture\main.cpp
+	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
 
-1554296990 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1558355780 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
+	"stb_image.h"
+
+1554382646 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
+	"../Header/Tinyobjloader.h"
+	"tiny_obj_loader.h"
+
+1553602588 e:\gamedev\opengl\trunk\openglproject\tools\header\tinyobjloader.h
+	<algorithm>
+	<cassert>
+	<cmath>
+	<limits>
+	<map>
+	<vector>
+	"../Header/Tools.h"
+	"../Header/UtilTimer.h"
+	"stb_image.h"
+	"tiny_obj_loader.h"
+	<glut/glut.h>
+	<GL/glut.h>
+
+1558357749 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+	<windows.h>
+	<mmsystem.h>
+	<sys/time.h>
+	<ctime>
+
+1553258502 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\trackball.cpp
+	<math.h>
+	"../Header/trackball.h"
+
+1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 

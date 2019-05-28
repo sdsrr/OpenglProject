@@ -1,4 +1,6 @@
+#include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
+
 
 GLShaderManager shaderMgr_;
 ShaderMgr shaderMgr;
@@ -54,8 +56,6 @@ const char* cubemap[] =
     "Tools/Texture/Cubemap/pos_z.tga",
 };
 
-
-
 GLfloat vertexs[]={-0.5f,0,0, 0.5f,0,0, -0.5f,1.0f,0};
 GLfloat texcoord[]={ 0.0f,0.0f, 1.0f,0.0f, 0,1.0f };
 M3DVector4f color={244.0f/255, 49.0f/255, 166.0f/255 ,0.0f};
@@ -68,11 +68,14 @@ static void Display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1,1,1,1);
-    //消除cubemap采样可能出现的缝隙
-    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    shaderParam.SetDiffuseColor(color);
+    shaderParam.colorMap[0] = 0;
+
     //use texture2d
-    //glBindTexture(GL_TEXTURE_2D, textureID);
-    //shaderMgr.UseTexture2d(color, tranformPipeline.GetModelViewProjectionMatrix(), 0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    shaderMgr.UseTexture2d(shaderParam);
 
     //use texture2d array
     /*
@@ -83,13 +86,13 @@ static void Display(void)
     */
 
     //use cubemap
+    /*
+    //消除cubemap采样可能出现的缝隙
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
-    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    shaderParam.SetDiffuseColor(color);
-    shaderParam.colorMap[0] = 0;
     shaderMgr.UseCubeMap(shaderParam);
     cubeBatch.Draw();
-
+*/
     glutSwapBuffers();
 }
 
@@ -110,7 +113,7 @@ void OnStartUp()
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
     Util::LoadTGATexture(textures[0], GL_LINEAR, GL_CLAMP_TO_EDGE);
-
+/*
     //load texture array
     glGenTextures(1, &textureArrayID);
     glBindTexture(GL_TEXTURE_2D_ARRAY, textureArrayID);
@@ -120,10 +123,9 @@ void OnStartUp()
     glGenTextures(1, &textureCubemap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
     Util::LoadTGACubemap(cubemap, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_CLAMP_TO_EDGE);
-
+*/
     //load triangle
     triangleBathch.Begin(GL_TRIANGLES, 3, 1);
-
     triangleBathch.CopyVertexData3f(vertexs);
     triangleBathch.CopyTexCoordData2f(texcoord, 0);
  /*
@@ -168,9 +170,8 @@ int main(int argc, char *argv[])
     glutReshapeFunc(Resize);
     glutMotionFunc(MotionFunc);
     glutMouseFunc(MouseClick);
-
-
     glEnable(GL_DEPTH_TEST);
+
     if (glewInit() != GLEW_OK)
     {
         printf("glew init failed..\n");

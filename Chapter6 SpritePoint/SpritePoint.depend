@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1554368644 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1558601176 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1554367249 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1558601162 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1554296995 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1558354422 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -30,6 +30,8 @@
 	<cmath>
 	<map>
 	<vector>
+	<ImfRgbaFile.h>
+	<ImfArray.h>
 	<glut/glut.h>
 	<GL/glut.h>
 
@@ -354,8 +356,9 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1554296990 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1558355780 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
+	"stb_image.h"
 
 1550303590 source:e:\gamedev\opengl\trunk\openglproject\spritepoint\main.cpp
 	"../Tools/Header/Tools.h"
@@ -449,7 +452,7 @@
 	"_winsock.h"
 	"wtypes.h"
 
-1554369239 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
+1554369282 source:e:\gamedev\opengl\trunk\openglproject\chapter6 spritepoint\main.cpp
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/ShaderMgr.h"
 
