@@ -26,6 +26,7 @@ void BaseShaderParam::SetCameraPosition(GLfloat x, GLfloat y, GLfloat z)
     cameraPosition[1] = y;
     cameraPosition[2] = z;
 }
+
 void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
 {
     lightDirection[0] = x;
@@ -35,6 +36,11 @@ void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
 
 GLfloat ShaderMgr::white[] = {1,1,1,1};
 GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
+
+void ShaderMgr::InitBaseShader(ShaderType type)
+{
+    InitBaseShader(shaderList[(int)type]);
+}
 
 void ShaderMgr::InitBaseShader(BaseShader* shader)
 {
@@ -59,54 +65,59 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
 
 ShaderMgr::ShaderMgr()
 {
-    initfunctions[STSolid] = (VoidDeldgate)&ShaderMgr::InitSolid;
-    initfunctions[STDiffuse] = (VoidDeldgate)&ShaderMgr::InitDiffuse;
-    initfunctions[STTexture2d] = (VoidDeldgate)&ShaderMgr::InitTexture2d;
+    shaderList[STSolid] = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
+    shaderList[STDiffuse] = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
+    shaderList[STTexture2d] = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
+    shaderList[STCubemap] = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
+    shaderList[STSkybox] = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
+    shaderList[STBloor] = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
+    shaderList[STFBO] = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
+    shaderList[STMSAA] = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
+    shaderList[STFeedback] = new BaseShader("Tools/Shader/FeedBack/vertex.vp", "Tools/Shader/FeedBack/fragment.fp");
+    shaderList[STWriteFeedback] = new BaseShader("Tools/Shader/FeedBack/vertex_out.vp", NULL);
+    shaderList[STGrassInstance] = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
+    shaderList[STGeometry] = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
+    shaderList[STTextureArray] = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
+    shaderList[STTextureSprite] = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
+    shaderList[STTBO] = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
+    shaderList[STHDR] = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
+
+    initfunctions[STSolid] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STDiffuse] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STTexture2d] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STTextureArray] = (VoidDeldgate)&ShaderMgr::InitTextureArray;
-    initfunctions[STCubemap] = (VoidDeldgate)&ShaderMgr::InitCubemap;
-    initfunctions[STSkybox] = (VoidDeldgate)&ShaderMgr::InitTextureSkybox;
+    initfunctions[STCubemap] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STSkybox] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STTextureSprite] = (VoidDeldgate)&ShaderMgr::InitTextureSprite;
-    initfunctions[STBlur] = (VoidDeldgate)&ShaderMgr::InitBlur;
+    initfunctions[STBlur] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STTBO] = (VoidDeldgate)&ShaderMgr::InitTbo;
     initfunctions[STFBO] = (VoidDeldgate)&ShaderMgr::InitFBO;
     initfunctions[STHDR] = (VoidDeldgate)&ShaderMgr::InitHDR;
-    initfunctions[STBLOOR] = (VoidDeldgate)&ShaderMgr::InitBloor;
-    initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitMsaa;
-    initfunctions[STGEOMETRY] = (VoidDeldgate)&ShaderMgr::InitGeometry;
-    initfunctions[STGRASSINSTANCE] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
-    initfunctions[STFEEDBACK] = (VoidDeldgate)&ShaderMgr::InitFeedback;
-    initfunctions[STWRITEFEEDBACK] = (VoidDeldgate)&ShaderMgr::InitWriteFeedback;
+    initfunctions[STBloor] = (VoidDeldgate)&ShaderMgr::InitBloor;
+    initfunctions[STMSAA] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STGeometry] = (VoidDeldgate)&ShaderMgr::InitGeometry;
+    initfunctions[STGrassInstance] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
+    initfunctions[STFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STWriteFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
 }
 
-void ShaderMgr::InitWriteFeedback()
-{
-    InitBaseShader(writeFeedbackShader);
-}
 
-void ShaderMgr::InitFeedback()
+void ShaderMgr::InitGrassInstance(ShaderType type)
 {
-    InitBaseShader(feedbackShader);
-}
-
-void ShaderMgr::InitGrassInstance()
-{
+    BaseShader* grassShader = shaderList[(int)type];
     InitBaseShader(grassShader);
     grassShader_iInstance = glGetUniformLocation(grassShader->id, "instance");
     grassShader_iTime = glGetUniformLocation(grassShader->id, "time");
 }
 
-void ShaderMgr::InitGeometry()
+void ShaderMgr::InitGeometry(ShaderType type)
 {
+    BaseShader* geometryShader = shaderList[(int)type];
     InitBaseShader(geometryShader);
     geometryShader_iDelta = glGetUniformLocation(geometryShader->id, "delta");
 }
 
-void ShaderMgr::InitMsaa()
-{
-    InitBaseShader(msaaShader);
-}
-
-void ShaderMgr::InitBloor()
+void ShaderMgr::InitBloor(ShaderType type)
 {
     InitBaseShader(bloorNormalShader);
     InitBaseShader(bloorBrightShader);
@@ -122,14 +133,16 @@ void ShaderMgr::InitBloor()
     bloorBlurShader_iOffset = glGetUniformLocation(bloorBlurShader->id, "offset");
 }
 
-void ShaderMgr::InitHDR()
+void ShaderMgr::InitHDR(ShaderType type)
 {
+    BaseShader* hdrShader = shaderList[(int)type];
     InitBaseShader(hdrShader);
     hdrShader_iExposure = glGetUniformLocation(hdrShader->id, "exposure");
 }
 
-void ShaderMgr::InitFBO()
+void ShaderMgr::InitFBO(ShaderType type)
 {
+    BaseShader* fboShader = shaderList[(int)type];
     InitBaseShader(fboShader);
     glBindFragDataLocation(fboShader->id,0,"originColor");
     glBindFragDataLocation(fboShader->id,1,"grayColor");
@@ -138,63 +151,28 @@ void ShaderMgr::InitFBO()
     //PrintBaseShader(fboShader, NULL);
 }
 
-void ShaderMgr::InitTbo()
+void ShaderMgr::InitTbo(ShaderType type)
 {
+    BaseShader* tboShader = shaderList[(int)type];
     InitBaseShader(tboShader);
     tboShader_iMaxWidth = glGetUniformLocation(tboShader->id, "maxWidth");
     tboShader_iMaxHeight = glGetUniformLocation(tboShader->id, "maxHeight");
 }
 
-void ShaderMgr::InitSolid()
-{
-    //单色
-    InitBaseShader(solidShader);
-    //若为-1表示未取得index可能变量未使用被优化掉了
-    //printf("%d  %d  %d", textureSprite_iMatrix, textureSprite_iColor, textureSprite_iColorMap);
-}
-
-void ShaderMgr::InitDiffuse()
-{
-    //漫反射
-    InitBaseShader(diffuseShader);
-}
-
-void ShaderMgr::InitTexture2d()
-{
-    //2d纹理
-    InitBaseShader(texture2dShader);
-}
-
-void ShaderMgr::InitTextureArray()
+void ShaderMgr::InitTextureArray(ShaderType type)
 {
     //2d纹理数组
+    BaseShader* texture2dArrayShader = shaderList[(int)type];
     InitBaseShader(texture2dArrayShader);
     texture2dArrayShader_iTime = glGetUniformLocation(texture2dArrayShader->id, "time");
 }
 
-void ShaderMgr::InitCubemap()
-{
-    //cubemap
-    InitBaseShader(cubeMapShader);
-}
-
-void ShaderMgr::InitTextureSkybox()
-{
-    //skybox
-    InitBaseShader(textureSkybox);
-}
-
-void ShaderMgr::InitTextureSprite()
+void ShaderMgr::InitTextureSprite(ShaderType type)
 {
     //spritepoint
+    BaseShader* textureSprite = shaderList[(int)type];
     InitBaseShader(textureSprite);
     textureSprite_iSize = glGetUniformLocation(textureSprite->id, "size");
-}
-
-void ShaderMgr::InitBlur()
-{
-    //blur
-    InitBaseShader(blurShader);
 }
 
 void ShaderMgr::OnInit(int type)
@@ -204,7 +182,7 @@ void ShaderMgr::OnInit(int type)
         if (type == -1 || (type & (1<<i)) > 0)
         {
             VoidDeldgate fn = initfunctions[(ShaderType)i];
-            (this->*fn)();
+            (this->*fn)((ShaderType)type);
             printf("init shader %d\n", i);
         }
     }
@@ -212,21 +190,15 @@ void ShaderMgr::OnInit(int type)
 
 void ShaderMgr::OnUnInit()
 {
-    glDeleteProgram(grassShader->id);
-    glDeleteProgram(writeFeedbackShader->id);
-    glDeleteProgram(feedbackShader->id);
-    glDeleteProgram(solidShader->id);
-    glDeleteProgram(diffuseShader->id);
-    glDeleteProgram(texture2dShader->id);
-    glDeleteProgram(texture2dArrayShader->id);
-    glDeleteProgram(cubeMapShader->id);
-    glDeleteProgram(textureSkybox->id);
-    glDeleteProgram(textureSprite->id);
-    glDeleteProgram(blurShader->id);
-    glDeleteProgram(tboShader->id);
-    glDeleteProgram(fboShader->id);
-    glDeleteProgram(msaaShader->id);
-    glDeleteProgram(geometryShader->id);
+    for (int i = 0 ; i < (int)STMax; i++)
+    {
+        BaseShader* shader = shaderList[(int)i];
+        glDeleteShader(shader->id);
+    }
+    glDeleteShader(bloorNormalShader->id);
+    glDeleteShader(bloorBrightShader->id);
+    glDeleteShader(bloorBlurShader->id);
+    glDeleteShader(bloorMixShader->id);
 }
 
 bool ShaderMgr::LoadShaderFile(const char* filePath, GLuint shader)
@@ -406,49 +378,58 @@ void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param
 
 void ShaderMgr::UseSolidColor(const BaseShaderParam& param)
 {
+    BaseShader* solidShader = shaderList[(int)STSolid];
     InitBaseShaderParam(solidShader, param);
 }
 
 void ShaderMgr::UseDiffuse(const BaseShaderParam& param)
 {
     //调用useprogram之后设置参数
+    BaseShader* diffuseShader = shaderList[(int)STDiffuse];
     InitBaseShaderParam(diffuseShader, param);
 }
 
 void ShaderMgr::UseTexture2d(const BaseShaderParam& param)
 {
+    BaseShader* texture2dShader = shaderList[(int)STTexture2d];
     InitBaseShaderParam(texture2dShader, param);
 }
 
 void ShaderMgr::UseTextureArray(const BaseShaderParam& param, GLuint time)
 {
+    BaseShader* texture2dArrayShader = shaderList[(int)STTextureArray];
     InitBaseShaderParam(texture2dArrayShader, param);
     glUniform1f(texture2dArrayShader_iTime, time);
 }
 
 void ShaderMgr::UseCubeMap(const BaseShaderParam& param)
 {
+    BaseShader* cubeMapShader = shaderList[(int)STCubemap];
     InitBaseShaderParam(cubeMapShader, param);
 }
 
 void ShaderMgr::UseSkyBox(const BaseShaderParam& param)
 {
+    BaseShader* textureSkybox = shaderList[(int)STSkybox];
     InitBaseShaderParam(textureSkybox, param);
 }
 
 void ShaderMgr::UseSpritePoint(const BaseShaderParam& param, GLfloat size)
 {
+    BaseShader* textureSprite = shaderList[(int)STTextureSprite];
     InitBaseShaderParam(textureSprite, param);
     glUniform1f(textureSprite_iSize, size);
 }
 
 void ShaderMgr::UseBlurShader(const BaseShaderParam& param)
 {
+    BaseShader* blurShader = shaderList[(int)STBlur];
     InitBaseShaderParam(blurShader, param);
 }
 
 void ShaderMgr::UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight)
 {
+    BaseShader* tboShader = shaderList[(int)STTBO];
     InitBaseShaderParam(tboShader, param);
     glUniform1i(tboShader_iMaxWidth, maxWidth);
     glUniform1i(tboShader_iMaxHeight, maxHeight);
@@ -456,11 +437,13 @@ void ShaderMgr::UseTboShader(const BaseShaderParam& param, int maxWidth, int max
 
 void ShaderMgr::DrawToFBO(const BaseShaderParam& param)
 {
+    BaseShader* fboShader = shaderList[(int)STFBO];
     InitBaseShaderParam(fboShader, param);
 }
 
 void ShaderMgr::UseHDR(const BaseShaderParam& param, float exposure)
 {
+    BaseShader* hdrShader = shaderList[(int)STHDR];
     InitBaseShaderParam(hdrShader, param);
     glUniform1f(hdrShader_iExposure, exposure);
 }
@@ -491,17 +474,20 @@ void ShaderMgr::UseBloorMix(const BaseShaderParam& param, float exposure, float 
 
 void ShaderMgr::UseMsaa(const BaseShaderParam& param)
 {
+    BaseShader* msaaShader = shaderList[(int)STMSAA];
     InitBaseShaderParam(msaaShader, param);
 }
 
 void ShaderMgr::DrawNormal(const BaseShaderParam& param, float delta)
 {
+    BaseShader* geometryShader = shaderList[(int)STGeometry];
     InitBaseShaderParam(geometryShader, param);
     glUniform1f(geometryShader_iDelta, delta);
 }
 
 void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance, float time)
 {
+    BaseShader* grassShader = shaderList[(int)STGrassInstance];
     InitBaseShaderParam(grassShader, param);
     glUniform1i(grassShader_iInstance, instance);
     glUniform1f(grassShader_iTime, time);
@@ -509,15 +495,18 @@ void ShaderMgr::DrawGrass(const BaseShaderParam& param, GLint instance, float ti
 
 void ShaderMgr::UseFeedbackBuffer(const BaseShaderParam& param)
 {
+    BaseShader* feedbackShader = shaderList[(int)STFeedback];
     InitBaseShaderParam(feedbackShader, param);
 }
 
 void ShaderMgr::WriteFeedbackBuffer(const BaseShaderParam& param)
 {
+    BaseShader* writeFeedbackShader = shaderList[(int)STWriteFeedback];
     InitBaseShaderParam(writeFeedbackShader, param);
 }
 
 GLuint ShaderMgr::GetShaderId(ShaderType type)
 {
-     return writeFeedbackShader->id;
+    BaseShader* shader = shaderList[(int)type];
+    return shader != NULL ? shader->id : -1;
 }

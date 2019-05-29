@@ -14,12 +14,12 @@ enum ShaderType
     STTBO,
     STFBO,
     STHDR,
-    STBLOOR,
+    STBloor,
     STMSAA,
-    STGEOMETRY,
-    STGRASSINSTANCE,
-    STFEEDBACK,
-    STWRITEFEEDBACK,
+    STGeometry,
+    STGrassInstance,
+    STFeedback,
+    STWriteFeedback,
     STMax,
 };
 
@@ -43,6 +43,7 @@ public:
 public:
     BaseShader(const char* vp, const char* fp);
     BaseShader(const char* vp, const char* gp, const char* fp);
+    BaseShader(){};
 };
 
 class BaseShaderParam
@@ -72,39 +73,24 @@ public:
 
 class ShaderMgr
 {
-    typedef void (ShaderMgr::*VoidDeldgate)();
+    typedef void (ShaderMgr::*VoidDeldgate)(ShaderType type);
 private:
+    BaseShader* shaderList[(int)STMax];
     std::map<ShaderType, VoidDeldgate> initfunctions;
 
-    BaseShader* solidShader = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
-    BaseShader* diffuseShader = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
-    BaseShader* texture2dShader = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
-    BaseShader* cubeMapShader = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
-    BaseShader* textureSkybox = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
-    BaseShader* blurShader = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
-    BaseShader* fboShader = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
-    BaseShader* msaaShader = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
-    BaseShader* feedbackShader = new BaseShader("Tools/Shader/FeedBack/vertex.vp", "Tools/Shader/FeedBack/fragment.fp");
-    BaseShader* writeFeedbackShader = new BaseShader("Tools/Shader/FeedBack/vertex_out.vp", NULL);
-
-    BaseShader* grassShader = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
     GLint grassShader_iInstance;
     GLint grassShader_iTime;
 
-    BaseShader* geometryShader = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
     GLfloat geometryShader_iDelta;
 
-    BaseShader* texture2dArrayShader = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
     GLint texture2dArrayShader_iTime;
 
-    BaseShader* textureSprite = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
     GLint textureSprite_iSize;
 
-    BaseShader* tboShader = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
+
     GLint tboShader_iMaxWidth;
     GLint tboShader_iMaxHeight;
 
-    BaseShader* hdrShader = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
     GLint hdrShader_iExposure;
 
     BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
@@ -126,23 +112,16 @@ public:
     void OnInit(int type=-1);
     void OnUnInit();
     void Update();
-    void InitSolid();
-    void InitDiffuse();
-    void InitTexture2d();
-    void InitTextureArray();
-    void InitCubemap();
-    void InitTextureSkybox();
-    void InitTextureSprite();
-    void InitBlur();
-    void InitTbo();
-    void InitFBO();
-    void InitHDR();
-    void InitBloor();
-    void InitMsaa();
-    void InitGeometry();
-    void InitGrassInstance();
-    void InitFeedback();
-    void InitWriteFeedback();
+
+    void InitBloor(ShaderType type);
+    void InitTextureSprite(ShaderType type);
+    void InitTextureArray(ShaderType type);
+    void InitTbo(ShaderType type);
+    void InitFBO(ShaderType type);
+    void InitHDR(ShaderType type);
+    void InitGeometry(ShaderType type);
+    void InitGrassInstance(ShaderType type);
+    void InitBaseShader(ShaderType type);
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:

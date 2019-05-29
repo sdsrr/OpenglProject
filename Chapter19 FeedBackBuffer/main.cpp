@@ -108,7 +108,7 @@ void OnStartUp()
     glEnableVertexAttribArray(3);
 
     //init feedback buffer object
-    GLuint program = shaderMgr.GetShaderId(STWRITEFEEDBACK);
+    GLuint program = shaderMgr.GetShaderId(STWriteFeedback);
     glTransformFeedbackVaryings(program, 3, verying_names, GL_INTERLEAVED_ATTRIBS);
     glLinkProgram(program);
 
