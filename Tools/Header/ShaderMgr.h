@@ -109,6 +109,8 @@ public:
 
 public:
     ShaderMgr();
+    void InitShaders();
+    void InitFunctions();
     void OnInit(int type=-1);
     void OnUnInit();
     void Update();

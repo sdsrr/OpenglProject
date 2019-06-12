@@ -8,5 +8,5 @@ in vec4 color;
 
 void main(void)
 {
-    vFragColor = texture(colorMap00, texcoord);
+    vFragColor = color + texture(colorMap00, texcoord);
 }

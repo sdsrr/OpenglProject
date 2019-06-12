@@ -39,7 +39,8 @@ GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
 
 void ShaderMgr::InitBaseShader(ShaderType type)
 {
-    InitBaseShader(shaderList[(int)type]);
+    BaseShader* shader = shaderList[(int)type];
+    InitBaseShader(shader);
 }
 
 void ShaderMgr::InitBaseShader(BaseShader* shader)
@@ -65,12 +66,18 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
 
 ShaderMgr::ShaderMgr()
 {
+    InitShaders();
+    InitFunctions();
+}
+
+void ShaderMgr::InitShaders()
+{
     shaderList[STSolid] = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
     shaderList[STDiffuse] = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
     shaderList[STTexture2d] = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
     shaderList[STCubemap] = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
     shaderList[STSkybox] = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
-    shaderList[STBloor] = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
+    shaderList[STBlur] = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
     shaderList[STFBO] = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
     shaderList[STMSAA] = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
     shaderList[STFeedback] = new BaseShader("Tools/Shader/FeedBack/vertex.vp", "Tools/Shader/FeedBack/fragment.fp");
@@ -81,7 +88,10 @@ ShaderMgr::ShaderMgr()
     shaderList[STTextureSprite] = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
     shaderList[STTBO] = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     shaderList[STHDR] = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
+}
 
+void ShaderMgr::InitFunctions()
+{
     initfunctions[STSolid] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STDiffuse] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STTexture2d] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
@@ -100,7 +110,6 @@ ShaderMgr::ShaderMgr()
     initfunctions[STFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STWriteFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
 }
-
 
 void ShaderMgr::InitGrassInstance(ShaderType type)
 {
@@ -182,7 +191,7 @@ void ShaderMgr::OnInit(int type)
         if (type == -1 || (type & (1<<i)) > 0)
         {
             VoidDeldgate fn = initfunctions[(ShaderType)i];
-            (this->*fn)((ShaderType)type);
+            (this->*fn)((ShaderType)i);
             printf("init shader %d\n", i);
         }
     }
@@ -244,6 +253,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
             Util::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
+            glDeleteShader(geometryShader);
             return 0;
         }
         // compile
@@ -257,6 +267,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
             Util::PrintString(2, (char*)"vertext shader compile faile ", logs);
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
+            glDeleteShader(geometryShader);
             return 0;
         }
     }
@@ -315,8 +326,8 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
 
     //link
     GLuint program = glCreateProgram();
-    glAttachShader(program, geometryShader);
     glAttachShader(program, vertexShader);
+    glAttachShader(program, geometryShader);
     glAttachShader(program, fragmentShader);
 
     glLinkProgram(program);

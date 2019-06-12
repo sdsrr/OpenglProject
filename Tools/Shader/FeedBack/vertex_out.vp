@@ -11,6 +11,6 @@ out vec2 outTexcoord;
 void main(void)
 {
     outVertex = vVertex * mvpMatrix;
-    outCol = vec4(0,0.1,0,1);
+    outCol = vec4(1,0,0,1);
     outTexcoord = vTexcoord;
 }

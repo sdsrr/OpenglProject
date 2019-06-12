@@ -7,16 +7,13 @@ ShaderMgr shaderMgr;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
 
+GLuint query;
 GLuint texture;
 GLfloat angle;
 GLuint vaos[2];
 GLuint vbo_triangle;
 GLuint vbo_feedback;
-
-GLuint query;
-GLboolean bDraw = true;
-
-GLuint test;
+GLuint obj_feedback;
 
 void Display(void)
 {
@@ -31,54 +28,53 @@ void Display(void)
         param.SetDiffuseColor(ShaderMgr::white);
         param.colorMap[0] = 0;
 
-        if (bDraw)
-        {
-            //write data to feedback buffer
-            //glEnable(GL_RASTERIZER_DISCARD);
-            glBindVertexArray(vaos[0]);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
-            glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, vbo_feedback);
-            glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, vbo_feedback);
-            glBeginTransformFeedback(GL_TRIANGLES);
-            glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
 
-            shaderMgr.WriteFeedbackBuffer(param);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        //1.绑定feedback对象obj_feedback,将数据写入到绑定的缓冲区中obj_feedback
+        glEnable(GL_RASTERIZER_DISCARD);
+        glBindVertexArray(vaos[0]);
+        //要在glBeginTransformFeedback前切换shader
+        shaderMgr.WriteFeedbackBuffer(param);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+        glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, obj_feedback);
 
-            glEndTransformFeedback();
-            glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-            GLint result = 0;
-            glGetQueryObjectiv(query, GL_QUERY_RESULT, &result);
-            printf("render vertex count: %d\n", result);
-        }
-        else
-        {
-            //use feedback buffer data
-            //glDisable(GL_RASTERIZER_DISCARD);
+        glBeginTransformFeedback(GL_TRIANGLES);
+        glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
 
-            glBindVertexArray(vaos[1]);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_feedback);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
 
-            GLfloat feedback[10];
-            glGetBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(feedback), feedback);
-            for (int i = 0; i < 10; i++)
-                printf("%f ", feedback[i]);
-            printf("\n");
-            //调用之后feedback被清空???
-            shaderMgr.UseFeedbackBuffer(param);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        }
-        bDraw = !bDraw;
+        glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+        glEndTransformFeedback();
+        glFlush();
+
+        //2.打印feedback buff中数据
+        GLfloat feedback[20];
+        glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
+        for (int i = 0; i < 20; i++)
+            printf("%f ", feedback[i]);
+        printf("\n");
+
+        GLint result = 0;
+        glGetQueryObjectiv(query, GL_QUERY_RESULT, &result);
+        printf("render vertex count: %d\n", result);
+
+        //3.将obj_feedback作为arraybuff，从中获取顶点数据
+        glDisable(GL_RASTERIZER_DISCARD);
+        glBindVertexArray(vaos[1]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_feedback);
+
+        shaderMgr.UseFeedbackBuffer(param);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
     modelviewStack->PopMatrix();
 
     glutSwapBuffers();
 }
 
 const char* verying_names[] = {"outVertex", "outCol", "outTexcoord"};
-GLfloat vertices[]={0,0,0,1, 0,0,
-                    1,0,0,1, 1,0,
-                    0,1,0,1, 0,1,
-                    1,1,0,1, 1,1};
+GLfloat vertices[]={0,0,0,1, 1,1,
+                    1,0,0,1, 0,1,
+                    0,1,0,1, 1,0,
+                    1,1,0,1, 0,0};
+
 void OnStartUp()
 {
     //init query
@@ -109,13 +105,14 @@ void OnStartUp()
 
     //init feedback buffer object
     GLuint program = shaderMgr.GetShaderId(STWriteFeedback);
-    glTransformFeedbackVaryings(program, 3, verying_names, GL_INTERLEAVED_ATTRIBS);
+    glTransformFeedbackVaryings(program, 3, verying_names, GL_INTERLEAVED_ATTRIBS);//
     glLinkProgram(program);
+    glUseProgram(program);
 
     glBindVertexArray(vaos[1]);
     glGenBuffers(1, &vbo_feedback);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_feedback);
-    glBufferData(GL_ARRAY_BUFFER, 512*sizeof(float), NULL, GL_DYNAMIC_COPY);
+    glBufferData(GL_ARRAY_BUFFER, 60*sizeof(float), NULL, GL_DYNAMIC_COPY);
 
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -123,6 +120,11 @@ void OnStartUp()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(sizeof(float)*8));
     glEnableVertexAttribArray(2);
+
+    //将vbo_feedback作为feedback的buffer
+    glCreateTransformFeedbacks(1, &obj_feedback);
+    glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, obj_feedback);
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, vbo_feedback);
 }
 
 void OnShutUp()
@@ -131,6 +133,7 @@ void OnShutUp()
     glDeleteBuffers(1, &vbo_feedback);
     glDeleteBuffers(1, &vbo_triangle);
     glDeleteTextures(1, &texture);
+    glDeleteTransformFeedbacks(1, &obj_feedback);
     shaderMgr.OnUnInit();
     normalCamera.OnUnInit();
 }
