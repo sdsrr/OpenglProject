@@ -88,6 +88,7 @@ void ShaderMgr::InitShaders()
     shaderList[STTextureSprite] = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
     shaderList[STTBO] = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     shaderList[STHDR] = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
+    shaderList[STFont] = new BaseShader("Tools/Shader/Font/vertex.vp","Tools/Shader/Font/fragment.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -109,6 +110,7 @@ void ShaderMgr::InitFunctions()
     initfunctions[STGrassInstance] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
     initfunctions[STFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STWriteFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STFont] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
 }
 
 void ShaderMgr::InitGrassInstance(ShaderType type)
@@ -520,4 +522,11 @@ GLuint ShaderMgr::GetShaderId(ShaderType type)
 {
     BaseShader* shader = shaderList[(int)type];
     return shader != NULL ? shader->id : -1;
+}
+
+void ShaderMgr::UseFont(const BaseShader& param, float color[4])
+{
+    BaseShader* fontShader = shaderList[(int)STFont];
+    InitBaseShaderParam(fontShader, param);
+    glUniform4fv(fontShader->id, 1, color);
 }

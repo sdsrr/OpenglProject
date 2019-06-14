@@ -20,6 +20,7 @@ enum ShaderType
     STGrassInstance,
     STFeedback,
     STWriteFeedback,
+    STFont,
     STMax,
 };
 
@@ -139,6 +140,7 @@ public:
     void UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight);
     void DrawToFBO(const BaseShaderParam& param);
     void UseHDR(const BaseShaderParam& param, float exposure);
+    void UseFont(const BaseShader& param, float color[4]);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);
