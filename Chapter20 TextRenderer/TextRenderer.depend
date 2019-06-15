@@ -3,10 +3,10 @@
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 
-1560224571 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1560577570 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1558354422 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1560594114 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -31,6 +31,7 @@
 	<cmath>
 	<map>
 	<vector>
+	<list>
 	<ImfRgbaFile.h>
 	<ImfArray.h>
 	<glut/glut.h>
@@ -677,7 +678,7 @@
 	<fstream>
 	<sstream>
 
-1558355780 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1560590754 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -686,4 +687,17 @@
 	"../Header/trackball.h"
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
+
+1560577790 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+	"../Header/ShaderMgr.h"
+
+1560597662 source:e:\gamedev\opengl\trunk\openglproject\chapter20 textrenderer\main.cpp
+	"../Tools/Header/ShaderMgr.h"
+	"../Tools/Header/Tools.h"
+	"ft2build.h"
+
+1550887568 d:\codeblocks\mingw\include\ft2build.h
+	<freetype/config/ftheader.h>
+
+1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
 

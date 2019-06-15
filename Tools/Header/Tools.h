@@ -25,6 +25,7 @@
 #include <cmath>
 #include <map>
 #include <vector>
+#include <list>
 
 // OpenEXR headers
 #include <ImfRgbaFile.h>
@@ -70,6 +71,7 @@ public:
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();
     static void CheckFBO();
+    static void PrintBuffer(GLenum type, int bufferSize);
     // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);

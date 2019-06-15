@@ -327,6 +327,18 @@ void Util::CheckFBO()
     }
 }
 
+void Util::PrintBuffer(GLenum type, int bufferSize)
+{
+    GLfloat* buffer = (GLfloat*)malloc(sizeof(float)*bufferSize);
+    glGetBufferSubData(type, 0, sizeof(float)*bufferSize, buffer);
+    for (int i = 0; i < bufferSize; i++)
+        printf("%.0f ", buffer[i]);
+    printf("\n");
+    free(buffer);
+}
+
+
+
 void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp, bool perspective)
 {
     this->fov = fov;

@@ -1,7 +1,7 @@
-version 330;
+#version 330
 
 layout(location = 0) in vec4 vVertex;
-layout(location = 3) in vec2 vTexcoord;
+layout(location = 1) in vec2 vTexcoord;
 
 out vec2 texcoord;
 uniform mat4 mvpMatrix;

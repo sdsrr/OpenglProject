@@ -81,18 +81,13 @@ private:
 
     GLint grassShader_iInstance;
     GLint grassShader_iTime;
-
     GLfloat geometryShader_iDelta;
-
     GLint texture2dArrayShader_iTime;
-
     GLint textureSprite_iSize;
-
-
     GLint tboShader_iMaxWidth;
     GLint tboShader_iMaxHeight;
-
     GLint hdrShader_iExposure;
+    GLuint fontShader_icolor;
 
     BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
     BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
@@ -122,6 +117,7 @@ public:
     void InitTbo(ShaderType type);
     void InitFBO(ShaderType type);
     void InitHDR(ShaderType type);
+    void InitFont(ShaderType type);
     void InitGeometry(ShaderType type);
     void InitGrassInstance(ShaderType type);
     void InitBaseShader(ShaderType type);
@@ -140,7 +136,7 @@ public:
     void UseTboShader(const BaseShaderParam& param, int maxWidth, int maxHeight);
     void DrawToFBO(const BaseShaderParam& param);
     void UseHDR(const BaseShaderParam& param, float exposure);
-    void UseFont(const BaseShader& param, float color[4]);
+    void UseFont(const BaseShaderParam& param, float color[4]);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

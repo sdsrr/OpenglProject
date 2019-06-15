@@ -47,6 +47,8 @@
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
 		<Unit filename="../Tools/Header/UtilTimer.h" />
+		<Unit filename="../Tools/Shader/Font/fragment.fp" />
+		<Unit filename="../Tools/Shader/Font/vertex.vp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />

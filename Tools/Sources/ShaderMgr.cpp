@@ -110,7 +110,14 @@ void ShaderMgr::InitFunctions()
     initfunctions[STGrassInstance] = (VoidDeldgate)&ShaderMgr::InitGrassInstance;
     initfunctions[STFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STWriteFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
-    initfunctions[STFont] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STFont] = (VoidDeldgate)&ShaderMgr::InitFont;
+}
+
+void ShaderMgr::InitFont(ShaderType type)
+{
+    BaseShader* fontShader = shaderList[(int)type];
+    InitBaseShader(fontShader);
+    fontShader_icolor = glGetUniformLocation(fontShader->id, "color");
 }
 
 void ShaderMgr::InitGrassInstance(ShaderType type)
@@ -524,9 +531,9 @@ GLuint ShaderMgr::GetShaderId(ShaderType type)
     return shader != NULL ? shader->id : -1;
 }
 
-void ShaderMgr::UseFont(const BaseShader& param, float color[4])
+void ShaderMgr::UseFont(const BaseShaderParam& param, float color[4])
 {
     BaseShader* fontShader = shaderList[(int)STFont];
     InitBaseShaderParam(fontShader, param);
-    glUniform4fv(fontShader->id, 1, color);
+    glUniform4fv(fontShader_icolor, 1, color);
 }
