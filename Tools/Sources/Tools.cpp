@@ -183,9 +183,9 @@ void Util::LoadOpenEXR(char*filepath, GLenum filter, GLenum wrapMode, int& texWi
     GLfloat* pTex = texels;
 
     // Copy OpenEXR into local buffer for loading into a texture
-    for (unsigned int v = 0; v < texHeight; v++)
+    for (unsigned int v = 0; v < (unsigned int)texHeight; v++)
     {
-        for (unsigned int u = 0; u < texWidth; u++)
+        for (unsigned int u = 0; u < (unsigned int)texWidth; u++)
         {
             Imf::Rgba texel = pixels[texHeight - v - 1][u];
             pTex[0] = texel.r;
@@ -338,22 +338,13 @@ void Util::PrintBuffer(GLenum type, int bufferSize)
 }
 
 
-
-void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp, bool perspective)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)
 {
     this->fov = fov;
-    this->height = h;
-    this->width = w;
     this->moveSpeed = moveSp;
     this->roateSpeed = roateSp;
-    this->perspective = perspective;
-    if (perspective)
-        frustum.SetPerspective(fov, w/h, 0.1f, 1000);
-    else
-        frustum.SetOrthographic(-w/2.0, w/2.0, -h/2.0, h/2.0, -1000, 1000);
-    modelviewStack.LoadIdentity();
-    projectStack.LoadIdentity();
-    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
+    Resize(w, h);
 }
 
 void NormalCamera::MouseClick(int button, int action, int x, int y)
@@ -444,13 +435,10 @@ void NormalCamera::MotionFunc(int mouse_x, int mouse_y)
 
 void NormalCamera::Resize(int w, int h)
 {
-    width = w;
-    height = h;
+    this->width = w;
+    this->height = h;
     glViewport(0, 0, w, h);
-    if (perspective)
-        frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
-    else
-        frustum.SetOrthographic(-width/2.0, width/2.0, -height/2.0, height/2.0, -1000, 1000);
+    frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
     glutPostRedisplay();
 }
@@ -502,4 +490,32 @@ GLMatrixStack* NormalCamera::GetProjectStack()
 void NormalCamera::OnUnInit()
 {
 
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void UICamera::OnInit(float w, float h)
+{
+    Resize(w, h);
+}
+
+void UICamera::OnUnInit()
+{
+
+}
+
+const M3DMatrix44f& UICamera::GetModelviewprojectMatrix()
+{
+    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
+    return matrix;
+}
+
+void UICamera::Resize(int w, int h)
+{
+    glViewport(0, 0, w, h);
+    frustum.SetOrthographic(-w/2.0, w/2.0, -h/2.0, h/2.0, -1000, 1000);
+    projectStack.PushMatrix(frustum.GetProjectionMatrix());
+    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
+    glutPostRedisplay();
 }

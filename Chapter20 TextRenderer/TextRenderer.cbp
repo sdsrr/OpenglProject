@@ -42,6 +42,7 @@
 			<Add library="gdi32" />
 			<Add directory="D:/CodeBlocks/MinGW/lib" />
 		</Linker>
+		<Unit filename="../Tools/Header/FreetypeFont.h" />
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
@@ -49,6 +50,7 @@
 		<Unit filename="../Tools/Header/UtilTimer.h" />
 		<Unit filename="../Tools/Shader/Font/fragment.fp" />
 		<Unit filename="../Tools/Shader/Font/vertex.vp" />
+		<Unit filename="../Tools/Sources/FreetypeFont.cpp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />

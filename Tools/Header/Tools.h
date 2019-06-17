@@ -106,7 +106,7 @@ private:
     GLGeometryTransform transformPiple;
 public:
     void OnUnInit();
-    void OnInit(float w, float h, float fov, float moveSp, float roateSp,bool perspective=true);
+    void OnInit(float w, float h, float fov, float moveSp, float roateSp);
     void KeyboardFn(unsigned char key, int x, int y);
     void MouseClick(int button, int action, int x, int y);
     void MotionFunc(int mouse_x, int mouse_y);
@@ -121,6 +121,21 @@ public:
     const M3DMatrix44f& GetModelviewprojectMatrix();
     const M3DMatrix44f& GetModelviewMatrix();
     const M3DMatrix33f& GetNormalMatrix();
+};
+
+class UICamera
+{
+private:
+    GLFrustum frustum;
+    GLGeometryTransform transformPiple;
+    GLMatrixStack projectStack;
+    GLMatrixStack modelviewStack;
+
+public:
+    void OnInit(float w, float h);
+    void OnUnInit();
+    const M3DMatrix44f& GetModelviewprojectMatrix();
+    void Resize(int w, int h);
 };
 
 #endif // TOOLS__
