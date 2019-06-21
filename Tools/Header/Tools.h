@@ -135,6 +135,7 @@ public:
     void OnInit(float w, float h);
     void OnUnInit();
     const M3DMatrix44f& GetModelviewprojectMatrix();
+    GLMatrixStack* GetModelviewStack();
     void Resize(int w, int h);
 };
 

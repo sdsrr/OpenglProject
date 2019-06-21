@@ -28,7 +28,7 @@ class CharTextureManager
 private:
     FT_Library ft;
     FT_Face face;
-    float fontSize = 40;
+    float fontSize;
     char* fontPath = (char*)"Tools/Font/msyh.ttf";
     std::map<char, CharTexture> texMap;
     static CharTextureManager* _instance;
@@ -38,6 +38,7 @@ public:
     CharTexture* GetCharTexture(char ch);
     static CharTextureManager* GetInstance();
     float GetFontSize();
+    void SetFontSize(float fontSize);
 };
 
 class CharText
@@ -46,7 +47,7 @@ private:
     std::vector<Char> charList;
 public:
     void Show();
-    void CreateText(char text[], int count, float x, float y, float space);
+    void CreateText(char text[], int count, float x, float y, float space, float fontSize=40);
     void OnUnInit();
 };
 

@@ -79,11 +79,18 @@ CharTextureManager* CharTextureManager::GetInstance()
 }
 
 float CharTextureManager::GetFontSize() { return fontSize; };
+void CharTextureManager::SetFontSize(float fontSize)
+{
+    if (this->fontSize == fontSize)
+        return;
+    this->fontSize = fontSize;
+    OnInit();
+}
 
-
-void CharText::CreateText(char text[], int count, float x, float y, float space)
+void CharText::CreateText(char text[], int count, float x, float y, float space, float fontSize)
 {
     CharTextureManager* instance = CharTextureManager::GetInstance();
+    instance->SetFontSize(fontSize);
     instance->LoadCharTexture(text, count);
     for (int i = 0; i < count; i++)
     {

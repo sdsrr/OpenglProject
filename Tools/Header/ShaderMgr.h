@@ -21,6 +21,8 @@ enum ShaderType
     STFeedback,
     STWriteFeedback,
     STFont,
+    STOutShadowmap,
+    STShadowmap,
     STMax,
 };
 
@@ -97,6 +99,7 @@ private:
     GLint bloorMixShader_iExposure;
     GLint bloorMixShader_iBlurLevel;
     GLint bloorBlurShader_iOffset;
+    GLuint shadowmapShader_iLightMatrix;
 
 public:
     static GLfloat white[];
@@ -120,6 +123,7 @@ public:
     void InitFont(ShaderType type);
     void InitGeometry(ShaderType type);
     void InitGrassInstance(ShaderType type);
+    void InitShadowmap(ShaderType type);
     void InitBaseShader(ShaderType type);
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
@@ -137,6 +141,8 @@ public:
     void DrawToFBO(const BaseShaderParam& param);
     void UseHDR(const BaseShaderParam& param, float exposure);
     void UseFont(const BaseShaderParam& param, float color[4]);
+    void WriteToShadowmap(const BaseShaderParam& param);
+    void UseShaodwmap(const BaseShaderParam& param, const M3DMatrix44f lightMat);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

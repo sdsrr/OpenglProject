@@ -89,6 +89,8 @@ void ShaderMgr::InitShaders()
     shaderList[STTBO] = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
     shaderList[STHDR] = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
     shaderList[STFont] = new BaseShader("Tools/Shader/Font/vertex.vp","Tools/Shader/Font/fragment.fp");
+    shaderList[STOutShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_outshadow.vp","Tools/Shader/Shadowmap/fragment_outshadow.fp");
+    shaderList[STShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_shadow.vp","Tools/Shader/Shadowmap/fragment_shadow.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -111,6 +113,15 @@ void ShaderMgr::InitFunctions()
     initfunctions[STFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STWriteFeedback] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STFont] = (VoidDeldgate)&ShaderMgr::InitFont;
+    initfunctions[STOutShadowmap] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STShadowmap] = (VoidDeldgate)&ShaderMgr::InitShadowmap;
+}
+
+void ShaderMgr::InitShadowmap(ShaderType type)
+{
+    BaseShader* shadowShader = shaderList[(int)type];
+    InitBaseShader(shadowShader);
+    shadowmapShader_iLightMatrix = glGetUniformLocation(shadowShader->id, "lightMatrix");
 }
 
 void ShaderMgr::InitFont(ShaderType type)
@@ -536,4 +547,17 @@ void ShaderMgr::UseFont(const BaseShaderParam& param, float color[4])
     BaseShader* fontShader = shaderList[(int)STFont];
     InitBaseShaderParam(fontShader, param);
     glUniform4fv(fontShader_icolor, 1, color);
+}
+
+void ShaderMgr::WriteToShadowmap(const BaseShaderParam& param)
+{
+    BaseShader* outShadowShader = shaderList[(int)STOutShadowmap];
+    InitBaseShaderParam(outShadowShader, param);
+}
+
+void ShaderMgr::UseShaodwmap(const BaseShaderParam& param, const M3DMatrix44f lightMat)
+{
+    BaseShader* shadowShader = shaderList[(int)STShadowmap];
+    InitBaseShaderParam(shadowShader, param);
+    glUniformMatrix4fv(shadowmapShader_iLightMatrix, 1, true, lightMat);
 }

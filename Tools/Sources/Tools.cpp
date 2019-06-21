@@ -440,6 +440,7 @@ void NormalCamera::Resize(int w, int h)
     glViewport(0, 0, w, h);
     frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
+    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
     glutPostRedisplay();
 }
 
@@ -518,4 +519,9 @@ void UICamera::Resize(int w, int h)
     projectStack.PushMatrix(frustum.GetProjectionMatrix());
     transformPiple.SetMatrixStacks(modelviewStack, projectStack);
     glutPostRedisplay();
+}
+
+GLMatrixStack* UICamera::GetModelviewStack()
+{
+    return &modelviewStack;
 }

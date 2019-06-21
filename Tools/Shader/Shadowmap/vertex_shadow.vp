@@ -1,0 +1,18 @@
+#version 330
+
+layout(location = 0)in vec4 vVertex;
+layout(location = 2)in vec3 vNormal;
+layout(location = 3)in vec2 vTexcoord;
+
+uniform mat4 mvpMatrix;
+uniform mat4 lightMatrix;
+
+out vec2 texcoord;
+out vec4 shadowSpacePos;
+
+void main(void)
+{
+    texcoord = vTexcoord;
+    shadowSpacePos = vVertex*lightMatrix;
+    gl_Position = vVertex*mvpMatrix;
+}
