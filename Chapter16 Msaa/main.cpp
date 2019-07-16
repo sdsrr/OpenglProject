@@ -1,14 +1,14 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 BaseShaderParam param;
 
 GLfloat angle = 10;
-GLBatch triangles[3];
+BatchGObject triangles[3];
 GLfloat color[] = {1,0,0,1};
 GLfloat lightDirection[] ={-1,0,0,0};
 
@@ -27,18 +27,14 @@ void Display(void)
     glClearColor(0.3f, 0.3f, 1, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(-2, -1.5f, -5);
-    modelviewStack->Rotate(angle+=2, 1, 1, 0);
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetLightDirection(lightDirection);
-        param.SetEnvironmentColor(color);
-        shaderMgr.DrawToFBO(param);
-        triangles[0].Draw();
-    modelviewStack->PopMatrix();
-
+    GLMatrixStack* modelviewStack = &triangles[0].modelviewStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetLightDirection(lightDirection);
+    param.SetEnvironmentColor(color);
+    shaderMgr.DrawToFBO(param);
+    triangles[0].Draw();
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDrawBuffers(1, windowBuffers);
@@ -46,17 +42,14 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //绘制trinagle[1]到左边
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(-2, 0, -5);
-    modelviewStack->Rotate(angle, 1, 1, 0);
-        param.SetDiffuseColor(color);
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetLightDirection(lightDirection);
-        shaderMgr.UseDiffuse(param);
-        triangles[1].Draw();
-    modelviewStack->PopMatrix();
+    modelviewStack = &triangles[1].modelviewStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetLightDirection(lightDirection);
+    param.SetDiffuseColor(color);
+    shaderMgr.UseDiffuse(param);
+    triangles[1].Draw();
 
     //将多重采样rbo图像显示到屏幕右上
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
@@ -66,16 +59,13 @@ void Display(void)
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
     //将多重采样texture图像显示到屏幕右下(面片采样)
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0, -2.4f, -5);
-    modelviewStack->Scale(4*0.78f, 3*0.78f, 1);
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.colorMap[0] = 0;
-        shaderMgr.UseMsaa(param);
-        triangles[2].Draw();
-    modelviewStack->PopMatrix();
+    modelviewStack = &triangles[2].modelviewStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.colorMap[0] = 0;
+    shaderMgr.UseMsaa(param);
+    triangles[2].Draw();
 
     glutSwapBuffers();
 }
@@ -107,7 +97,7 @@ void OnStartUp()
     //init triangle
     for (int i = 0; i < 3; i++)
     {
-        GLBatch& triangle = triangles[i];
+        GLBatch& triangle = triangles[i].batch;
         triangle.Begin(GL_TRIANGLE_STRIP, 6, 1);
         triangle.MultiTexCoord2f(0,0,0);
         triangle.Normal3f(-1,0,0);
@@ -126,12 +116,17 @@ void OnStartUp()
         triangle.Vertex3f(1,1,0);
         triangle.End();
     }
+    triangles[0].modelviewStack.Translate(-2, -1.5f, -5);
+    triangles[0].modelviewStack.Rotate(angle+=2, 1, 1, 0);
+    triangles[1].modelviewStack.Translate(-2, 0, -5);
+    triangles[1].modelviewStack.Rotate(angle, 1, 1, 0);
+    triangles[2].modelviewStack.Translate(0, -2.4f, -5);
+    triangles[2].modelviewStack.Scale(4*0.78f, 3*0.78f, 1);
 
     //init shadermgr
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 }
 
 void OnShutUp()

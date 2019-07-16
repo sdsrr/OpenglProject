@@ -32,12 +32,12 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="C:/MinGW/include" />
+			<Add directory="D:/CodeBlocks/MinGW/include" />
 		</Compiler>
 		<Linker>
 			<Add library="gdi32" />
 			<Add library="winmm" />
-			<Add directory="C:/MinGW/lib" />
+			<Add directory="D:/CodeBlocks/MinGW/lib" />
 		</Linker>
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tools.h" />

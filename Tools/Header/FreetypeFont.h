@@ -2,6 +2,7 @@
 #define FREETYPEFONT
 
 #include "../Header/Tools.h"
+#include "../Header/GameObject.h"
 
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -41,12 +42,12 @@ public:
     void SetFontSize(float fontSize);
 };
 
-class CharText
+class CharText : public GObject
 {
 private:
     std::vector<Char> charList;
 public:
-    void Show();
+    virtual void Draw();
     void CreateText(char text[], int count, float x, float y, float space, float fontSize=40);
     void OnUnInit();
 };

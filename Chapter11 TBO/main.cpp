@@ -1,17 +1,17 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 GLuint tbo;
 GLuint texture;
-
 GLfloat angle;
-GLBatch triangle;
+BatchGObject triangle;
+
 const char* filepath = "Chapter11 TBO/Marble.tga";
 const char* datapath = "Chapter11 TBO/LumTan.data";
 bool useTexture = false;
@@ -60,14 +60,11 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0,0,-20);
     //glBindTexture(GL_TEXTURE_BUFFER, texture);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
     param.colorMap[0] = 0;
     shaderMgr.UseTboShader(param, maxWidth, maxHeight);
     triangle.Draw();
-    modelviewStack->PopMatrix();
 
     glutSwapBuffers();
 }
@@ -75,7 +72,8 @@ void Display(void)
 void OnStartUp()
 {
     //init triangle
-    gltMakeCube(triangle, 2);
+    gltMakeCube(triangle.batch, 2);
+    triangle.modelviewStack.Translate(0,0,-20);
 
     //init texture
     glActiveTexture(GL_TEXTURE0);
@@ -115,7 +113,6 @@ void OnStartUp()
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit(1<<STTBO | 1<<STTexture2d);
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 }
 
 void OnShutUp()

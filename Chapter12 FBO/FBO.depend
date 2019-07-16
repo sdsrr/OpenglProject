@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1557216121 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1561894274 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1557216082 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1561894269 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1555503882 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1562308272 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -30,6 +30,7 @@
 	<cmath>
 	<map>
 	<vector>
+	<list>
 	<ImfRgbaFile.h>
 	<ImfArray.h>
 	<glut/glut.h>
@@ -495,7 +496,7 @@
 	<glut/glut.h>
 	<GL/glut.h>
 
-1553409511 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+1558357749 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
 	<windows.h>
 	<mmsystem.h>
 	<sys/time.h>
@@ -534,7 +535,7 @@
 	<fstream>
 	<sstream>
 
-1555555214 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1562380377 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -689,4 +690,24 @@
 
 1407644636 d:\codeblocks\mingw\include\imfarray.h
 	"ImfForward.h"
+
+1561723552 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
+	"../Header/FreetypeFont.h"
+	"ft2build.h"
+
+1561685782 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
+	"../Header/Tools.h"
+	"../Header/GameObject.h"
+	"ft2build.h"
+
+1562233623 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
+	"../Header/Tools.h"
+
+1550887568 d:\codeblocks\mingw\include\ft2build.h
+	<freetype/config/ftheader.h>
+
+1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
+
+1562233653 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
+	"../Header/GameObject.h"
 

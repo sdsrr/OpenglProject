@@ -2,25 +2,25 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tinyobjloader.h"
 #include "../Tools/Header/Trackball.h"
+#include "../Tools/Header/GameObject.h"
 
-const char* modelName = Util::GetFullPath("Tools/Models/OBJ/spider.obj");
+const char* modelName = Util::GetFullPath("Tools/Models/OBJ/box.obj");
 Tinyobjloader modelObj;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 M3DVector4f green = {0,1,0,0};
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
+
 GLfloat lightPosition[] = {-100, 100, -100,1};
-BaseShaderParam shaderParam;
+BaseShaderParam param;
 
 static void OnStartup()
 {
     //load model data
     glActiveTexture(GL_TEXTURE0);
     modelObj.LoadObjAndConvert(modelName);
-
+    //modelObj.modelviewStack.Translate(0,0,-100);
     normalCamera.OnInit(640, 480, 50, 2, 1);
-    modelviewStack = normalCamera.GetModelviewStack();
 
     shaderMgr.OnInit();
     glShaderMgr.InitializeStockShaders();
@@ -35,18 +35,14 @@ static void Display(void)
 {
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    modelviewStack->PushMatrix();
-        modelviewStack->Translate(0,0,-100);
-        shaderParam.SetDiffuseColor(green);
-        shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        shaderParam.SetMVMatrix(normalCamera.GetModeviewMatrix());
-        shaderParam.SetLightPostion(lightPosition);
-        shaderParam.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        shaderParam.colorMap[0] = 0;
-        shaderMgr.UseTexture2d(shaderParam);
-        modelObj.DefaultDrawGraph();
-    modelviewStack->PopMatrix();
+    param.SetDiffuseColor(green);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelObj.modelviewStack));
+    param.SetMVMatrix(modelObj.modelviewStack.GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(modelObj.modelviewStack));
+    param.SetLightDirection(lightPosition);
+    param.colorMap[0] = 0;
+    shaderMgr.UseTexture2d(param);
+    modelObj.DefaultDrawGraph();
     glutSwapBuffers();
 }
 

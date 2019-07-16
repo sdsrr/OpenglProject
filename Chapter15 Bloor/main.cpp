@@ -1,5 +1,6 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
@@ -9,7 +10,7 @@ BaseShaderParam param;
 
 GLint tickCount = 0;
 GLfloat angle = 0;
-GLBatch screenQuards[5];
+BatchGObject screenQuards[5];
 
 GLuint textures[1];
 GLuint normalFbo;
@@ -47,12 +48,10 @@ void GenerateOffset(GLuint width, GLuint height)
 
 void Display(void)
 {
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(-5, -5, -10);
-    modelviewStack->Rotate(angle, 0, 1, 0);
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    param.SetMVMatrix(normalCamera.GetModelviewMatrix());
+    GLMatrixStack* modelviewStack = &screenQuards[0].modelviewStack;
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetMVMatrix(modelviewStack->GetMatrix());
 
     //Õý³£äÖÈ¾µ½normalTexture(1)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, normalFbo);
@@ -95,7 +94,6 @@ void Display(void)
     shaderMgr.UseBloorMix(param, exposure, std::min(1.0f, std::max(0.0f, blurLevel)));
     screenQuards[3].Draw();
 
-    modelviewStack->PopMatrix();
     glutSwapBuffers();
 }
 
@@ -128,7 +126,7 @@ void OnStartUp()
     //init triangle
     for (int i = 0; i < 5; i++)
     {
-        GLBatch* screenQuard = &screenQuards[i];
+        GLBatch* screenQuard = &screenQuards[i].batch;
         screenQuard->Begin(GL_TRIANGLE_STRIP, 6, 1);
         screenQuard->MultiTexCoord2f(0,0,0);
         screenQuard->Vertex3f(0,0,0);
@@ -139,6 +137,9 @@ void OnStartUp()
         screenQuard->MultiTexCoord2f(0,0,1);
         screenQuard->Vertex3f(0,10,0);
         screenQuard->End();
+        GLMatrixStack* modelviewStack = &screenQuards[i].modelviewStack;
+        modelviewStack->Translate(-5, -5, -10);
+        modelviewStack->Rotate(angle, 0, 1, 0);
     }
 
     //init hdr texture
@@ -150,9 +151,8 @@ void OnStartUp()
 
     //init camera,shadermgr
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit(1<<STHDR | 1<<STTexture2d | 1<<STBLOOR);
+    shaderMgr.OnInit();
     normalCamera.OnInit(600, 600, 53.2, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 
     //init fbo,texture
     for (int i = 0 ; i < 5; i++)

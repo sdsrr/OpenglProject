@@ -142,7 +142,7 @@ public:
     void UseHDR(const BaseShaderParam& param, float exposure);
     void UseFont(const BaseShaderParam& param, float color[4]);
     void WriteToShadowmap(const BaseShaderParam& param);
-    void UseShaodwmap(const BaseShaderParam& param, const M3DMatrix44f lightMat);
+    void UseShadowmap(const BaseShaderParam& param, const M3DMatrix44f lightMat);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

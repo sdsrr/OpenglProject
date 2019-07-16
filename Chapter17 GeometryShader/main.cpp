@@ -1,15 +1,15 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 GLfloat angle = 0;
 GLuint texture;
-GLBatch triangle;
+BatchGObject triangle;
 GLfloat diffuseColor[] = {0,1,1,0};
 
 void Display(void)
@@ -17,19 +17,15 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0, 0, -10);
-    modelviewStack->Rotate(angle+=2, 1, 1, 0);
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetDiffuseColor(diffuseColor);
-        param.colorMap[0] = 0;
-        shaderMgr.UseTexture2d(param);
-        triangle.Draw();
-        shaderMgr.DrawNormal(param, 1.0f);
-        triangle.Draw();
-    modelviewStack->PopMatrix();
+    param.SetMVMatrix(triangle.modelviewStack.GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(triangle.modelviewStack));
+    param.SetDiffuseColor(diffuseColor);
+    param.colorMap[0] = 0;
+    shaderMgr.UseTexture2d(param);
+    triangle.Draw();
+    shaderMgr.DrawNormal(param, 1.0f);
+    triangle.Draw();
 
     glutSwapBuffers();
 }
@@ -43,12 +39,14 @@ void OnStartUp()
     Util::LoadTGATexture("Chapter17 GeometryShader/Marble.tga", GL_LINEAR, GL_CLAMP);
 
     // init cube
-    gltMakeCube(triangle, 1);
+    gltMakeCube(triangle.batch, 1);
+    triangle.modelviewStack.Translate(0, 0, -10);
+    triangle.modelviewStack.Rotate(angle+=2, 1, 1, 0);
+
     // init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 }
 
 void OnShutUp()

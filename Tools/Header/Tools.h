@@ -101,7 +101,6 @@ private:
     GLFrame camera;
     GLFrustum frustum;
     GLboolean perspective;
-    GLMatrixStack modelviewStack;
     GLMatrixStack projectStack;
     GLGeometryTransform transformPiple;
 public:
@@ -114,28 +113,28 @@ public:
 
     void GetCameraForward(M3DVector3f forward);
     void GetCameraPostion(M3DVector3f position);
-    GLMatrixStack* GetModelviewStack();
-    GLMatrixStack* GetProjectStack();
 
     const M3DMatrix44f& GetProjectMatrix();
-    const M3DMatrix44f& GetModelviewprojectMatrix();
-    const M3DMatrix44f& GetModelviewMatrix();
-    const M3DMatrix33f& GetNormalMatrix();
+    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelviewStack);
+    const M3DMatrix33f& GetNormalMatrix(GLMatrixStack& modelviewStack);
+    void Rotate(float angle, float x, float y, float z);
+    void Translate(float x, float y, float z);
 };
 
 class UICamera
 {
 private:
-    GLFrustum frustum;
+
     GLGeometryTransform transformPiple;
     GLMatrixStack projectStack;
-    GLMatrixStack modelviewStack;
 
 public:
+    GLFrustum frustum;
     void OnInit(float w, float h);
     void OnUnInit();
-    const M3DMatrix44f& GetModelviewprojectMatrix();
-    GLMatrixStack* GetModelviewStack();
+    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelviewStack);
+    void Rotate(float angle, float x, float y, float z);
+    void Translate(float x, float y, float z);
     void Resize(int w, int h);
 };
 

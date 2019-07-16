@@ -1,15 +1,15 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 BaseShaderParam param;
 
 GLint tickCount = 0;
 GLfloat angle;
-GLBatch triangle;
+BatchGObject triangle;
 GLuint textures[3];
 const char* filepath[]=
 {
@@ -24,19 +24,16 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0, 0, -2.5);
-    modelviewStack->Rotate(angle, 0, 1, 0);
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    param.SetMVMatrix(normalCamera.GetModelviewMatrix());
+    GLMatrixStack& modelviewStack = triangle.modelviewStack;
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelviewStack));
+    param.SetMVMatrix(modelviewStack.GetMatrix());
     param.colorMap[0] = 0;
 
     int index = tickCount++/100%3;
     glBindTexture(GL_TEXTURE_2D, textures[index]);
     shaderMgr.UseHDR(param, exposure[index]);
     triangle.Draw();
-    modelviewStack->PopMatrix();
 
     glutSwapBuffers();
 }
@@ -44,7 +41,9 @@ void Display(void)
 void OnStartUp()
 {
     //init cube
-    gltMakeCube(triangle, 1);
+    gltMakeCube(triangle.batch, 1);
+    triangle.modelviewStack.Translate(0, 0, -2.5);
+    triangle.modelviewStack.Rotate(angle, 0, 1, 0);
 
     //init hdr texture
     int width,height=0;
@@ -60,7 +59,6 @@ void OnStartUp()
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit(1<<STHDR | 1<<STTexture2d);
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 }
 
 void OnShutUp()

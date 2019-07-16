@@ -1,11 +1,11 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
-
+#include "../Tools/Header/GameObject.h"
 
 GLShaderManager shaderMgr_;
 ShaderMgr shaderMgr;
-GLBatch triangleBathch;
-GLBatch cubeBatch;
+BatchGObject triangle;
+BatchGObject cube;
 BaseShaderParam shaderParam;
 
 GLuint textureID;
@@ -69,7 +69,7 @@ static void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1,1,1,1);
 
-    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
     shaderParam.SetDiffuseColor(color);
     shaderParam.colorMap[0] = 0;
 
@@ -78,12 +78,10 @@ static void Display(void)
     shaderMgr.UseTexture2d(shaderParam);
 
     //use texture2d array
-    /*
     GLuint tick = (time++)/16%29;
     glBindTexture(GL_TEXTURE_2D_ARRAY, textureArrayID);
-    shaderMgr.UseTextureArray(color, tranformPipeline.GetModelViewProjectionMatrix(), 0, tick);
-    triangleBathch.Draw();
-    */
+    shaderMgr.UseTextureArray(shaderParam, tick);
+    triangle.Draw();
 
     //use cubemap
     /*
@@ -91,7 +89,7 @@ static void Display(void)
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
     shaderMgr.UseCubeMap(shaderParam);
-    cubeBatch.Draw();
+    cube.Draw();
 */
     glutSwapBuffers();
 }
@@ -125,27 +123,17 @@ void OnStartUp()
     Util::LoadTGACubemap(cubemap, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_CLAMP_TO_EDGE);
 */
     //load triangle
-    triangleBathch.Begin(GL_TRIANGLES, 3, 1);
-    triangleBathch.CopyVertexData3f(vertexs);
-    triangleBathch.CopyTexCoordData2f(texcoord, 0);
- /*
-    triangleBathch.MultiTexCoord2f(0, 0, 0);
-    triangleBathch.Vertex3f(-0.5f, 0, 0);
+    triangle.batch.Begin(GL_TRIANGLES, 3, 1);
+    triangle.batch.CopyVertexData3f(vertexs);
+    triangle.batch.CopyTexCoordData2f(texcoord, 0);
+    triangle.batch.End();
 
-    triangleBathch.MultiTexCoord2f(0, 1, 0);
-    triangleBathch.Vertex3f(0.5f, 0, 0);
-
-    triangleBathch.MultiTexCoord2f(0, 0.5f, 1);
-    triangleBathch.Vertex3f(0, 0.5f, 0);
-*/
-    triangleBathch.End();
-
-    gltMakeCube(cubeBatch, 1);
+    gltMakeCube(cube.batch, 1);
 
     //init camera
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
-    modelviewStack->Translate(0,0,-3);
+    triangle.modelviewStack.Translate(0,0,-3);
+    cube.modelviewStack.Translate(0,0,-3);
 }
 
 void OnShutUp()

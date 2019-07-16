@@ -1,18 +1,16 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/UtilTimer.h"
+#include "../Tools/Header/GameObject.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
-GLMatrixStack* projectStack;
 
+TriangleStripGObject triangle[2];
 GLuint textures[3];
 GLfloat angle;
-GLuint vaos[2];
-GLuint vbos[2];
 GLboolean bUseGpuInstance = true;
 GLuint maxCount = 100000;
 FrameTimer timer;
@@ -26,52 +24,41 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    projectStack->PushMatrix();
-    projectStack->Translate(-30, 5, -80);
-    projectStack->Rotate(10, 1, 0, 0);
-
     //draw ground
-    modelviewStack->PushMatrix();
-    modelviewStack->Rotate(90, 1, 0, 0);
-    modelviewStack->Scale(500, 200, 1);
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetProjectMatrix(normalCamera.GetProjectMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetDiffuseColor(ShaderMgr::white);
-        param.colorMap[0] = 2;
-        shaderMgr.UseTexture2d(param);
-        glBindVertexArray(vaos[0]);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    modelviewStack->PopMatrix();
+    GLMatrixStack* modelviewStack = &triangle[0].modelviewStack;
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetProjectMatrix(normalCamera.GetProjectMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetDiffuseColor(ShaderMgr::white);
+    param.colorMap[0] = 2;
+    shaderMgr.UseTexture2d(param);
+    triangle[0].Draw();
 
     // draw grass
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0, 0, -5);
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetProjectMatrix(normalCamera.GetProjectMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetDiffuseColor(ShaderMgr::white);
-        param.colorMap[0] = 0;
-        param.colorMap[1] = 1;
-        if (bUseGpuInstance)
+    modelviewStack = &triangle[1].modelviewStack;
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetProjectMatrix(normalCamera.GetProjectMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetDiffuseColor(ShaderMgr::white);
+    param.colorMap[0] = 0;
+    param.colorMap[1] = 1;
+    if (bUseGpuInstance)
+    {
+        shaderMgr.DrawGrass(param, 0, tickCount/20.0f);
+        glBindVertexArray(triangle[1].vao);
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, maxCount);
+    }
+    else
+    {
+        for (int i = 0; i < maxCount; i++)
         {
-            shaderMgr.DrawGrass(param, 0, tickCount/20.0f);
-            glBindVertexArray(vaos[1]);
-            glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, maxCount);
+            shaderMgr.DrawGrass(param, i, tickCount/20.0f);
+            glBindVertexArray(triangle[1].vao);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         }
-        else
-        {
-            for (int i = 0; i < maxCount; i++)
-            {
-                shaderMgr.DrawGrass(param, i, tickCount/20.0f);
-                glBindVertexArray(vaos[1]);
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-            }
-        }
-    modelviewStack->PopMatrix();
-    projectStack->PopMatrix();
+    }
 
     deltaTime += timer.Update();
     if (deltaTime >= 100)
@@ -110,12 +97,14 @@ void OnStartUp()
                         1,0,0,1, 0,0,1, 0,1,
                         0,1,0,1, 0,0,1, 1,0,
                         1,1,0,1, 0,0,1, 0,0};
-    glGenVertexArrays(2, vaos);
-    glGenBuffers(2, vbos);
+
     for (int i = 0 ; i < 2; i++)
     {
-        glBindVertexArray(vaos[i]);
-        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
+        TriangleStripGObject& batch = triangle[i];
+        glGenVertexArrays(1, &batch.vao);
+        glGenBuffers(1, &batch.vbo);
+        glBindVertexArray(batch.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
@@ -124,14 +113,15 @@ void OnStartUp()
         glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7*sizeof(float)));
         glEnableVertexAttribArray(3);
     }
+    triangle[0].modelviewStack.Rotate(90,1,0,0);
+    triangle[0].modelviewStack.Scale(500,200,1);
+    triangle[1].modelviewStack.Translate(0,0,-5);
 
     // init camera
+    param.deltatime = 10;
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
-    projectStack = normalCamera.GetProjectStack();
-    param.deltatime = 10;
 }
 
 void OnShutUp()
@@ -145,7 +135,12 @@ void Idle(void) {glutPostRedisplay();}
 void KeyboardFn(unsigned char key, int x, int y) {normalCamera.KeyboardFn(key, x, y);}
 void MouseClick(int button, int action, int x, int y) {normalCamera.MouseClick(button, action, x, y);}
 void MotionFunc(int mouse_x, int mouse_y) {normalCamera.MotionFunc(mouse_x, mouse_y);}
-void Resize(int w, int h) {normalCamera.Resize(w, h);}
+void Resize(int w, int h)
+{
+    normalCamera.Resize(w, h);
+    normalCamera.Translate(-30, 5, -50);
+    normalCamera.Rotate(10, 1, 0, 0);
+}
 
 int main(int argc, char *argv[])
 {

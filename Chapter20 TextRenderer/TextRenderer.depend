@@ -3,10 +3,10 @@
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 
-1560577570 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1561894269 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1560753046 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1561894418 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -678,7 +678,7 @@
 	<fstream>
 	<sstream>
 
-1560753150 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1561894408 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -688,10 +688,10 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1560577790 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1561894274 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1560755279 source:e:\gamedev\opengl\trunk\openglproject\chapter20 textrenderer\main.cpp
+1562202741 source:e:\gamedev\opengl\trunk\openglproject\chapter20 textrenderer\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/FreetypeFont.h"
@@ -701,11 +701,15 @@
 
 1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
 
-1560755386 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
+1561723552 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
 	"../Header/FreetypeFont.h"
 	"ft2build.h"
 
-1560755403 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
+1561685782 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
 	"../Header/Tools.h"
+	"../Header/GameObject.h"
 	"ft2build.h"
+
+1561696028 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
+	"../Header/Tools.h"
 

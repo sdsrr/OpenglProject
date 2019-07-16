@@ -1,15 +1,14 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/GameObject.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 GLfloat angle;
-GLTriangleBatch triangle;
-
+TriangleGObject triangle;
 GLfloat lightDirection[] = {0,100,0};
 
 GLuint fbo;
@@ -29,20 +28,17 @@ void Display(void)
     //设置gl_fragdata[]与缓冲区映射关系
     glDrawBuffers(3, fboBuffers);
 
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0,0,-10);
-    modelviewStack->Rotate(angle+=2, 0,1,0);
-        glBindTexture(GL_TEXTURE_2D, texture2d);
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetLightDirection(lightDirection);
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
-        param.SetEnvironmentColor(ShaderMgr::ondine);
-        param.colorMap[0] = 0;
-        //shaderMgr.UseDiffuse(param);
-        shaderMgr.DrawToFBO(param);
-        triangle.Draw();
-    modelviewStack->PopMatrix();
+    GLMatrixStack* modelviewStack = &triangle.modelviewStack;
+    glBindTexture(GL_TEXTURE_2D, texture2d);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    param.SetMVMatrix(modelviewStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetLightDirection(lightDirection);
+    param.SetEnvironmentColor(ShaderMgr::ondine);
+    param.colorMap[0] = 0;
+    //shaderMgr.UseDiffuse(param);
+    shaderMgr.DrawToFBO(param);
+    triangle.Draw();
 
     //还原默认fbo
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -83,13 +79,14 @@ void OnStartUp()
     }
 
     Util::CheckFBO();
-    gltMakeCylinder(triangle, 1, 2, 3, 30, 30);
+    gltMakeCylinder(triangle.batch, 1, 2, 3, 30, 30);
+    triangle.modelviewStack.Translate(0,0,-10);
+    triangle.modelviewStack.Rotate(angle+=2, 0,1,0);
 
     // init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit(1<<STFBO | 1<<STTexture2d);
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 
     //load texture
     glGenTextures(1, &texture2d);

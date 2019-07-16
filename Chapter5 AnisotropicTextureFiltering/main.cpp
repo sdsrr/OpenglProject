@@ -1,14 +1,18 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
+#include "../Tools/Header/GameObject.h"
+
+enum EBatch
+{
+    EBLeft,
+    EBRight,
+    EBTop,
+    EBBottom,
+};
 
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
-
-GLBatch leftPatch;
-GLBatch rightPatch;
-GLBatch upPatch;
-GLBatch downPatch;
-
+BatchGObject batch[4];
 
 GLuint texture01;
 GLuint texture02;
@@ -26,9 +30,9 @@ char* texturePath03 = (char*)"Chapter5 AnisotropicTextureFiltering/Texture/floor
 #define open_anisotropy 7
 #define close_anisotropy 8
 
+GLMatrixStack modelviewStack;
 BaseShaderParam param;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 float whiteCol[] = {1,1,1,1};
 float redCol[] = {1,0,0,1};
@@ -40,21 +44,21 @@ static void Display(void)
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture01);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelviewStack));
     param.SetDiffuseColor(whiteCol);
     param.colorMap[0] = 0;
     shaderMgr.UseTexture2d(param);
     //glShaderMgr.UseStockShader(GLT_SHADER_FLAT, transformPiple.GetModelViewProjectionMatrix(), redCol);
-    leftPatch.Draw();
-    rightPatch.Draw();
+    batch[(int)EBLeft].Draw();
+    batch[(int)EBRight].Draw();
 
     glBindTexture(GL_TEXTURE_2D, texture02);
     shaderMgr.UseTexture2d(param);
-    upPatch.Draw();
+    batch[(int)EBTop].Draw();
 
     glBindTexture(GL_TEXTURE_2D, texture03);
     shaderMgr.UseTexture2d(param);
-    downPatch.Draw();
+    batch[(int)EBBottom].Draw();
     glutSwapBuffers();
 }
 
@@ -67,8 +71,7 @@ static void Idle(void)
 void OnStartUp()
 {
     normalCamera.OnInit(640,480,50,2,1);
-    modelviewStack = normalCamera.GetModelviewStack();
-    modelviewStack->Translate(0,0,-1);
+    modelviewStack.Translate(0,0,-1);
 
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
@@ -86,43 +89,45 @@ void OnStartUp()
     glBindTexture(GL_TEXTURE_2D, texture03);
     Util::LoadTGATexture(texturePath03, GL_LINEAR, GL_REPEAT);
 
-    leftPatch.Begin(GL_TRIANGLES, 60, 1);
+    GLBatch* batch = &batch[(int)EBLeft].batch;
+    batch->Begin(GL_TRIANGLES, 60, 1);
     for (int z = -10; z < 0; z++)
     {
-        leftPatch.MultiTexCoord2f(0,0,0);
-        leftPatch.Vertex3f(-1,-1,z);
-        leftPatch.MultiTexCoord2f(0,1,0);
-        leftPatch.Vertex3f(-1,-1,z-1);
-        leftPatch.MultiTexCoord2f(0,0,1);
-        leftPatch.Vertex3f(-1,1,z);
+        batch->MultiTexCoord2f(0,0,0);
+        batch->Vertex3f(-1,-1,z);
+        batch->MultiTexCoord2f(0,1,0);
+        batch->Vertex3f(-1,-1,z-1);
+        batch->MultiTexCoord2f(0,0,1);
+        batch->Vertex3f(-1,1,z);
 
-        leftPatch.MultiTexCoord2f(0,0,1);
-        leftPatch.Vertex3f(-1,1,z);
-        leftPatch.MultiTexCoord2f(0,1,0);
-        leftPatch.Vertex3f(-1,-1,z-1);
-        leftPatch.MultiTexCoord2f(0,1,1);
-        leftPatch.Vertex3f(-1, 1,z-1);
+        batch->MultiTexCoord2f(0,0,1);
+        batch->Vertex3f(-1,1,z);
+        batch->MultiTexCoord2f(0,1,0);
+        batch->Vertex3f(-1,-1,z-1);
+        batch->MultiTexCoord2f(0,1,1);
+        batch->Vertex3f(-1, 1,z-1);
     }
-    leftPatch.End();
+    batch.End();
 
-    rightPatch.Begin(GL_TRIANGLES, 60, 1);
+    batch = &batch[(int)EBRight].batch;
+    batch.Begin(GL_TRIANGLES, 60, 1);
     for (int z = -10; z < 0; z++)
     {
-        rightPatch.MultiTexCoord2f(0,0,0);
-        rightPatch.Vertex3f(1,-1,z);
-        rightPatch.MultiTexCoord2f(0,1,0);
-        rightPatch.Vertex3f(1,-1,z-1);
-        rightPatch.MultiTexCoord2f(0,0,1);
-        rightPatch.Vertex3f(1,1,z);
+        batch.MultiTexCoord2f(0,0,0);
+        batch.Vertex3f(1,-1,z);
+        batch.MultiTexCoord2f(0,1,0);
+        batch.Vertex3f(1,-1,z-1);
+        batch.MultiTexCoord2f(0,0,1);
+        batch.Vertex3f(1,1,z);
 
-        rightPatch.MultiTexCoord2f(0,0,1);
-        rightPatch.Vertex3f(1,1,z);
-        rightPatch.MultiTexCoord2f(0,1,0);
-        rightPatch.Vertex3f(1,-1,z-1);
-        rightPatch.MultiTexCoord2f(0,1,1);
-        rightPatch.Vertex3f(1, 1,z-1);
+        batch.MultiTexCoord2f(0,0,1);
+        batch.Vertex3f(1,1,z);
+        batch.MultiTexCoord2f(0,1,0);
+        batch.Vertex3f(1,-1,z-1);
+        batch.MultiTexCoord2f(0,1,1);
+        batch.Vertex3f(1, 1,z-1);
     }
-    rightPatch.End();
+    batch.End();
 
     upPatch.Begin(GL_TRIANGLES, 60, 1);
     for (int z = -10; z < 0; z++)

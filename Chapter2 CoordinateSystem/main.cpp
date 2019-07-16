@@ -1,5 +1,7 @@
 #include "../Tools/Header/ShaderMgr.h"
+#include "../Tools/Header/GameObject.h"
 
+BaseShaderParam param;
 ShaderMgr shaderMgr;
 GLShaderManager shaderMgr_;
 GLBatch batch;
@@ -82,7 +84,10 @@ static void Display_normal()
 
     M3DMatrix44f mvpMatrix;
     m3dMatrixMultiply44(mvpMatrix, frustum.GetProjectionMatrix(), mvMatrix);
-    shaderMgr.UseDiffuse(color, mvpMatrix);
+    param.SetMVPMatrix(mvMatrix);
+    param.SetDiffuseColor(color);
+    param.colorMap[0] = 0;
+    shaderMgr.UseDiffuse(param);
     //shaderMgr_.UseStockShader(GLT_SHADER_FLAT, mvpMatrix, vRed);
     batch.Draw();
     glutSwapBuffers();
@@ -103,7 +108,9 @@ static void Display_transformpiple()
 
     modelviewMatrixStack.PushMatrix();
     modelviewMatrixStack.Rotate(angle, 0, 1, 0);
-    shaderMgr.UseDiffuse(color, transformPipeline.GetModelViewProjectionMatrix());
+    param.SetMVPMatrix(transformPipeline.GetModelViewProjectionMatrix());
+    param.SetDiffuseColor(color);
+    shaderMgr.UseDiffuse(param);
     modelviewMatrixStack.PopMatrix();
 
     batch.Draw();

@@ -32,7 +32,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="C:/Program Files (x86)/CodeBlocks/MinGW/include" />
+			<Add directory="D:/CodeBlocks/MinGW/include" />
 		</Compiler>
 		<Linker>
 			<Add library="glut32" />
@@ -40,8 +40,10 @@
 			<Add library="glu32" />
 			<Add library="winmm" />
 			<Add library="gdi32" />
-			<Add directory="C:/Program Files (x86)/CodeBlocks/MinGW/lib" />
+			<Add directory="D:/CodeBlocks/MinGW/lib" />
 		</Linker>
+		<Unit filename="../Tools/Header/FreetypeFont.h" />
+		<Unit filename="../Tools/Header/GameObject.h" />
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
@@ -57,6 +59,8 @@
 		<Unit filename="../Tools/Shader/Texture2D/vertex.vp" />
 		<Unit filename="../Tools/Shader/TextureArray/fragment.fp" />
 		<Unit filename="../Tools/Shader/TextureArray/vertex.vp" />
+		<Unit filename="../Tools/Sources/FreetypeFont.cpp" />
+		<Unit filename="../Tools/Sources/GameObject.cpp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />

@@ -43,16 +43,20 @@
 			<Add directory="D:/CodeBlocks/MinGW/lib" />
 		</Linker>
 		<Unit filename="../Tools/Header/FreetypeFont.h" />
+		<Unit filename="../Tools/Header/GameObject.h" />
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
 		<Unit filename="../Tools/Header/UtilTimer.h" />
+		<Unit filename="../Tools/Shader/Font/fragment.fp" />
+		<Unit filename="../Tools/Shader/Font/vertex.vp" />
 		<Unit filename="../Tools/Shader/Shadowmap/fragment_outshadow.fp" />
 		<Unit filename="../Tools/Shader/Shadowmap/fragment_shadow.fp" />
 		<Unit filename="../Tools/Shader/Shadowmap/vertex_outshadow.vp" />
 		<Unit filename="../Tools/Shader/Shadowmap/vertex_shadow.vp" />
 		<Unit filename="../Tools/Sources/FreetypeFont.cpp" />
+		<Unit filename="../Tools/Sources/GameObject.cpp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />

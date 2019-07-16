@@ -344,7 +344,7 @@ void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roate
     this->fov = fov;
     this->moveSpeed = moveSp;
     this->roateSpeed = roateSp;
-    Resize(w, h);
+    //Resize(w, h);
 }
 
 void NormalCamera::MouseClick(int button, int action, int x, int y)
@@ -440,7 +440,7 @@ void NormalCamera::Resize(int w, int h)
     glViewport(0, 0, w, h);
     frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
-    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
+    transformPiple.SetProjectionMatrixStack(projectStack);
     glutPostRedisplay();
 }
 
@@ -454,38 +454,34 @@ void NormalCamera::GetCameraPostion(M3DVector3f position)
     camera.GetOrigin(position);
 }
 
-const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix()
+const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix(GLMatrixStack& modelviewStack)
 {
+    transformPiple.SetModelViewMatrixStack(modelviewStack);
     const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
     return matrix;
 }
 
 const M3DMatrix44f& NormalCamera::GetProjectMatrix()
 {
-    const M3DMatrix44f& matrix = transformPiple.GetProjectionMatrix();
+    const M3DMatrix44f& matrix = projectStack.GetMatrix();
     return matrix;
 }
 
-const M3DMatrix44f& NormalCamera::GetModelviewMatrix()
+const M3DMatrix33f& NormalCamera::GetNormalMatrix(GLMatrixStack& modelviewStack)
 {
-    const M3DMatrix44f& matrix = transformPiple.GetModelViewMatrix();
-    return matrix;
-}
-
-const M3DMatrix33f& NormalCamera::GetNormalMatrix()
-{
+    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
     const M3DMatrix33f& matrix = transformPiple.GetNormalMatrix(true);
     return matrix;
 }
 
-GLMatrixStack* NormalCamera::GetModelviewStack()
+void NormalCamera::Rotate(float angle, float x, float y, float z)
 {
-    return &modelviewStack;
+    projectStack.Rotate(angle,x,y,z);
 }
 
-GLMatrixStack* NormalCamera::GetProjectStack()
+void NormalCamera::Translate(float x, float y, float z)
 {
-    return &projectStack;
+    projectStack.Translate(x,y,z);
 }
 
 void NormalCamera::OnUnInit()
@@ -495,10 +491,9 @@ void NormalCamera::OnUnInit()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void UICamera::OnInit(float w, float h)
 {
-    Resize(w, h);
+    //Resize(w, h);
 }
 
 void UICamera::OnUnInit()
@@ -506,8 +501,19 @@ void UICamera::OnUnInit()
 
 }
 
-const M3DMatrix44f& UICamera::GetModelviewprojectMatrix()
+void UICamera::Rotate(float angle, float x, float y, float z)
 {
+    projectStack.Rotate(angle, x, y, z);
+}
+
+void UICamera::Translate(float x, float y, float z)
+{
+    projectStack.Translate(x, y, z);
+}
+
+const M3DMatrix44f& UICamera::GetModelviewprojectMatrix(GLMatrixStack& modelviewStack)
+{
+    transformPiple.SetModelViewMatrixStack(modelviewStack);
     const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
     return matrix;
 }
@@ -516,12 +522,7 @@ void UICamera::Resize(int w, int h)
 {
     glViewport(0, 0, w, h);
     frustum.SetOrthographic(-w/2.0, w/2.0, -h/2.0, h/2.0, -1000, 1000);
-    projectStack.PushMatrix(frustum.GetProjectionMatrix());
-    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
+    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
+    transformPiple.SetProjectionMatrixStack(projectStack);
     glutPostRedisplay();
-}
-
-GLMatrixStack* UICamera::GetModelviewStack()
-{
-    return &modelviewStack;
 }

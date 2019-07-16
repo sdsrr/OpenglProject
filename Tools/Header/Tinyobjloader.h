@@ -8,8 +8,9 @@
 #include <map>
 #include <vector>
 
-#include "../Header/Tools.h"
-#include "../Header/UtilTimer.h"
+#include "Tools.h"
+#include "UtilTimer.h"
+#include "GameObject.h"
 
 #include "stb_image.h"
 #include "tiny_obj_loader.h"
@@ -28,7 +29,7 @@ typedef struct
     size_t material_id;
 } DrawObject;
 
-class Tinyobjloader
+class Tinyobjloader : public GObject
 {
 private:
     UtilTimer tm;

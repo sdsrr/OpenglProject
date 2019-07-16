@@ -1,15 +1,14 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
+#include "../Tools/Header/GameObject.h"
 
-BaseShaderParam shaderParam;
+BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
-
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 const int MaxStarNum = 30;
-GLBatch points[MaxStarNum];
+BatchGObject points[MaxStarNum];
 M3DVector2f pointsSize[MaxStarNum];
 
 GLuint texture;
@@ -26,14 +25,14 @@ static void Display(void)
     glEnable(GL_POINT_SPRITE_ARB);
     glEnable(GL_PROGRAM_POINT_SIZE);
 
-    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    shaderParam.colorMap[0] = 0;
     for (int i = 0; i < MaxStarNum; i++)
     {
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(points[i].modelviewStack));
+        param.colorMap[0] = 0;
         pointsSize[i][0]--;
         if (pointsSize[i][0] <= 0)
             pointsSize[i][0] = pointsSize[i][1];
-        shaderMgr.UseSpritePoint(shaderParam, pointsSize[i][0]);
+        shaderMgr.UseSpritePoint(param, pointsSize[i][0]);
         points[i].Draw();
     }
 
@@ -41,7 +40,6 @@ static void Display(void)
     glutSwapBuffers();
     glutPostRedisplay();
 }
-
 
 static void Idle(void)
 {
@@ -52,16 +50,14 @@ void OnStartup()
 {
     //init matrix
     normalCamera.OnInit(640, 480, 50, 2, 1);
-    modelviewStack = normalCamera.GetModelviewStack();
-    modelviewStack->Translate(-2,-2,-12);
-
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
 
     //init points
     for (int i = 0; i < MaxStarNum; i++)
     {
-        points[i].Begin(GL_POINTS, 1, 1);
+        points[i].modelviewStack.Translate(-2,-2,-12);
+        points[i].batch.Begin(GL_POINTS, 1, 1);
         //point position
         M3DVector3f vVertex;
         vVertex[0] = (float)(rand()%6);
@@ -74,16 +70,13 @@ void OnStartup()
         vColor[2] = rand()%10/10.0f;
         vColor[3] = 1;
 
-        points[i].Color4fv(vColor);
-        points[i].Vertex3fv(vVertex);
-
-        points[i].End();
+        points[i].batch.Color4fv(vColor);
+        points[i].batch.Vertex3fv(vVertex);
+        points[i].batch.End();
         // point size
         float size = rand()%200;
         pointsSize[i][0] = size;
         pointsSize[i][1] = size;
-
-
         //printf("%f %f %f\n", vColor[0],vColor[1],vColor[2]);
     }
 

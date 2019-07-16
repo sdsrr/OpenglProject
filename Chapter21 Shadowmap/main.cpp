@@ -1,6 +1,7 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/FreetypeFont.h"
+#include "../Tools/Header/GameObject.h"
 
 enum ETexture
 {
@@ -9,50 +10,47 @@ enum ETexture
     ETDepth,
 };
 
-enum EBatch
+enum EObject
 {
-    EBCube,
-    EBGround,
-    EBDepth,
-    EBMax,
+    EOCube01,
+    EOCube02,
+    EOCube03,
+    EOGround,
+    EODepth,
+    EOMax,
 };
+
 
 CharText charTex;
 UICamera uiCamera;
-GLMatrixStack* uiStack;
-
 UICamera shadowCamera;
-GLMatrixStack* shadowStack;
+NormalCamera normalCamera;
+float shadowmapWidth = 256;
+float shadowmapHeight = 256;
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
-NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
 
 GLuint frameBuf;
 GLfloat angle;
-GLBatch triangles[3];
+BatchGObject triangles[(int)EOMax];
 GLTriangleBatch cameraBatch;
 GLuint textures[3];
 GLfloat fontCol[] = {0,0,0,1};
+bool nomlCameraView = true;//normalcamera/shadowcamera
 char* paths[] =
 {
     Util::GetFullPath("Chapter21 Shadowmap/pig.jpg"),
     Util::GetFullPath("Chapter21 Shadowmap/grass.jpg")
 };
 
-void DrawGround()
+void DrawGround(BatchGObject& object)
 {
-    shadowStack->PushMatrix();
-    shadowStack->Translate(-10,-4,-20);
-    shadowStack->Rotate(90,1,0,0);
-
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(-10,-4,-20);
-    modelviewStack->Rotate(90,1,0,0);
-
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
+    if (nomlCameraView)
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    else
+        param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
@@ -61,42 +59,23 @@ void DrawGround()
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETGround]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr.UseShaodwmap(param, shadowCamera.GetModelviewprojectMatrix());
-    triangles[(int)EBGround].Draw();
-
-    modelviewStack->PopMatrix();
-    shadowStack->PopMatrix();
+    shaderMgr.UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    object.Draw();
 }
 
-void DrawGroundShadow()
+void DrawGroundShadow(BatchGObject& object)
 {
-    shadowStack->PushMatrix();
-    shadowStack->Translate(-10,-4,-20);
-    shadowStack->Rotate(90,1,0,0);
-    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix());
-
+    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     shaderMgr.WriteToShadowmap(param);
-    triangles[(int)EBGround].Draw();
-
-    shadowStack->PopMatrix();
+    object.Draw();
 }
 
-void DrawCube()
+void DrawCube(BatchGObject& object)
 {
-    shadowStack->PushMatrix();
-    shadowStack->Translate(0,0,-15);
-    shadowStack->Rotate(angle+=2,0,1,0);
-    shadowStack->Rotate(10,1,0,0);
-    shadowStack->Rotate(10,0,1,0);
-
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0,0,-15);
-    modelviewStack->Rotate(angle+=2,0,1,0);
-    modelviewStack->Rotate(10,1,0,0);
-    modelviewStack->Rotate(10,0,1,0);
-
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-    param.SetDiffuseColor(ShaderMgr::white);
+    if (nomlCameraView)
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    else
+        param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
 
@@ -104,78 +83,68 @@ void DrawCube()
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETCubeMaintex]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr.UseShaodwmap(param, shadowCamera.GetModelviewprojectMatrix());
-    triangles[(int)EBCube].Draw();
-
-    modelviewStack->PopMatrix();
-    shadowStack->PopMatrix();
+    shaderMgr.UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    object.Draw();
 }
 
-void DrawCubeShadow()
+void DrawCubeShadow(BatchGObject& object)
 {
-    shadowStack->PushMatrix();
-    shadowStack->Translate(0,0,-15);
-    shadowStack->Rotate(angle+=2,0,1,0);
-    shadowStack->Rotate(10,1,0,0);
-    shadowStack->Rotate(10,0,1,0);
-
-    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix());
-    param.SetDiffuseColor(ShaderMgr::white);
-
+    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     shaderMgr.WriteToShadowmap(param);
-    triangles[(int)EBCube].Draw();
-
-    shadowStack->PopMatrix();
+    object.Draw();
 }
 
-void DrawDepthTexture()
+void DrawDepthTexture(BatchGObject& object)
 {
-    uiStack->PushMatrix();
-    uiStack->Translate(-310,-230,0);
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix());
-    param.SetDiffuseColor(ShaderMgr::white);
-    param.colorMap[0] = 1;
-
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetDiffuseColor(ShaderMgr::white);
+    param.colorMap[0] = 1;
     shaderMgr.UseTexture2d(param);
-    triangles[(int)EBDepth].Draw();
-
-    uiStack->PopMatrix();
+    object.Draw();
 }
 
 void DrawCharText()
 {
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix());
+    param.colorMap[0] = 0;
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelviewStack));
     shaderMgr.UseFont(param, fontCol);
-    charTex.Show();
+    charTex.Draw();
+}
+
+void RoateCube(BatchGObject& object)
+{
+    object.modelviewStack.Rotate(2.0f, 0, 1, 0);
 }
 
 void Display(void)
 {
+    //roate cube
+    RoateCube(triangles[(int)EOCube01]);
+    RoateCube(triangles[(int)EOCube02]);
+
     //draw shadow
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuf);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0,0,64,64);
+    glViewport(0,0,shadowmapWidth,shadowmapHeight);
 
-    shadowStack->PushMatrix();
-    shadowStack->Translate(0,0,0);
-    shadowStack->Rotate(80,1,0,0);
-    DrawCubeShadow();
-    DrawGroundShadow();
+    DrawCubeShadow(triangles[(int)EOCube01]);
+    DrawCubeShadow(triangles[(int)EOCube02]);
+    DrawGroundShadow(triangles[(int)EOGround]);
 
-    //
+    //draw gameobject
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,640,480);
-    DrawCube();
-    DrawGround();
 
-    shadowStack->PopMatrix();
+    DrawCube(triangles[(int)EOCube01]);
+    DrawCube(triangles[(int)EOCube02]);
+    DrawGround(triangles[(int)EOGround]);
 
-    DrawDepthTexture();
+    DrawDepthTexture(triangles[(int)EODepth]);
     DrawCharText();
     glutSwapBuffers();
 }
@@ -189,66 +158,72 @@ void OnStartUp()
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETGround]);
     Util::LoadJPGTexture(paths[1], GL_LINEAR, GL_CLAMP);
 
-    //init cube
-    gltMakeCube(triangles[(int)EBCube], 2.0f);
-    gltMakeCylinder(cameraBatch, 0.5, 0, 1.0f, 10, 10);
+    //init triangles
+    BatchGObject& gameobj01 = triangles[(int)EOCube01];
+    gltMakeCube(gameobj01.batch, 2.0f);
+    gameobj01.modelviewStack.Translate(0, 0, -15);
 
-    {
-        GLBatch& triangle = triangles[(int)EBGround];
-        triangle.Begin(GL_TRIANGLE_STRIP, 6, 1);
-        triangle.MultiTexCoord2f(0,0,0);
-        triangle.Vertex3f(-50,-50,0);
-        triangle.MultiTexCoord2f(0,1,0);
-        triangle.Vertex3f(50,-50,0);
-        triangle.MultiTexCoord2f(0,0,1);
-        triangle.Vertex3f(-50,50,0);
-        triangle.MultiTexCoord2f(0,1,1);
-        triangle.Vertex3f(50,50,0);
-        triangle.End();
-    }
-    {
-        GLBatch& triangle = triangles[(int)EBDepth];
-        triangle.Begin(GL_TRIANGLE_STRIP, 6, 1);
-        triangle.MultiTexCoord2f(0,0,0);
-        triangle.Vertex3f(0,0,0);
-        triangle.MultiTexCoord2f(0,1,0);
-        triangle.Vertex3f(100,0,0);
-        triangle.MultiTexCoord2f(0,0,1);
-        triangle.Vertex3f(0,100,0);
-        triangle.MultiTexCoord2f(0,1,1);
-        triangle.Vertex3f(100,100,0);
-        triangle.End();
-    }
+    BatchGObject& gameobj02 = triangles[(int)EOCube02];
+    gltMakeCube(gameobj02.batch, 2.0f);
+    gameobj02.modelviewStack.Translate(-5, 5, -15);
+
+    BatchGObject& ground = triangles[(int)EOGround];
+    ground.modelviewStack.Translate(-10, -4, -20);
+    ground.modelviewStack.Rotate(90,1,0,0);
+    ground.batch.Begin(GL_TRIANGLE_STRIP, 6, 1);
+    ground.batch.MultiTexCoord2f(0,0,0);
+    ground.batch.Vertex3f(-50,-50,0);
+    ground.batch.MultiTexCoord2f(0,1,0);
+    ground.batch.Vertex3f(50,-50,0);
+    ground.batch.MultiTexCoord2f(0,0,1);
+    ground.batch.Vertex3f(-50,50,0);
+    ground.batch.MultiTexCoord2f(0,1,1);
+    ground.batch.Vertex3f(50,50,0);
+    ground.batch.End();
+
+    BatchGObject& depth = triangles[(int)EODepth];
+    depth.modelviewStack.Translate(-310,-230,0);
+    depth.batch.Begin(GL_TRIANGLE_STRIP, 6, 1);
+    depth.batch.MultiTexCoord2f(0,0,0);
+    depth.batch.Vertex3f(0,0,0);
+    depth.batch.MultiTexCoord2f(0,1,0);
+    depth.batch.Vertex3f(100,0,0);
+    depth.batch.MultiTexCoord2f(0,0,1);
+    depth.batch.Vertex3f(0,100,0);
+    depth.batch.MultiTexCoord2f(0,1,1);
+    depth.batch.Vertex3f(100,100,0);
+    depth.batch.End();
+
     //init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
+
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
-
     uiCamera.OnInit(640, 480);
-    uiStack = uiCamera.GetModelviewStack();
+    shadowCamera.OnInit(shadowmapWidth, shadowmapHeight);
+    shadowCamera.Translate(0,0,10);
+    shadowCamera.Rotate(90,1,0,0);
 
-    shadowCamera.OnInit(64, 64);
-    shadowStack = shadowCamera.GetModelviewStack();
 
     //init framebuffer
     glGenFramebuffers(1, &frameBuf);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuf);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 64, 64, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowmapWidth, shadowmapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shadowmapWidth, shadowmapHeight, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textures[(int)ETDepth], 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    //init text
+    //init chartext
     char ch[] = "frame count:";
-    charTex.CreateText(ch, sizeof(ch)-1, -320,220,0.2f,20);
+    charTex.CreateText(ch, sizeof(ch)-1, -320, 220, 0.2f, 20);
 }
 
 void OnShutUp()

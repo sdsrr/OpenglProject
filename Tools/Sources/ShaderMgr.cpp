@@ -555,7 +555,7 @@ void ShaderMgr::WriteToShadowmap(const BaseShaderParam& param)
     InitBaseShaderParam(outShadowShader, param);
 }
 
-void ShaderMgr::UseShaodwmap(const BaseShaderParam& param, const M3DMatrix44f lightMat)
+void ShaderMgr::UseShadowmap(const BaseShaderParam& param, const M3DMatrix44f lightMat)
 {
     BaseShader* shadowShader = shaderList[(int)STShadowmap];
     InitBaseShaderParam(shadowShader, param);

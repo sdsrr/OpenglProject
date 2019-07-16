@@ -5,7 +5,7 @@ BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
+GLMatrixStack modelviewStack;
 
 GLuint query;
 GLuint texture;
@@ -19,12 +19,12 @@ void Display(void)
 {
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    modelviewStack->PushMatrix();
-    modelviewStack->Translate(0, 0, -5);
-    modelviewStack->Rotate(angle+=3, 0, 1, 0);
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix());
-        param.SetMVMatrix(normalCamera.GetModelviewMatrix());
-        param.SetNormalMatrix(normalCamera.GetNormalMatrix());
+    modelviewStack.PushMatrix();
+    modelviewStack.Translate(0, 0, -5);
+    modelviewStack.Rotate(angle+=3, 0, 1, 0);
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelviewStack));
+        param.SetMVMatrix(modelviewStack.GetMatrix());
+        param.SetNormalMatrix(normalCamera.GetNormalMatrix(modelviewStack));
         param.SetDiffuseColor(ShaderMgr::white);
         param.colorMap[0] = 0;
 
@@ -64,7 +64,7 @@ void Display(void)
 
         shaderMgr.UseFeedbackBuffer(param);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
-    modelviewStack->PopMatrix();
+    modelviewStack.PopMatrix();
 
     glutSwapBuffers();
 }
@@ -84,7 +84,6 @@ void OnStartUp()
     glShaderMgr.InitializeStockShaders();
     shaderMgr.OnInit();
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 
     //init texture
     glActiveTexture(GL_TEXTURE0);

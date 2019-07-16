@@ -18,10 +18,10 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix());
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelviewStack));
     param.colorMap[0] = 0;
     shaderMgr.UseFont(param, color);
-    charTex.Show();
+    charTex.Draw();
 
     glutSwapBuffers();
 }

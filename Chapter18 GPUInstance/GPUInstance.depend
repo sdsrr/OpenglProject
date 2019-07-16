@@ -17,7 +17,7 @@
 	<glut/glut.h>
 	<GL/glut.h>
 
-1558354422 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1562308272 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -42,6 +42,7 @@
 	<cmath>
 	<map>
 	<vector>
+	<list>
 	<ImfRgbaFile.h>
 	<ImfArray.h>
 	<glut/glut.h>
@@ -670,7 +671,7 @@
 	<fstream>
 	<sstream>
 
-1558355780 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1562380377 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -680,14 +681,35 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1559121560 source:e:\gamedev\opengl\trunk\openglproject\chapter18 gpuinstance\main.cpp
+1562378405 source:e:\gamedev\opengl\trunk\openglproject\chapter18 gpuinstance\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/UtilTimer.h"
+	"../Tools/Header/GameObject.h"
 
-1559121767 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1561894269 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
 
-1559121055 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1561894274 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
+
+1561723552 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
+	"../Header/FreetypeFont.h"
+	"ft2build.h"
+
+1561685782 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
+	"../Header/Tools.h"
+	"../Header/GameObject.h"
+	"ft2build.h"
+
+1562233623 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
+	"../Header/Tools.h"
+
+1550887568 d:\codeblocks\mingw\include\ft2build.h
+	<freetype/config/ftheader.h>
+
+1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
+
+1562233653 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
+	"../Header/GameObject.h"
 
