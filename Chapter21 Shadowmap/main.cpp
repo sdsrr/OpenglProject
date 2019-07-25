@@ -122,14 +122,21 @@ void RoateCube(BatchGObject& object)
     object.modelviewStack.Rotate(2.0f, 0, 1, 0);
 }
 
-void DrawCameraBox()
+void DrawShadowCamera()
 {
     BaseCamera& mainCamera = GetMainCamera();
     GLMatrixStack& matrixStack = shadowCamera.GetModeviewStack();
     const M3DMatrix44f& mvMatrix = matrixStack.GetMatrix();
     const M3DMatrix44f& projectMatrix = mainCamera.GetProjectMatrix();
     const M3DMatrix33f& normalMatrix = mainCamera.GetNormalMatrix(matrixStack);
-    shadowCamera.Draw(mvMatrix, projectMatrix, normalMatrix);
+    shadowCamera.DrawLine(mainCamera.GetModelviewprojectMatrix(matrixStack));
+}
+
+void DrawNormalCamera()
+{
+    BaseCamera& mainCamera = GetMainCamera();
+    GLMatrixStack& matrixStack = normalCamera.GetModeviewStack();
+    normalCamera.DrawLine(normalCamera.GetModelviewprojectMatrix(matrixStack));
 }
 
 void Display(void)
@@ -158,7 +165,8 @@ void Display(void)
     DrawCube(triangles[(int)EOCube02]);
     DrawGround(triangles[(int)EOGround]);
 
-    DrawCameraBox();
+    DrawShadowCamera();
+    //DrawNormalCamera();
     DrawDepthTexture(triangles[(int)EODepth]);
     DrawCharText();
     glutSwapBuffers();

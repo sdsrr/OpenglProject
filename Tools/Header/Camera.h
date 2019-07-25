@@ -13,12 +13,19 @@ enum MouseMotion
     MMRightMousePress,
 };
 
+enum ECameraObject
+{
+    COLine,
+    COBox,
+    COMax,
+};
 class BaseCamera
 {
 protected:
     GLfloat width,height,nearCamera,farCamera;
     BaseShaderParam param;
-    BatchGObject gObject;
+    BatchGObject gObject[(int)COMax];
+
 protected:
     GLGeometryTransform transformPiple;
     GLMatrixStack projectStack;
@@ -26,7 +33,8 @@ protected:
     GLFrame frame;
 public:
     void ResetFrame();
-    void Draw(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix, const M3DMatrix33f normalMatrix);
+    void DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix, const M3DMatrix33f normalMatrix);
+    void DrawLine(const M3DMatrix44f mvpMatrix);
     void Rotate(float angle, float x, float y, float z);
     void Translate(float x, float y, float z);
     void RefreshProjectStack();
@@ -57,16 +65,16 @@ private:
 public:
     void OnUnInit();
     void OnInit(float w, float h, float fov, float moveSp, float roateSp);
-
     virtual void Resize(int w, int h);
     virtual void RebuildGObject();
+    void BuildPlaneVertex(float ditance, float fov, M3DVector3f& p1, M3DVector3f& p2, M3DVector3f& p3, M3DVector3f& p4, M3DVector3f& origin, M3DVector3f& foward, M3DVector3f& right, M3DVector3f& up);
 };
 
 class UICamera : public BaseCamera
 {
 public:
-    void OnInit(float w, float h);
     void OnUnInit();
+    void OnInit(float w, float h);
     virtual void Resize(int w, int h);
     virtual void RebuildGObject();
 };

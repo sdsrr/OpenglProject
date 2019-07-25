@@ -1,22 +1,31 @@
 #include "../Header/Camera.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void BaseCamera::Draw(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix,const M3DMatrix33f normalMatrix)
+void BaseCamera::DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix,const M3DMatrix33f normalMatrix)
 {
     ShaderMgr* shaderMgr = ShaderMgr::GetInstance();
     param.SetDiffuseColor(ShaderMgr::red);
     param.SetMVMatrix(mvMatrix);
     param.SetProjectMatrix(projectMatrix);
     param.SetNormalMatrix(normalMatrix);
-/*
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     shaderMgr->UseCameraLine(param);
-    gObject.Draw();
+    gObject[(int)COBox].Draw();
     glDisable(GL_CULL_FACE);
-*/
+
     shaderMgr->UseCameraBox(param);
-    gObject.Draw();
+    gObject[(int)COBox].Draw();
+}
+
+void BaseCamera::DrawLine(const M3DMatrix44f mvpMatrix)
+{
+    ShaderMgr* shaderMgr = ShaderMgr::GetInstance();
+    param.SetDiffuseColor(ShaderMgr::red);
+    param.SetMVPMatrix(mvpMatrix);
+    shaderMgr->UseSolidColor(param);
+    gObject[(int)COLine].Draw();
 }
 
 void BaseCamera::ResetFrame()
@@ -173,6 +182,7 @@ void NormalCamera::Resize(int w, int h)
     transformPiple.SetProjectionMatrixStack(projectStack);
     projectStack.LoadMatrix(frustum.GetProjectionMatrix());
     ResetFrame();
+    RebuildGObject();
     glutPostRedisplay();
 }
 
@@ -183,7 +193,72 @@ void NormalCamera::OnUnInit()
 
 void NormalCamera::RebuildGObject()
 {
+    GLFrame camera;
+    M3DVector3f origin,foward,up,right;
+    frustum.Transform(camera);
+    camera.GetOrigin(origin);
+    camera.GetZAxis(foward);
+    camera.GetYAxis(up);
+    camera.GetXAxis(right);
 
+    m3dNormalizeVector3(foward);
+    m3dNormalizeVector3(up);
+    m3dNormalizeVector3(right);
+
+    M3DVector3f p1,p2,p3,p4, p5,p6,p7,p8;
+    BuildPlaneVertex(nearCamera, fov/2, p1, p2, p3, p4, origin, foward, right, up);
+    BuildPlaneVertex(farCamera, fov/2, p5, p6, p7, p8, origin, foward, right, up);
+
+    {
+        GLBatch& batch = gObject[(int)COLine].batch;
+        batch.Reset();
+        batch.Begin(GL_LINES, 24, 0);
+
+        batch.Vertex3fv(p1);
+        batch.Vertex3fv(p2);
+        batch.Vertex3fv(p2);
+        batch.Vertex3fv(p3);
+        batch.Vertex3fv(p3);
+        batch.Vertex3fv(p4);
+        batch.Vertex3fv(p4);
+        batch.Vertex3fv(p1);
+
+        batch.Vertex3fv(origin);
+        batch.Vertex3fv(p5);
+        batch.Vertex3fv(origin);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(origin);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(origin);
+        batch.Vertex3fv(p8);
+
+        batch.Vertex3fv(p5);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(p8);
+        batch.Vertex3fv(p8);
+        batch.Vertex3fv(p5);
+        batch.End();
+    }
+
+}
+
+void NormalCamera::BuildPlaneVertex(float ditance, float fov, M3DVector3f& p1, M3DVector3f& p2, M3DVector3f& p3, M3DVector3f& p4, M3DVector3f& origin, M3DVector3f& foward, M3DVector3f& right, M3DVector3f& up)
+{
+    float hlafHeight = ditance * tan(m3dDegToRad(fov));
+    float halfWidth = hlafHeight * width / height;
+
+    M3DVector3f planeOrigin,rightMed,leftMed;
+    Util::MoveVector(planeOrigin, origin, foward, ditance);
+
+    Util::MoveVector(rightMed, planeOrigin, right, halfWidth);
+    Util::MoveVector(p1, rightMed, up, hlafHeight);
+    Util::MoveVector(p2, rightMed, up, -hlafHeight);
+    Util::MoveVector(leftMed, planeOrigin, right, -halfWidth);
+    Util::MoveVector(p3, leftMed, up, -hlafHeight);
+    Util::MoveVector(p4, leftMed, up, hlafHeight);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,91 +335,129 @@ void UICamera::RebuildGObject()
     Util::CalcNormal(normalP7, p7, p3, p6, p8);
     Util::CalcNormal(normalP8, p8, p7, p4, p5);
 
-    //set data
-    glLineWidth(2);
-    gObject.batch.Reset();
-    gObject.batch.Begin(GL_TRIANGLES, 36, 1);
-    //front
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP2);
-    gObject.batch.Vertex3fv(p2);
-    gObject.batch.Normal3fv(normalP1);
-    gObject.batch.Vertex3fv(p1);
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP1);
-    gObject.batch.Vertex3fv(p1);
-    gObject.batch.Normal3fv(normalP4);
-    gObject.batch.Vertex3fv(p4);
-    //back
-    gObject.batch.Normal3fv(normalP5);
-    gObject.batch.Vertex3fv(p5);
-    gObject.batch.Normal3fv(normalP6);
-    gObject.batch.Vertex3fv(p6);
-    gObject.batch.Normal3fv(normalP7);
-    gObject.batch.Vertex3fv(p7);
-    gObject.batch.Normal3fv(normalP5);
-    gObject.batch.Vertex3fv(p5);
-    gObject.batch.Normal3fv(normalP7);
-    gObject.batch.Vertex3fv(p7);
-    gObject.batch.Normal3fv(normalP8);
-    gObject.batch.Vertex3fv(p8);
 
-    //right
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP4);
-    gObject.batch.Vertex3fv(p4);
-    gObject.batch.Normal3fv(normalP8);
-    gObject.batch.Vertex3fv(p8);
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP8);
-    gObject.batch.Vertex3fv(p8);
-    gObject.batch.Normal3fv(normalP7);
-    gObject.batch.Vertex3fv(p7);
+    {
+        //set data
+        glLineWidth(2);
+        GLBatch& batch = gObject[(int)COBox].batch;
+        batch.Reset();
+        batch.Begin(GL_TRIANGLES, 36, 1);
+        //front
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP2);
+        batch.Vertex3fv(p2);
+        batch.Normal3fv(normalP1);
+        batch.Vertex3fv(p1);
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP1);
+        batch.Vertex3fv(p1);
+        batch.Normal3fv(normalP4);
+        batch.Vertex3fv(p4);
+        //back
+        batch.Normal3fv(normalP5);
+        batch.Vertex3fv(p5);
+        batch.Normal3fv(normalP6);
+        batch.Vertex3fv(p6);
+        batch.Normal3fv(normalP7);
+        batch.Vertex3fv(p7);
+        batch.Normal3fv(normalP5);
+        batch.Vertex3fv(p5);
+        batch.Normal3fv(normalP7);
+        batch.Vertex3fv(p7);
+        batch.Normal3fv(normalP8);
+        batch.Vertex3fv(p8);
 
-    //button
-    gObject.batch.Normal3fv(normalP6);
-    gObject.batch.Vertex3fv(p6);
-    gObject.batch.Normal3fv(normalP2);
-    gObject.batch.Vertex3fv(p2);
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP6);
-    gObject.batch.Vertex3fv(p6);
-    gObject.batch.Normal3fv(normalP3);
-    gObject.batch.Vertex3fv(p3);
-    gObject.batch.Normal3fv(normalP7);
-    gObject.batch.Vertex3fv(p7);
+        //right
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP4);
+        batch.Vertex3fv(p4);
+        batch.Normal3fv(normalP8);
+        batch.Vertex3fv(p8);
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP8);
+        batch.Vertex3fv(p8);
+        batch.Normal3fv(normalP7);
+        batch.Vertex3fv(p7);
 
-    //left
-    gObject.batch.Normal3fv(normalP1);
-    gObject.batch.Vertex3fv(p1);
-    gObject.batch.Normal3fv(normalP2);
-    gObject.batch.Vertex3fv(p2);
-    gObject.batch.Normal3fv(normalP6);
-    gObject.batch.Vertex3fv(p6);
-    gObject.batch.Normal3fv(normalP1);
-    gObject.batch.Vertex3fv(p1);
-    gObject.batch.Normal3fv(normalP6);
-    gObject.batch.Vertex3fv(p6);
-    gObject.batch.Normal3fv(normalP5);
-    gObject.batch.Vertex3fv(p5);
+        //button
+        batch.Normal3fv(normalP6);
+        batch.Vertex3fv(p6);
+        batch.Normal3fv(normalP2);
+        batch.Vertex3fv(p2);
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP6);
+        batch.Vertex3fv(p6);
+        batch.Normal3fv(normalP3);
+        batch.Vertex3fv(p3);
+        batch.Normal3fv(normalP7);
+        batch.Vertex3fv(p7);
 
-    //top
-    gObject.batch.Normal3fv(normalP4);
-    gObject.batch.Vertex3fv(p4);
-    gObject.batch.Normal3fv(normalP1);
-    gObject.batch.Vertex3fv(p1);
-    gObject.batch.Normal3fv(normalP5);
-    gObject.batch.Vertex3fv(p5);
-    gObject.batch.Normal3fv(normalP4);
-    gObject.batch.Vertex3fv(p4);
-    gObject.batch.Normal3fv(normalP5);
-    gObject.batch.Vertex3fv(p5);
-    gObject.batch.Normal3fv(normalP8);
-    gObject.batch.Vertex3fv(p8);
-    gObject.batch.End();
+        //left
+        batch.Normal3fv(normalP1);
+        batch.Vertex3fv(p1);
+        batch.Normal3fv(normalP2);
+        batch.Vertex3fv(p2);
+        batch.Normal3fv(normalP6);
+        batch.Vertex3fv(p6);
+        batch.Normal3fv(normalP1);
+        batch.Vertex3fv(p1);
+        batch.Normal3fv(normalP6);
+        batch.Vertex3fv(p6);
+        batch.Normal3fv(normalP5);
+        batch.Vertex3fv(p5);
+
+        //top
+        batch.Normal3fv(normalP4);
+        batch.Vertex3fv(p4);
+        batch.Normal3fv(normalP1);
+        batch.Vertex3fv(p1);
+        batch.Normal3fv(normalP5);
+        batch.Vertex3fv(p5);
+        batch.Normal3fv(normalP4);
+        batch.Vertex3fv(p4);
+        batch.Normal3fv(normalP5);
+        batch.Vertex3fv(p5);
+        batch.Normal3fv(normalP8);
+        batch.Vertex3fv(p8);
+        batch.End();
+    }
+
+    {
+        GLBatch& batch = gObject[(int)COLine].batch;
+        batch.Reset();
+        batch.Begin(GL_LINES, 36, 0);
+        batch.Vertex3fv(p1);
+        batch.Vertex3fv(p2);
+        batch.Vertex3fv(p2);
+        batch.Vertex3fv(p3);
+        batch.Vertex3fv(p3);
+        batch.Vertex3fv(p4);
+        batch.Vertex3fv(p4);
+        batch.Vertex3fv(p1);
+
+        batch.Vertex3fv(p1);
+        batch.Vertex3fv(p5);
+        batch.Vertex3fv(p2);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(p3);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(p4);
+        batch.Vertex3fv(p8);
+
+        batch.Vertex3fv(p5);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(p6);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(p7);
+        batch.Vertex3fv(p8);
+        batch.Vertex3fv(p8);
+        batch.Vertex3fv(p5);
+        batch.End();
+    }
+
 }
