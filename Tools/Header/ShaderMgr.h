@@ -23,6 +23,8 @@ enum ShaderType
     STFont,
     STOutShadowmap,
     STShadowmap,
+    STCameraBox,
+    STCameraLine,
     STMax,
 };
 
@@ -78,6 +80,8 @@ class ShaderMgr
 {
     typedef void (ShaderMgr::*VoidDeldgate)(ShaderType type);
 private:
+    ShaderMgr();
+    static ShaderMgr* _instance;
     BaseShader* shaderList[(int)STMax];
     std::map<ShaderType, VoidDeldgate> initfunctions;
 
@@ -104,10 +108,10 @@ private:
 public:
     static GLfloat white[];
     static GLfloat ondine[];
-
+    static GLfloat red[];
+    static ShaderMgr* GetInstance();
 
 public:
-    ShaderMgr();
     void InitShaders();
     void InitFunctions();
     void OnInit(int type=-1);
@@ -143,6 +147,8 @@ public:
     void UseFont(const BaseShaderParam& param, float color[4]);
     void WriteToShadowmap(const BaseShaderParam& param);
     void UseShadowmap(const BaseShaderParam& param, const M3DMatrix44f lightMat);
+    void UseCameraBox(const BaseShaderParam& param);
+    void UseCameraLine(const BaseShaderParam& param);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

@@ -61,6 +61,7 @@ public:
     static void PrintString(int count, char* str, ...);
     static void PrintMatrix44f(M3DMatrix44f matrix);
     static void PrintMatrix44f(const M3DMatrix44f matrix);
+    static void PrintVector3f(M3DVector3f vector, std::string ext="");
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
@@ -72,72 +73,18 @@ public:
     static void UpdateFrameRate();
     static void CheckFBO();
     static void PrintBuffer(GLenum type, int bufferSize);
+    //result = origin + direction * distance
+    static void MoveVector(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& direction, GLfloat distance);
+    //result = ((p1-origin)+(p2-origin)+(p3-origin))/3
+    static void CalcNormal(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& p1, const M3DVector3f& p2, const M3DVector3f& p3);
     // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);
+
     //vector
     static void NormalizeVector(vec3 &v);//单位化向量v
     static void Roate(vec2& v, float angle);
 };
-
-enum MouseMotion
-{
-    MMNone,
-    MMLeftMousePress,
-    MMMedMousePress,
-    MMRightMousePress,
-};
-
-
-class NormalCamera
-{
-private:
-    float moveSpeed = 1;
-    float roateSpeed = 2;
-    float width, height, fov;
-    int prevMouseX, prevMouseY;
-    MouseMotion mouseMotion;
-
-    GLFrame camera;
-    GLFrustum frustum;
-    GLboolean perspective;
-    GLMatrixStack projectStack;
-    GLGeometryTransform transformPiple;
-public:
-    void OnUnInit();
-    void OnInit(float w, float h, float fov, float moveSp, float roateSp);
-    void KeyboardFn(unsigned char key, int x, int y);
-    void MouseClick(int button, int action, int x, int y);
-    void MotionFunc(int mouse_x, int mouse_y);
-    void Resize(int w, int h);
-
-    void GetCameraForward(M3DVector3f forward);
-    void GetCameraPostion(M3DVector3f position);
-
-    const M3DMatrix44f& GetProjectMatrix();
-    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelviewStack);
-    const M3DMatrix33f& GetNormalMatrix(GLMatrixStack& modelviewStack);
-    void Rotate(float angle, float x, float y, float z);
-    void Translate(float x, float y, float z);
-};
-
-class UICamera
-{
-private:
-
-    GLGeometryTransform transformPiple;
-    GLMatrixStack projectStack;
-
-public:
-    GLFrustum frustum;
-    void OnInit(float w, float h);
-    void OnUnInit();
-    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelviewStack);
-    void Rotate(float angle, float x, float y, float z);
-    void Translate(float x, float y, float z);
-    void Resize(int w, int h);
-};
-
 #endif // TOOLS__
 
 

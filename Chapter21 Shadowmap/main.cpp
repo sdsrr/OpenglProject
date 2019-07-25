@@ -2,6 +2,7 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/FreetypeFont.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 enum ETexture
 {
@@ -20,17 +21,17 @@ enum EObject
     EOMax,
 };
 
-
 CharText charTex;
 UICamera uiCamera;
 UICamera shadowCamera;
 NormalCamera normalCamera;
-float shadowmapWidth = 256;
-float shadowmapHeight = 256;
+float shadowmapWidth = 512;
+float shadowmapHeight = 512;
+float shaderCameraViewSize = 50;
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 
 GLuint frameBuf;
 GLfloat angle;
@@ -42,15 +43,20 @@ bool nomlCameraView = true;//normalcamera/shadowcamera
 char* paths[] =
 {
     Util::GetFullPath("Chapter21 Shadowmap/pig.jpg"),
-    Util::GetFullPath("Chapter21 Shadowmap/grass.jpg")
+    Util::GetFullPath("Chapter21 Shadowmap/grass.png")
 };
+
+BaseCamera& GetMainCamera()
+{
+    if (nomlCameraView)
+        return normalCamera;
+    return shadowCamera;
+}
 
 void DrawGround(BatchGObject& object)
 {
-    if (nomlCameraView)
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(object.modelviewStack));
-    else
-        param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    BaseCamera& mainCamera = GetMainCamera();
+    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelviewStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
@@ -59,23 +65,21 @@ void DrawGround(BatchGObject& object)
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETGround]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr.UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     object.Draw();
 }
 
 void DrawGroundShadow(BatchGObject& object)
 {
     param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
-    shaderMgr.WriteToShadowmap(param);
+    shaderMgr->WriteToShadowmap(param);
     object.Draw();
 }
 
 void DrawCube(BatchGObject& object)
 {
-    if (nomlCameraView)
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(object.modelviewStack));
-    else
-        param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    BaseCamera& mainCamera = GetMainCamera();
+    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelviewStack));
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
 
@@ -83,14 +87,14 @@ void DrawCube(BatchGObject& object)
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETCubeMaintex]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr.UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
     object.Draw();
 }
 
 void DrawCubeShadow(BatchGObject& object)
 {
     param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
-    shaderMgr.WriteToShadowmap(param);
+    shaderMgr->WriteToShadowmap(param);
     object.Draw();
 }
 
@@ -101,7 +105,7 @@ void DrawDepthTexture(BatchGObject& object)
     param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(object.modelviewStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 1;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     object.Draw();
 }
 
@@ -109,13 +113,23 @@ void DrawCharText()
 {
     param.colorMap[0] = 0;
     param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelviewStack));
-    shaderMgr.UseFont(param, fontCol);
+    shaderMgr->UseFont(param, fontCol);
     charTex.Draw();
 }
 
 void RoateCube(BatchGObject& object)
 {
     object.modelviewStack.Rotate(2.0f, 0, 1, 0);
+}
+
+void DrawCameraBox()
+{
+    BaseCamera& mainCamera = GetMainCamera();
+    GLMatrixStack& matrixStack = shadowCamera.GetModeviewStack();
+    const M3DMatrix44f& mvMatrix = matrixStack.GetMatrix();
+    const M3DMatrix44f& projectMatrix = mainCamera.GetProjectMatrix();
+    const M3DMatrix33f& normalMatrix = mainCamera.GetNormalMatrix(matrixStack);
+    shadowCamera.Draw(mvMatrix, projectMatrix, normalMatrix);
 }
 
 void Display(void)
@@ -144,6 +158,7 @@ void Display(void)
     DrawCube(triangles[(int)EOCube02]);
     DrawGround(triangles[(int)EOGround]);
 
+    DrawCameraBox();
     DrawDepthTexture(triangles[(int)EODepth]);
     DrawCharText();
     glutSwapBuffers();
@@ -164,8 +179,9 @@ void OnStartUp()
     gameobj01.modelviewStack.Translate(0, 0, -15);
 
     BatchGObject& gameobj02 = triangles[(int)EOCube02];
-    gltMakeCube(gameobj02.batch, 2.0f);
-    gameobj02.modelviewStack.Translate(-5, 5, -15);
+    gltMakeCube(gameobj02.batch, 1.0f);
+    gameobj02.modelviewStack.Translate(-10, 5, -15);
+    gameobj02.modelviewStack.Scale(5,1,1);
 
     BatchGObject& ground = triangles[(int)EOGround];
     ground.modelviewStack.Translate(-10, -4, -20);
@@ -175,35 +191,43 @@ void OnStartUp()
     ground.batch.Vertex3f(-50,-50,0);
     ground.batch.MultiTexCoord2f(0,1,0);
     ground.batch.Vertex3f(50,-50,0);
-    ground.batch.MultiTexCoord2f(0,0,1);
-    ground.batch.Vertex3f(-50,50,0);
     ground.batch.MultiTexCoord2f(0,1,1);
     ground.batch.Vertex3f(50,50,0);
+
+    ground.batch.MultiTexCoord2f(0,1,1);
+    ground.batch.Vertex3f(50,50,0);
+    ground.batch.MultiTexCoord2f(0,0,1);
+    ground.batch.Vertex3f(-50,50,0);
+    ground.batch.MultiTexCoord2f(0,0,0);
+    ground.batch.Vertex3f(-50,-50,0);
     ground.batch.End();
 
     BatchGObject& depth = triangles[(int)EODepth];
-    depth.modelviewStack.Translate(-310,-230,0);
-    depth.batch.Begin(GL_TRIANGLE_STRIP, 6, 1);
+    depth.batch.Begin(GL_TRIANGLES, 6, 1);
     depth.batch.MultiTexCoord2f(0,0,0);
     depth.batch.Vertex3f(0,0,0);
     depth.batch.MultiTexCoord2f(0,1,0);
-    depth.batch.Vertex3f(100,0,0);
-    depth.batch.MultiTexCoord2f(0,0,1);
-    depth.batch.Vertex3f(0,100,0);
+    depth.batch.Vertex3f(1,0,0);
     depth.batch.MultiTexCoord2f(0,1,1);
-    depth.batch.Vertex3f(100,100,0);
-    depth.batch.End();
+    depth.batch.Vertex3f(1,1,0);
 
+    depth.batch.MultiTexCoord2f(0,0,0);
+    depth.batch.Vertex3f(0,0,0);
+    depth.batch.MultiTexCoord2f(0,1,1);
+    depth.batch.Vertex3f(1,1,0);
+    depth.batch.MultiTexCoord2f(0,0,1);
+    depth.batch.Vertex3f(0,1,0);
+    depth.batch.End();
+    depth.modelviewStack.Scale(60,60,1);
+    depth.modelviewStack.Translate(-2.7,-2,0);
     //init camera
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
 
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    uiCamera.OnInit(640, 480);
-    shadowCamera.OnInit(shadowmapWidth, shadowmapHeight);
-    shadowCamera.Translate(0,0,10);
+    uiCamera.OnInit(320, 240);
+    shadowCamera.OnInit(shaderCameraViewSize, shaderCameraViewSize);
     shadowCamera.Rotate(90,1,0,0);
-
 
     //init framebuffer
     glGenFramebuffers(1, &frameBuf);
@@ -211,7 +235,6 @@ void OnStartUp()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowmapWidth, shadowmapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shadowmapWidth, shadowmapHeight, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -223,7 +246,7 @@ void OnStartUp()
 
     //init chartext
     char ch[] = "frame count:";
-    charTex.CreateText(ch, sizeof(ch)-1, -320, 220, 0.2f, 20);
+    charTex.CreateText(ch, sizeof(ch)-1, -160, 100, 0.2f, 10);
 }
 
 void OnShutUp()
@@ -232,15 +255,15 @@ void OnShutUp()
     uiCamera.OnUnInit();
     shadowCamera.OnUnInit();
     glDeleteTextures(3, textures);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 
 void Idle(void) {glutPostRedisplay();}
-void KeyboardFn(unsigned char key, int x, int y) {normalCamera.KeyboardFn(key, x, y);}
-void MouseClick(int button, int action, int x, int y) {normalCamera.MouseClick(button, action, x, y);}
-void MotionFunc(int mouse_x, int mouse_y) {normalCamera.MotionFunc(mouse_x, mouse_y);}
-void Resize(int w, int h) {normalCamera.Resize(w, h);}
+void KeyboardFn(unsigned char key, int x, int y) {shadowCamera.KeyboardFn(key, x, y);}
+void MouseClick(int button, int action, int x, int y) {shadowCamera.MouseClick(button, action, x, y);}
+void MotionFunc(int mouse_x, int mouse_y) {shadowCamera.MotionFunc(mouse_x, mouse_y);}
+void Resize(int w, int h) {normalCamera.Resize(w, h); normalCamera.Translate(0,-10,-50);}
 
 int main(int argc, char *argv[])
 {
@@ -258,6 +281,7 @@ int main(int argc, char *argv[])
     glutIdleFunc(Idle);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glFrontFace(GL_CCW);
 
     if (glewInit() != GLEW_OK)
     {

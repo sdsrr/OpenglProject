@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveTarget name="Release" />
-	<File name="..\Tools\Header\FreetypeFont.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<ActiveTarget name="Debug" />
+	<File name="..\Tools\Shader\CameraBox\fragment_line.fp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="957" topLine="18" />
+			<Cursor1 position="72" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Header\GameObject.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="329" topLine="0" />
+			<Cursor1 position="8421" topLine="239" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Shader\CameraBox\fragment_normal.fp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4586" topLine="124" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Header\Tools.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3287" topLine="102" />
+			<Cursor1 position="102" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\Tools\Shader\Font\fragment.fp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -27,54 +22,107 @@
 			<Cursor1 position="187" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="..\Tools\Shader\SolidColor\fragment.fp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="81" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Sources\Camera.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="796" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\Texture2D\fragment.fp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="225" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Sources\FreetypeFont.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2757" topLine="71" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Sources\GameObject.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="56" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\CameraBox\vertex_normal.vp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="184" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\CameraBox\vertex_line.vp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="345" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\Shadowmap\vertex_shadow.vp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="301" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Header\FreetypeFont.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="957" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Header\Camera.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="475" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Header\GameObject.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="130" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\SolidColor\vertex.vp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="119" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\Shadowmap\vertex_outshadow.vp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="140" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\Shadowmap\fragment_outshadow.fp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="31" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Header\Tools.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2576" topLine="52" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2294" topLine="36" />
+		</Cursor>
+		<Folding>
+			<Collapse line="85" />
+		</Folding>
+	</File>
+	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="449" topLine="7" />
+		</Cursor>
+	</File>
 	<File name="..\Tools\Shader\Font\vertex.vp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Shader\Shadowmap\fragment_outshadow.fp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Sources\Tools.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="38" topLine="0" />
+			<Cursor1 position="11043" topLine="328" />
 		</Cursor>
 	</File>
 	<File name="..\Tools\Shader\Shadowmap\fragment_shadow.fp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="299" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Shader\Shadowmap\vertex_outshadow.vp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="138" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Shader\Shadowmap\vertex_shadow.vp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="367" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Sources\FreetypeFont.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4626" topLine="113" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Sources\GameObject.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="114" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="21982" topLine="525" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="13383" topLine="416" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="801" topLine="33" />
+			<Cursor1 position="164" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -1,8 +1,7 @@
 #include "../Header/GameObject.h"
 GObject::GObject()
 {
-    modelviewStack.Translate(0,0,0);
-    modelviewStack.Rotate(0,0,0,0);
+    modelviewStack.LoadIdentity();
 }
 
 BatchGObject::BatchGObject(){}

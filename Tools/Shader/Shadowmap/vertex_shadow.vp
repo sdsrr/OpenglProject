@@ -13,6 +13,6 @@ out vec4 shadowSpacePos;
 void main(void)
 {
     texcoord = vTexcoord;
-    shadowSpacePos = vVertex*lightMatrix;
-    gl_Position = vVertex*mvpMatrix;
+    shadowSpacePos = vVertex * lightMatrix;
+    gl_Position = vVertex * mvpMatrix;
 }

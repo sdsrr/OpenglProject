@@ -37,6 +37,16 @@ void Util::PrintMatrix44f(const M3DMatrix44f matrix)
     std::cout<<'\n';
 }
 
+void Util::PrintVector3f(M3DVector3f vector, std::string ext)
+{
+    std::cout<<ext;
+    for (int n = 0; n < 3; n++)
+    {
+        std::cout<<vector[n]<<" ";
+    }
+    std::cout<<'\n';
+}
+
 bool Util::CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb)
 {
     for (int n = 0; n < 4; n++)
@@ -337,192 +347,22 @@ void Util::PrintBuffer(GLenum type, int bufferSize)
     free(buffer);
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)
+void Util::MoveVector(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& direction, GLfloat distance)
 {
-    this->fov = fov;
-    this->moveSpeed = moveSp;
-    this->roateSpeed = roateSp;
-    //Resize(w, h);
+    M3DVector3f tmp;
+    m3dCopyVector3(tmp, direction);
+    m3dScaleVector3(tmp, distance);
+    m3dAddVectors3(result, tmp, origin);
 }
 
-void NormalCamera::MouseClick(int button, int action, int x, int y)
+void Util::CalcNormal(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& p1, const M3DVector3f& p2, const M3DVector3f& p3)
 {
-    if (button == GLUT_LEFT_BUTTON)
-    {
-        if (action == GLUT_DOWN) {
-            mouseMotion=MMLeftMousePress;
-        }
-        else if (action == GLUT_UP) {
-            mouseMotion = MMNone;
-        }
-    }
-    if (button == GLUT_RIGHT_BUTTON)
-    {
-        if (action == GLUT_DOWN) {
-            mouseMotion = MMRightMousePress;
-        }
-        else if (action == GLUT_UP) {
-            mouseMotion = MMNone;
-        }
-    }
-    if (button == GLUT_MIDDLE_BUTTON)
-    {
-        if (action == GLUT_DOWN) {
-            mouseMotion = MMMedMousePress;
-        }
-        else if (action == GLUT_UP) {
-            mouseMotion = MMNone;
-        }
-    }
-    prevMouseX = x;
-    prevMouseY = y;
-}
-
-void NormalCamera::KeyboardFn(unsigned char key, int x, int y)
-{
-    switch (key)
-    {
-    case 'a':
-        camera.TranslateWorld(moveSpeed,0,0);
-        projectStack.Translate(moveSpeed,0,0);
-        break;
-    case 'd':
-        camera.TranslateWorld(-moveSpeed,0,0);
-        projectStack.Translate(-moveSpeed,0,0);
-        break;
-    case 'w':
-        camera.TranslateWorld(0,-moveSpeed,0);
-        projectStack.Translate(0,-moveSpeed,0);
-        break;
-    case 's':
-        camera.TranslateWorld(0,moveSpeed,0);
-        projectStack.Translate(0,moveSpeed,0);
-        break;
-    case 'q':
-        camera.TranslateWorld(0,0,-moveSpeed);
-        projectStack.Translate(0,0,-moveSpeed);
-        break;
-    case 'e':
-        camera.TranslateWorld(0,0,moveSpeed);
-        projectStack.Translate(0,0,moveSpeed);
-        break;
-    }
-
-    //M3DVector3f ma;
-    //camera.GetOrigin(ma);
-    //printf("%f %f %f\n",ma[0], ma[1], ma[2]);
-    glutPostRedisplay();
-}
-
-void NormalCamera::MotionFunc(int mouse_x, int mouse_y)
-{
-    float deltaX = mouse_x - prevMouseX;
-    float deltaY = mouse_y - prevMouseY;
-
-    if (mouseMotion == MMRightMousePress)
-    {
-        projectStack.Rotate(deltaX/roateSpeed, 0, 1, 0);
-        projectStack.Rotate(deltaY/roateSpeed, 1, 0, 0);
-        camera.RotateLocal(deltaX/roateSpeed, 0, 1, 0);
-        camera.RotateLocal(deltaY/roateSpeed, 1, 0, 0);
-    }
-    //printf("%d  %d\n", mouse_x, mouse_y);
-    prevMouseX = mouse_x;
-    prevMouseY = mouse_y;
-}
-
-void NormalCamera::Resize(int w, int h)
-{
-    this->width = w;
-    this->height = h;
-    glViewport(0, 0, w, h);
-    frustum.SetPerspective(this->fov, width/height, 0.1f, 1000);
-    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
-    transformPiple.SetProjectionMatrixStack(projectStack);
-    glutPostRedisplay();
-}
-
-void NormalCamera::GetCameraForward(M3DVector3f forward)
-{
-    camera.GetForwardVector(forward);
-}
-
-void NormalCamera::GetCameraPostion(M3DVector3f position)
-{
-    camera.GetOrigin(position);
-}
-
-const M3DMatrix44f& NormalCamera::GetModelviewprojectMatrix(GLMatrixStack& modelviewStack)
-{
-    transformPiple.SetModelViewMatrixStack(modelviewStack);
-    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
-    return matrix;
-}
-
-const M3DMatrix44f& NormalCamera::GetProjectMatrix()
-{
-    const M3DMatrix44f& matrix = projectStack.GetMatrix();
-    return matrix;
-}
-
-const M3DMatrix33f& NormalCamera::GetNormalMatrix(GLMatrixStack& modelviewStack)
-{
-    transformPiple.SetMatrixStacks(modelviewStack, projectStack);
-    const M3DMatrix33f& matrix = transformPiple.GetNormalMatrix(true);
-    return matrix;
-}
-
-void NormalCamera::Rotate(float angle, float x, float y, float z)
-{
-    projectStack.Rotate(angle,x,y,z);
-}
-
-void NormalCamera::Translate(float x, float y, float z)
-{
-    projectStack.Translate(x,y,z);
-}
-
-void NormalCamera::OnUnInit()
-{
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void UICamera::OnInit(float w, float h)
-{
-    //Resize(w, h);
-}
-
-void UICamera::OnUnInit()
-{
-
-}
-
-void UICamera::Rotate(float angle, float x, float y, float z)
-{
-    projectStack.Rotate(angle, x, y, z);
-}
-
-void UICamera::Translate(float x, float y, float z)
-{
-    projectStack.Translate(x, y, z);
-}
-
-const M3DMatrix44f& UICamera::GetModelviewprojectMatrix(GLMatrixStack& modelviewStack)
-{
-    transformPiple.SetModelViewMatrixStack(modelviewStack);
-    const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
-    return matrix;
-}
-
-void UICamera::Resize(int w, int h)
-{
-    glViewport(0, 0, w, h);
-    frustum.SetOrthographic(-w/2.0, w/2.0, -h/2.0, h/2.0, -1000, 1000);
-    projectStack.LoadMatrix(frustum.GetProjectionMatrix());
-    transformPiple.SetProjectionMatrixStack(projectStack);
-    glutPostRedisplay();
+    M3DVector3f dir1,dir2,dir3;
+    m3dSubtractVectors3(dir1, p1, origin);
+    m3dSubtractVectors3(dir2, p2, origin);
+    m3dSubtractVectors3(dir3, p3, origin);
+    m3dAddVectors3(result,dir1,dir2);
+    m3dAddVectors3(result,result,dir3);
+    m3dNormalizeVector3(result);
+    m3dScaleVector3(result,-1);
 }

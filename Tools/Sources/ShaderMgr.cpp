@@ -34,8 +34,20 @@ void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
     lightDirection[2] = z;
 }
 
+GLfloat ShaderMgr::red[] = {1,0,0,1};
 GLfloat ShaderMgr::white[] = {1,1,1,1};
 GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
+ShaderMgr* ShaderMgr::_instance = NULL;
+
+ShaderMgr* ShaderMgr::GetInstance()
+{
+    if (_instance == NULL)
+    {
+        _instance = new ShaderMgr();
+        _instance->OnInit();
+    }
+    return _instance;
+};
 
 void ShaderMgr::InitBaseShader(ShaderType type)
 {
@@ -91,6 +103,8 @@ void ShaderMgr::InitShaders()
     shaderList[STFont] = new BaseShader("Tools/Shader/Font/vertex.vp","Tools/Shader/Font/fragment.fp");
     shaderList[STOutShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_outshadow.vp","Tools/Shader/Shadowmap/fragment_outshadow.fp");
     shaderList[STShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_shadow.vp","Tools/Shader/Shadowmap/fragment_shadow.fp");
+    shaderList[STCameraBox] = new BaseShader("Tools/Shader/CameraBox/vertex_normal.vp","Tools/Shader/CameraBox/fragment_normal.fp");
+    shaderList[STCameraLine] = new BaseShader("Tools/Shader/CameraBox/vertex_line.vp","Tools/Shader/CameraBox/fragment_line.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -115,6 +129,8 @@ void ShaderMgr::InitFunctions()
     initfunctions[STFont] = (VoidDeldgate)&ShaderMgr::InitFont;
     initfunctions[STOutShadowmap] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STShadowmap] = (VoidDeldgate)&ShaderMgr::InitShadowmap;
+    initfunctions[STCameraBox] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STCameraLine] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
 }
 
 void ShaderMgr::InitShadowmap(ShaderType type)
@@ -560,4 +576,16 @@ void ShaderMgr::UseShadowmap(const BaseShaderParam& param, const M3DMatrix44f li
     BaseShader* shadowShader = shaderList[(int)STShadowmap];
     InitBaseShaderParam(shadowShader, param);
     glUniformMatrix4fv(shadowmapShader_iLightMatrix, 1, true, lightMat);
+}
+
+void ShaderMgr::UseCameraBox(const BaseShaderParam& param)
+{
+    BaseShader* shader = shaderList[(int)STCameraBox];
+    InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseCameraLine(const BaseShaderParam& param)
+{
+    BaseShader* shader = shaderList[(int)STCameraLine];
+    InitBaseShaderParam(shader, param);
 }
