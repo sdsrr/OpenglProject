@@ -88,11 +88,12 @@ void CharTextureManager::SetFontSize(float fontSize)
     OnInit();
 }
 
-void CharText::CreateText(char text[], int count, float x, float y, float space, float fontSize)
+void CharText::CreateText(char text[], int count, float x, float y, float space, float fontSize, float scale)
 {
     CharTextureManager* instance = CharTextureManager::GetInstance();
     instance->SetFontSize(fontSize);
     instance->LoadCharTexture(text, count);
+    charList.clear();
     for (int i = 0; i < count; i++)
     {
         CharTexture* tex = instance->GetCharTexture(text[i]);
@@ -104,24 +105,24 @@ void CharText::CreateText(char text[], int count, float x, float y, float space,
         if (text[i] == ' ')
         {
             float fontSize = instance->GetFontSize();
-            x += fontSize/2;
+            x += fontSize/2*scale;
             continue;
         }
 
         Char newChar;
-        float width = tex->width;
+        float width = tex->width * scale;
         float height = tex->height;
         float posx = x + tex->position[0];
-        float posy = y - (height - tex->position[1]);
+        float posy = y - (height - tex->position[1])*scale;
 
         float vertex[30] = {
-            posx,posy+height,0, 0,0,
+            posx,posy+height*scale,0, 0,0,
             posx,posy,0, 0,1,
             posx+width,posy,0, 1,1,
 
-            posx,posy+height,0, 0,0,
+            posx,posy+height*scale,0, 0,0,
             posx+width,posy,0, 1,1,
-            posx+width,posy+height,0, 1,0,
+            posx+width,posy+height*scale,0, 1,0,
         };
         x += width + space;
 

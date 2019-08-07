@@ -25,6 +25,9 @@ enum ShaderType
     STShadowmap,
     STCameraBox,
     STCameraLine,
+    STDeferredOut,
+    STDeferredIn,
+    STSphereLight,
     STMax,
 };
 
@@ -32,6 +35,7 @@ class BaseShader
 {
 public:
     GLuint id = -1;
+    GLint mMatrix;
     GLint mvMatrix;
     GLint mvpMatrix;
     GLint projectMatrix;
@@ -58,6 +62,7 @@ public:
     M3DVector4f diffuseColor;
     M3DMatrix44f mvpMatrix;
     M3DMatrix44f mvMatrix;
+    M3DMatrix44f mMatrix;
     M3DMatrix44f projectMatrix;
     M3DMatrix33f normalMatrix;
     int deltatime;
@@ -69,6 +74,7 @@ public:
     void SetEnvironmentColor(M3DVector4f color);
     void SetMVPMatrix(const M3DMatrix44f matrix);
     void SetMVMatrix(const M3DMatrix44f matrix);
+    void SetMMatrix(const M3DMatrix44f matrix);
     void SetProjectMatrix(const M3DMatrix44f matrix);
     void SetNormalMatrix(const M3DMatrix44f matrix);
     void SetCameraPosition(GLfloat x, GLfloat y, GLfloat z);
@@ -94,6 +100,9 @@ private:
     GLint tboShader_iMaxHeight;
     GLint hdrShader_iExposure;
     GLuint fontShader_icolor;
+    GLuint sphereLight_iPos;
+    GLuint sphereLight_iRadius;
+    GLuint sphereLight_iColor;
 
     BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
     BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
@@ -105,10 +114,12 @@ private:
     GLint bloorBlurShader_iOffset;
     GLuint shadowmapShader_iLightMatrix;
 
+
 public:
     static GLfloat white[];
     static GLfloat ondine[];
     static GLfloat red[];
+    static GLfloat black[];
     static ShaderMgr* GetInstance();
 
 public:
@@ -128,6 +139,8 @@ public:
     void InitGeometry(ShaderType type);
     void InitGrassInstance(ShaderType type);
     void InitShadowmap(ShaderType type);
+    void InitSphereLight(ShaderType type);
+
     void InitBaseShader(ShaderType type);
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
@@ -149,6 +162,9 @@ public:
     void UseShadowmap(const BaseShaderParam& param, const M3DMatrix44f lightMat);
     void UseCameraBox(const BaseShaderParam& param);
     void UseCameraLine(const BaseShaderParam& param);
+    void UseDeferredOut(const BaseShaderParam& param);
+    void UseDeferredIn(const BaseShaderParam& param);
+    void UseSphereLight(const BaseShaderParam& param, M3DVector4f lightPosition, M3DVector3f lightColor, float lightRadius);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

@@ -18,6 +18,7 @@ void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentC
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(projectMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetMMatrix(const M3DMatrix44f matrix){memcpy(mMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetNormalMatrix(const M3DMatrix44f matrix){memcpy(normalMatrix, matrix, 16*sizeof(float));};
 void BaseShaderParam::SetLightDirection(GLfloat direction[3]){memcpy(lightDirection, direction, 3*sizeof(float));}
 void BaseShaderParam::SetCameraPosition(GLfloat x, GLfloat y, GLfloat z)
@@ -34,6 +35,7 @@ void BaseShaderParam::SetLightDirection(GLfloat x, GLfloat y, GLfloat z)
     lightDirection[2] = z;
 }
 
+GLfloat ShaderMgr::black[] = {0,0,0,1};
 GLfloat ShaderMgr::red[] = {1,0,0,1};
 GLfloat ShaderMgr::white[] = {1,1,1,1};
 GLfloat ShaderMgr::ondine[] = {64/255.0, 68/255.0, 10/255.0, 1};
@@ -60,6 +62,7 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
     shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
     shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
+    shader->mMatrix = glGetUniformLocation(shader->id, "mMatrix");
     shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
     shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
     shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
@@ -105,6 +108,9 @@ void ShaderMgr::InitShaders()
     shaderList[STShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_shadow.vp","Tools/Shader/Shadowmap/fragment_shadow.fp");
     shaderList[STCameraBox] = new BaseShader("Tools/Shader/CameraBox/vertex_normal.vp","Tools/Shader/CameraBox/fragment_normal.fp");
     shaderList[STCameraLine] = new BaseShader("Tools/Shader/CameraBox/vertex_line.vp","Tools/Shader/CameraBox/fragment_line.fp");
+    shaderList[STDeferredOut] = new BaseShader("Tools/Shader/DeferredRender/vertex_out.vp","Tools/Shader/DeferredRender/fragment_out.fp");
+    shaderList[STDeferredIn] = new BaseShader("Tools/Shader/DeferredRender/vertex_in.vp","Tools/Shader/DeferredRender/fragment_in.fp");
+    shaderList[STSphereLight] = new BaseShader("Tools/Shader/SphereLight/vertex.vp","Tools/Shader/SphereLight/fragment.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -131,6 +137,19 @@ void ShaderMgr::InitFunctions()
     initfunctions[STShadowmap] = (VoidDeldgate)&ShaderMgr::InitShadowmap;
     initfunctions[STCameraBox] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STCameraLine] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STDeferredOut] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STDeferredIn] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STSphereLight] = (VoidDeldgate)&ShaderMgr::InitSphereLight;
+}
+
+
+void ShaderMgr::InitSphereLight(ShaderType type)
+{
+    BaseShader* shadowShader = shaderList[(int)type];
+    InitBaseShader(shadowShader);
+    sphereLight_iPos = glGetUniformLocation(shadowShader->id, "lightPosition");
+    sphereLight_iRadius = glGetUniformLocation(shadowShader->id, "lightRadius");
+    sphereLight_iColor =  glGetUniformLocation(shadowShader->id, "lightColor");
 }
 
 void ShaderMgr::InitShadowmap(ShaderType type)
@@ -382,6 +401,7 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUseProgram(shader->id);
         glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
         glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
+        glUniformMatrix4fv(shader->mMatrix, 1, GL_TRUE, param.mMatrix);
         glUniformMatrix4fv(shader->projectMatrix, 1, GL_TRUE, param.projectMatrix);
         glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
         glUniform3fv(shader->lightDirection, 1, param.lightDirection);
@@ -404,6 +424,9 @@ void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param
 
         printf("mvpMatrix %d\n", shader->mvpMatrix);
         Util::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
+
+        printf("mMatrix %d\n", shader->mMatrix);
+        Util::PrintMatrix44f(param != NULL ? param->mMatrix : identity);
 
         printf("mvMatrix %d\n", shader->mvMatrix);
         Util::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
@@ -588,4 +611,25 @@ void ShaderMgr::UseCameraLine(const BaseShaderParam& param)
 {
     BaseShader* shader = shaderList[(int)STCameraLine];
     InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseDeferredOut(const BaseShaderParam& param)
+{
+    BaseShader* shader = shaderList[(int)STDeferredOut];
+    InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseDeferredIn(const BaseShaderParam& param)
+{
+    BaseShader* shader = shaderList[(int)STDeferredIn];
+    InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseSphereLight(const BaseShaderParam& param, M3DVector4f lightPosition, M3DVector3f lightColor, float lightRadius)
+{
+    BaseShader* shader = shaderList[(int)STSphereLight];
+    InitBaseShaderParam(shader, param);
+    glUniform3fv(sphereLight_iColor, 1, lightColor);
+    glUniform3fv(sphereLight_iPos, 1, lightPosition);
+    glUniform1f(sphereLight_iRadius, lightRadius);
 }

@@ -1,10 +1,16 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/Camera.h"
+#include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/FreetypeFont.h"
+#include "../Tools/Header/Light.h"
+#include "../Tools/Header/CommonStruct.h"
 
+BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
-GLMatrixStack* modelviewStack;
+
 
 GLfloat angle;
 GLBatch triangle;
@@ -20,14 +26,13 @@ void Display(void)
 void OnStartUp()
 {
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    modelviewStack = normalCamera.GetModelviewStack();
 }
 
 void OnShutUp()
 {
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 
@@ -43,7 +48,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(640,480);
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    glutCreateWindow("fbo");
+    glutCreateWindow("deferred render");
 
 
     glutKeyboardFunc(KeyboardFn);

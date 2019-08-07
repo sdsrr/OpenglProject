@@ -60,6 +60,20 @@ bool Util::CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb)
     return true;
 }
 
+void Util::RandomVector3(M3DVector3f& vector, int maxX, int maxY, int maxZ)
+{
+    vector[0] = random(maxX);
+    vector[1] = random(maxY);
+    vector[2] = random(maxZ);
+}
+
+void Util::RandomCol(M3DVector3f& color)
+{
+    color[0] = random(5000)/5000.0f;
+    color[1] = random(5000)/5000.0f;
+    color[2] = random(5000)/5000.0f;
+}
+
 void Util::LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode)
 {
     int width,height,comp;
@@ -173,6 +187,13 @@ void Util::LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFi
         free(pBits);
     }
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+}
+
+void Util::LoadVector3f(M3DVector3f vector, float x, float y, float z)
+{
+    vector[0] = x;
+    vector[1] = y;
+    vector[2] = z;
 }
 
 void Util::LoadOpenEXR(char*filepath, GLenum filter, GLenum wrapMode, int& texWidth, int& texHeight)

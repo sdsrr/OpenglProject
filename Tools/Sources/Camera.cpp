@@ -62,16 +62,24 @@ const M3DMatrix44f& BaseCamera::GetProjectMatrix()
     return matrix;
 }
 
-const M3DMatrix44f& BaseCamera::GetModelviewprojectMatrix(GLMatrixStack& modelviewStack)
+const M3DMatrix44f& BaseCamera::GetModelviewMatrix(GLMatrixStack& modelStack)
 {
-    transformPiple.SetModelViewMatrixStack(modelviewStack);
+    static M3DMatrix44f vector;
+    frame.GetMatrix(vector);
+    m3dScaleMatrix33(vector, modelStack.GetMatrix());
+    return vector;
+}
+
+const M3DMatrix44f& BaseCamera::GetModelviewprojectMatrix(GLMatrixStack& modelStack)
+{
+    transformPiple.SetModelViewMatrixStack(modelStack);
     const M3DMatrix44f& matrix = transformPiple.GetModelViewProjectionMatrix();
     return matrix;
 }
 
-const M3DMatrix33f& BaseCamera::GetNormalMatrix(GLMatrixStack& modelviewStack)
+const M3DMatrix33f& BaseCamera::GetNormalMatrix(GLMatrixStack& modelStack)
 {
-    transformPiple.SetModelViewMatrixStack(modelviewStack);
+    transformPiple.SetModelViewMatrixStack(modelStack);
     const M3DMatrix33f& matrix = transformPiple.GetNormalMatrix(true);
     return matrix;
 }
@@ -160,6 +168,22 @@ void BaseCamera::MotionFunc(int mouse_x, int mouse_y)
     prevMouseY = mouse_y;
 }
 
+void BaseCamera::ShowInfo(float x, float y)
+{
+    char str[20]= {0};
+    static M3DVector3f origin;
+    frame.GetOrigin(origin);
+    sprintf(str, "camera x:%.0f",  origin[0]);
+    sprintf(str, "%s y:%.0f", str, origin[1]);
+    sprintf(str, "%s z:%.0f", str, origin[2]);
+    charTex.CreateText(str, strlen(str), x, y, 0.3f, 20, 0.5f);
+    charTex.Draw();
+}
+
+void BaseCamera::OnUnInit()
+{
+    charTex.OnUnInit();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void NormalCamera::OnInit(float w, float h, float fov, float moveSp, float roateSp)
@@ -188,7 +212,7 @@ void NormalCamera::Resize(int w, int h)
 
 void NormalCamera::OnUnInit()
 {
-
+    BaseCamera::OnUnInit();
 }
 
 void NormalCamera::RebuildGObject()
@@ -272,7 +296,7 @@ void UICamera::OnInit(float w, float h)
 
 void UICamera::OnUnInit()
 {
-
+    BaseCamera::OnUnInit();
 }
 
 void UICamera::Resize(int w, int h)

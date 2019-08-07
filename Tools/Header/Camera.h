@@ -4,6 +4,7 @@
 #include "../Header/Tools.h"
 #include "../Header/GameObject.h"
 #include "../Header/ShaderMgr.h"
+#include "../Header/FreetypeFont.h"
 
 enum MouseMotion
 {
@@ -25,7 +26,7 @@ protected:
     GLfloat width,height,nearCamera,farCamera;
     BaseShaderParam param;
     BatchGObject gObject[(int)COMax];
-
+    CharText charTex;
 protected:
     GLGeometryTransform transformPiple;
     GLMatrixStack projectStack;
@@ -35,18 +36,21 @@ public:
     void ResetFrame();
     void DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix, const M3DMatrix33f normalMatrix);
     void DrawLine(const M3DMatrix44f mvpMatrix);
+    void ShowInfo(float x, float y);
+
     void Rotate(float angle, float x, float y, float z);
     void Translate(float x, float y, float z);
     void RefreshProjectStack();
 
     const M3DMatrix44f& GetProjectMatrix();
-    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelviewStack);
-    const M3DMatrix33f& GetNormalMatrix(GLMatrixStack& modelviewStack);
+    const M3DMatrix44f& GetModelviewMatrix(GLMatrixStack& modelStack);
+    const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelStack);
+    const M3DMatrix33f& GetNormalMatrix(GLMatrixStack& modelStack);
     GLMatrixStack& GetModeviewStack();
 
     virtual void RebuildGObject(){}
     virtual void Resize(int w, int h){}
-
+    virtual void OnUnInit();
 protected:
     float moveSpeed = 1;
     float roateSpeed = 2;
@@ -63,7 +67,7 @@ class NormalCamera : public BaseCamera
 private:
     float fov;
 public:
-    void OnUnInit();
+    virtual void OnUnInit();
     void OnInit(float w, float h, float fov, float moveSp, float roateSp);
     virtual void Resize(int w, int h);
     virtual void RebuildGObject();
@@ -73,7 +77,7 @@ public:
 class UICamera : public BaseCamera
 {
 public:
-    void OnUnInit();
+    virtual void OnUnInit();
     void OnInit(float w, float h);
     virtual void Resize(int w, int h);
     virtual void RebuildGObject();

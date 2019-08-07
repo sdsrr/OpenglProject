@@ -26,6 +26,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <ctime>
 
 // OpenEXR headers
 #include <ImfRgbaFile.h>
@@ -41,7 +42,6 @@
 #define random(x) (rand()%x)
 #define PI 3.1415926
 #define Enum2String(x) (#x)
-
 
 struct vec3
 {
@@ -67,7 +67,10 @@ public:
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
     static void LoadTGACubemap(const char* filepath[], GLenum magFilter, GLenum minFilter, GLenum wrapMode);
     static void LoadOpenEXR(char*filepath, GLenum filter, GLenum wrapMode, int& texWidth, int& texHeight);
+    static void LoadVector3f(M3DVector3f vector, float x, float y, float z);
 
+    static void RandomVector3(M3DVector3f& vector, int maxX, int maxY, int maxZ);
+    static void RandomCol(M3DVector3f& color);
     static bool CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb);
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();

@@ -48,7 +48,7 @@ private:
     std::vector<Char> charList;
 public:
     virtual void Draw();
-    void CreateText(char text[], int count, float x, float y, float space, float fontSize=40);
+    void CreateText(char text[], int count, float x, float y, float space, float fontSize=40,float scale=1);
     void OnUnInit();
 };
 

@@ -1,0 +1,12 @@
+#version 330
+
+layout(location = 0) in vec4 vVertex;
+layout(location = 1) in vec3 vNormal;
+
+uniform mat4 mvpMatrix;
+uniform mat3 normalMatrix;
+
+void main(void)
+{
+    gl_Position = vVertex*mvpMatrix;
+}
