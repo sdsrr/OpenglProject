@@ -1,7 +1,7 @@
 #include "../Header/GameObject.h"
 GObject::GObject()
 {
-    modelviewStack.LoadIdentity();
+    modelStack.LoadIdentity();
 }
 
 BatchGObject::BatchGObject(){}

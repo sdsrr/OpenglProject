@@ -51,11 +51,14 @@
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
+		<Unit filename="../Tools/Header/UtilPrint.h" />
 		<Unit filename="../Tools/Header/UtilTimer.h" />
 		<Unit filename="../Tools/Shader/DeferredRender/fragment_in.fp" />
 		<Unit filename="../Tools/Shader/DeferredRender/fragment_out.fp" />
 		<Unit filename="../Tools/Shader/DeferredRender/vertex_in.vp" />
 		<Unit filename="../Tools/Shader/DeferredRender/vertex_out.vp" />
+		<Unit filename="../Tools/Shader/SolidColor/fragment.fp" />
+		<Unit filename="../Tools/Shader/SolidColor/vertex.vp" />
 		<Unit filename="../Tools/Shader/SphereLight/fragment.fp" />
 		<Unit filename="../Tools/Shader/SphereLight/vertex.vp" />
 		<Unit filename="../Tools/Sources/Camera.cpp" />
@@ -66,6 +69,8 @@
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />
 		<Unit filename="../Tools/Sources/Trackball.cpp" />
+		<Unit filename="../Tools/Sources/UtilPrint.cpp" />
+		<Unit filename="../Tools/Sources/UtilTimer.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

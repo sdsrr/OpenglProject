@@ -170,7 +170,7 @@ void BaseCamera::MotionFunc(int mouse_x, int mouse_y)
 
 void BaseCamera::ShowInfo(float x, float y)
 {
-    char str[20]= {0};
+    static char str[20]= {0};
     static M3DVector3f origin;
     frame.GetOrigin(origin);
     sprintf(str, "camera x:%.0f",  origin[0]);

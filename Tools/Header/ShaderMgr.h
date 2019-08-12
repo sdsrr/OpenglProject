@@ -1,6 +1,7 @@
 #ifndef SHADERMGR__
 #define SHADERMGR__ XXX
 #include "Tools.h"
+#include "UtilPrint.h"
 enum ShaderType
 {
     STSolid,
@@ -70,6 +71,7 @@ public:
     GLfloat lightDirection[3];
     GLfloat cameraPosition[4];
 public:
+    void SetDiffuseColor(M3DVector3f color, float alpha);
     void SetDiffuseColor(M3DVector4f color);
     void SetEnvironmentColor(M3DVector4f color);
     void SetMVPMatrix(const M3DMatrix44f matrix);
@@ -100,9 +102,7 @@ private:
     GLint tboShader_iMaxHeight;
     GLint hdrShader_iExposure;
     GLuint fontShader_icolor;
-    GLuint sphereLight_iPos;
-    GLuint sphereLight_iRadius;
-    GLuint sphereLight_iColor;
+    GLuint sphereLight_iUbo;
 
     BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
     BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
@@ -164,7 +164,7 @@ public:
     void UseCameraLine(const BaseShaderParam& param);
     void UseDeferredOut(const BaseShaderParam& param);
     void UseDeferredIn(const BaseShaderParam& param);
-    void UseSphereLight(const BaseShaderParam& param, M3DVector4f lightPosition, M3DVector3f lightColor, float lightRadius);
+    void UseSphereLight(const BaseShaderParam& param);
 
     void WriteFeedbackBuffer(const BaseShaderParam& param);
     void UseBloorBase(const BaseShaderParam& param);

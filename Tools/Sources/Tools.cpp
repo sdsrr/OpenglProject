@@ -4,49 +4,6 @@
 
 const char* Util::projectPath = "E:/GameDev/Opengl/trunk/OpenglProject/";
 
-void Util::PrintString(int count, char* str, ...)
-{
-    char **address = &str;
-    for (int i = 0; i < count; i++)
-    {
-        printf(*address);
-        address = ++address;
-    }
-    printf("\n");
-}
-
-void Util::PrintMatrix44f(M3DMatrix44f matrix)
-{
-    for (int n = 0; n < 4; n++)
-    {
-        for (int m = 0; m < 4; m++)
-            std::cout<<matrix[n+4*m]<<" ";
-        std::cout<<'\n';
-    }
-    std::cout<<'\n';
-}
-
-void Util::PrintMatrix44f(const M3DMatrix44f matrix)
-{
-    for (int n = 0; n < 4; n++)
-    {
-        for (int m = 0; m < 4; m++)
-            std::cout<<matrix[n+4*m]<<" ";
-        std::cout<<'\n';
-    }
-    std::cout<<'\n';
-}
-
-void Util::PrintVector3f(M3DVector3f vector, std::string ext)
-{
-    std::cout<<ext;
-    for (int n = 0; n < 3; n++)
-    {
-        std::cout<<vector[n]<<" ";
-    }
-    std::cout<<'\n';
-}
-
 bool Util::CompareMatrix(const M3DMatrix44f matrixa, const M3DMatrix44f matrixb)
 {
     for (int n = 0; n < 4; n++)
@@ -356,16 +313,6 @@ void Util::CheckFBO()
         printf("error id %d \n", fboStatus);
         break;
     }
-}
-
-void Util::PrintBuffer(GLenum type, int bufferSize)
-{
-    GLfloat* buffer = (GLfloat*)malloc(sizeof(float)*bufferSize);
-    glGetBufferSubData(type, 0, sizeof(float)*bufferSize, buffer);
-    for (int i = 0; i < bufferSize; i++)
-        printf("%.0f ", buffer[i]);
-    printf("\n");
-    free(buffer);
 }
 
 void Util::MoveVector(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& direction, GLfloat distance)

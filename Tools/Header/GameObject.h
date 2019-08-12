@@ -8,7 +8,7 @@ class GObject
 {
 public:
     GObject();
-    GLMatrixStack modelviewStack;
+    GLMatrixStack modelStack;
     virtual void Draw(){printf("draw in Object \n");}
 };
 

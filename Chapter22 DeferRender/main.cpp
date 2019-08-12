@@ -1,37 +1,71 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/UtilPrint.h"
 #include "../Tools/Header/Camera.h"
 #include "../Tools/Header/GameObject.h"
-#include "../Tools/Header/FreetypeFont.h"
 #include "../Tools/Header/Light.h"
 #include "../Tools/Header/CommonStruct.h"
+#include "../Tools/Header/UtilTimer.h"
 
+bool useDeferredRender = false;
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
 ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 UICamera uiCamera;
-CharText charTex;
+FrameTimer frameTimer;
 
-const int MaxLightnum = 3;
-const int MaxSpherenum = 10;
-TriangleGObject sphere[MaxSpherenum];
-Light light[MaxLightnum];
+const int MaxLightNum = 500;
+const int MaxSphereNum = 500;
+TriangleGObject sphere[MaxSphereNum];
+Light lights[MaxLightNum];
+TriangleGObject lightObjs[MaxLightNum];
+GLuint ubo_light;
+
 
 void ShowCameraPosition()
 {
     param.SetMVPMatrix(uiCamera.GetProjectMatrix());
-    shaderMgr->UseFont(param, ShaderMgr::black);
+    shaderMgr->UseFont(param, ShaderMgr::white);
     normalCamera.ShowInfo(-60,50);
 }
 
 void ShowFrameCount()
 {
-    char* str = "frame count";
     param.SetMVPMatrix(uiCamera.GetProjectMatrix());
-    shaderMgr->UseFont(param, ShaderMgr::black);
-    charTex.CreateText(str, strlen(str), -60, 40, 0.3f, 20, 0.5f);
-    charTex.Draw();
+    shaderMgr->UseFont(param, ShaderMgr::white);
+    frameTimer.Update();
+}
+
+void DrawLight()
+{
+    glDisable(GL_DEPTH_TEST);
+    for (int i = 0 ; i < MaxLightNum; i++)
+    {
+        TriangleGObject& li = lightObjs[i];
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(li.modelStack));
+        param.SetDiffuseColor(lights[i].color, 0.1f);
+        shaderMgr->UseSolidColor(param);
+        li.Draw();
+    }
+    glEnable(GL_DEPTH_TEST);
+}
+
+void DrawSphereNormalMode()
+{
+    for (int i = 0 ; i < MaxSphereNum; i++)
+    {
+        GLMatrixStack& modelStack = sphere[i].modelStack;
+        param.SetMMatrix(modelStack.GetMatrix());
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelStack));
+        shaderMgr->UseSphereLight(param);
+        sphere[i].Draw();
+    }
+}
+
+void DrawSphereDeferredMode()
+{
+
 }
 
 void Display(void)
@@ -39,50 +73,70 @@ void Display(void)
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (int m = 0 ; m < 3; m++)
-    {
-        Light li = light[m];
-        M3DVector4f lightPosition = {0,0,0,1};
-        m3dTransformVector4(lightPosition, lightPosition, li.modelStack.GetMatrix());
-        for (int i = 0 ; i < MaxSpherenum; i++)
-        {
-            GLMatrixStack& modeStack = sphere[i].modelviewStack;
-            param.SetMMatrix(modeStack.GetMatrix());
-            param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modeStack));
-            shaderMgr->UseSphereLight(param, lightPosition, li.color, li.radius);
-            sphere[i].Draw();
-        }
+    if (useDeferredRender)
+        DrawSphereDeferredMode();
+    else
+        DrawSphereNormalMode();
 
-        //Util::PrintVector3f(lightPosition);
-    }
-
+    //DrawLight();
     ShowFrameCount();
     ShowCameraPosition();
     glutSwapBuffers();
 }
 
-void OnStartUp()
+void InitLight()
 {
-    for (int i = 0; i < MaxSpherenum; i++)
-    {
-        M3DVector3f position;
-        Util::RandomVector3(position, 10, 5, 10);
-        //printf("%f %f %f \n", x,y,z);
-        gltMakeSphere(sphere[i].batch, 1, 20, 20);
-        sphere[i].modelviewStack.Translate(position[0], position[1], position[2]);
-    }
-
     //init light
-    for (int i = 0; i < MaxLightnum; i++)
+    float space = 3.5f;
+    int lineNum = 30;
+    GLuint progress = shaderMgr->GetShaderId(STSphereLight);
+    for (int i = 0; i < MaxLightNum; i++)
     {
-        M3DVector3f position;
-        Util::RandomVector3(position, 10, 5, 10);
-        Light& li = light[i];
+        Light& li = lights[i];
         li.radius = random(10);
-        li.modelStack.Translate(position[0], position[1], position[2]);
+        li.position[0] = space * (i % lineNum);
+        li.position[1] = random(16);
+        li.position[2] = space * (i / lineNum);
         Util::RandomCol(li.color);
+
+        TriangleGObject& obj = lightObjs[i];
+        gltMakeSphere(obj.batch, li.radius, 30, 30);
+        obj.modelStack.Translate(li.position[0], li.position[1], li.position[2]);
     }
 
+    // init uniform buffer
+    glGenBuffers(1, &ubo_light);
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo_light);
+    glBufferData(GL_UNIFORM_BUFFER, 48*MaxLightNum, NULL, GL_DYNAMIC_DRAW);
+    for (int i = 0 ; i < MaxLightNum; i++)
+    {
+        Light& li = lights[i];
+        glBufferSubData(GL_UNIFORM_BUFFER, 0  + i * 48, 4, &li.radius);
+        glBufferSubData(GL_UNIFORM_BUFFER, 16 + i * 48, 16, li.position);
+        glBufferSubData(GL_UNIFORM_BUFFER, 32 + i * 48, 16, li.color);
+    }
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo_light);
+}
+
+void InitSphere()
+{
+    float space = 3;
+    int lineNum = 30;
+    for (int i = 0; i < MaxSphereNum; i++)
+    {
+        M3DVector3f position;
+        Util::RandomVector3(position, 100, 10, 100);
+        position[0] = space * (i & lineNum);
+        position[1] = random(10);
+        position[2] = space * (i / lineNum);
+
+        gltMakeSphere(sphere[i].batch, 1, 20, 20);
+        sphere[i].modelStack.Translate(position[0], position[1], position[2]);
+    }
+}
+
+void InitCamera()
+{
     //init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr = ShaderMgr::GetInstance();
@@ -91,11 +145,19 @@ void OnStartUp()
     srand(int(time(0)));
 }
 
+void OnStartUp()
+{
+    InitCamera();
+    InitSphere();
+    InitLight();
+}
+
 void OnShutUp()
 {
     shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
     uiCamera.OnUnInit();
+    glDeleteBuffers(1, &ubo_light);
 }
 
 void Idle(void) {glutPostRedisplay();}
@@ -112,7 +174,6 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("deferred render");
 
-
     glutKeyboardFunc(KeyboardFn);
     glutReshapeFunc(Resize);
     glutMotionFunc(MotionFunc);
@@ -121,6 +182,7 @@ int main(int argc, char *argv[])
     glutIdleFunc(Idle);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glEnable(GL_BLEND);
 
     if (glewInit() != GLEW_OK)
     {

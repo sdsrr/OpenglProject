@@ -1,6 +1,8 @@
 #ifndef UTILTIMER
 #define UTILTIMER
 
+#include "FreetypeFont.h"
+
 #ifdef _WIN32
 #ifdef __cplusplus
 extern "C" {
@@ -154,21 +156,13 @@ private:
     int nowTime = 0;
     int tickCount = 0;
     int lastTime = 0;
+    int currentFrame = 0;
+    CharText charTex;
+
 public:
-    int Update()
-    {
-        nowTime = glutGet(GLUT_ELAPSED_TIME);
-        tickCount++;
-        if (nowTime - baseTime >= 1000)
-        {
-            printf("frame count %d \n", tickCount);
-            baseTime = nowTime;
-            tickCount = 0;
-        }
-        int delta = nowTime - lastTime;
-        lastTime = nowTime;
-        return delta;
-    }
+    void Update();
+    void UpdateFrame();
+    void ShowFrame();
 };
 
 #endif

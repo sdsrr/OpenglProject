@@ -58,10 +58,7 @@ class Util
 public:
     static const char* projectPath;
     static char* GetFullPath(const char* relativePath);
-    static void PrintString(int count, char* str, ...);
-    static void PrintMatrix44f(M3DMatrix44f matrix);
-    static void PrintMatrix44f(const M3DMatrix44f matrix);
-    static void PrintVector3f(M3DVector3f vector, std::string ext="");
+
     static void LoadTGATexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadJPGTexture(const char* filepath, GLenum filter, GLenum wrapMode);
     static void LoadTGATextureArray(const char* filepath[], GLint count, GLenum filter, GLenum wrapMode);
@@ -75,7 +72,6 @@ public:
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();
     static void CheckFBO();
-    static void PrintBuffer(GLenum type, int bufferSize);
     //result = origin + direction * distance
     static void MoveVector(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& direction, GLfloat distance);
     //result = ((p1-origin)+(p2-origin)+(p3-origin))/3

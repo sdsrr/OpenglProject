@@ -13,6 +13,7 @@ BaseShader::BaseShader(const char* vp, const char* gp, const char* fp)
     this->gp = gp;
 }
 
+void BaseShaderParam::SetDiffuseColor(M3DVector3f color, float alpha) {memcpy(diffuseColor, color, 4*sizeof(float)); diffuseColor[3] = alpha;}
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
@@ -145,18 +146,15 @@ void ShaderMgr::InitFunctions()
 
 void ShaderMgr::InitSphereLight(ShaderType type)
 {
-    BaseShader* shadowShader = shaderList[(int)type];
-    InitBaseShader(shadowShader);
-    sphereLight_iPos = glGetUniformLocation(shadowShader->id, "lightPosition");
-    sphereLight_iRadius = glGetUniformLocation(shadowShader->id, "lightRadius");
-    sphereLight_iColor =  glGetUniformLocation(shadowShader->id, "lightColor");
+    BaseShader* lightShader = shaderList[(int)type];
+    InitBaseShader(lightShader);
 }
 
 void ShaderMgr::InitShadowmap(ShaderType type)
 {
     BaseShader* shadowShader = shaderList[(int)type];
     InitBaseShader(shadowShader);
-    shadowmapShader_iLightMatrix = glGetUniformLocation(shadowShader->id, "lightMatrix");
+    shadowmapShader_iLightMatrix = glGetUniformLocation(shadowShader->id, "lights");
 }
 
 void ShaderMgr::InitFont(ShaderType type)
@@ -305,7 +303,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         // load file
         if (LoadShaderFile(fileVertex, vertexShader) == false)
         {
-            Util::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
+            UtilPrint::PrintString(3, (char*)"the vertex shader at ", fileVertex, (char*)" not fond.");
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glDeleteShader(geometryShader);
@@ -319,7 +317,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         {
             char logs[1024];
             glGetShaderInfoLog(vertexShader, 1024, NULL, logs);
-            Util::PrintString(2, (char*)"vertext shader compile faile ", logs);
+            UtilPrint::PrintString(2, (char*)"vertext shader compile faile ", logs);
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glDeleteShader(geometryShader);
@@ -333,7 +331,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
         if (LoadShaderFile(fileGeometry, geometryShader) == false)
         {
-            Util::PrintString(3, (char*)"the geometry shader at ", fileGeometry, (char*)" not fond.");
+            UtilPrint::PrintString(3, (char*)"the geometry shader at ", fileGeometry, (char*)" not fond.");
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glDeleteShader(geometryShader);
@@ -346,7 +344,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         {
             char logs[1024];
             glGetShaderInfoLog(geometryShader, 1024, NULL, logs);
-            Util::PrintString(2, (char*)"geometry shader compile faile ", logs);
+            UtilPrint::PrintString(2, (char*)"geometry shader compile faile ", logs);
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glDeleteShader(geometryShader);
@@ -360,7 +358,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         if (LoadShaderFile(fileFragment, fragmentShader) == false)
         {
-            Util::PrintString(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
+            UtilPrint::PrintString(3, (char*)"the fragment shader at ", fileFragment, (char*)" not fond.");
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             return 0;
@@ -372,7 +370,7 @@ GLuint ShaderMgr::LoadShader(const char* fileVertex, const char* fileGeometry, c
         {
             char logs[1024];
             glGetShaderInfoLog(fragmentShader, 1024, NULL, logs);
-            Util::PrintString(2, (char*)"fragment shader compile faile ", logs);
+            UtilPrint::PrintString(2, (char*)"fragment shader compile faile ", logs);
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             return 0;
@@ -423,19 +421,19 @@ void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param
         printf("shader id %d\n", shader->id);
 
         printf("mvpMatrix %d\n", shader->mvpMatrix);
-        Util::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
 
         printf("mMatrix %d\n", shader->mMatrix);
-        Util::PrintMatrix44f(param != NULL ? param->mMatrix : identity);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->mMatrix : identity);
 
         printf("mvMatrix %d\n", shader->mvMatrix);
-        Util::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
 
         printf("normalMatrix %d\n", shader->normalMatrix);
-        Util::PrintMatrix44f(param != NULL ? param->normalMatrix : identity);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->normalMatrix : identity);
 
         printf("projectMatrix %d\n", shader->projectMatrix);
-        Util::PrintMatrix44f(param != NULL ? param->projectMatrix : identity);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->projectMatrix : identity);
 
         printf("colorMap00 %d %d\n", shader->colorMap[0], param != NULL ? param->colorMap[0] : -1);
         printf("colorMap01 %d %d\n", shader->colorMap[1], param != NULL ? param->colorMap[1] : -1);
@@ -625,11 +623,8 @@ void ShaderMgr::UseDeferredIn(const BaseShaderParam& param)
     InitBaseShaderParam(shader, param);
 }
 
-void ShaderMgr::UseSphereLight(const BaseShaderParam& param, M3DVector4f lightPosition, M3DVector3f lightColor, float lightRadius)
+void ShaderMgr::UseSphereLight(const BaseShaderParam& param)
 {
     BaseShader* shader = shaderList[(int)STSphereLight];
     InitBaseShaderParam(shader, param);
-    glUniform3fv(sphereLight_iColor, 1, lightColor);
-    glUniform3fv(sphereLight_iPos, 1, lightPosition);
-    glUniform1f(sphereLight_iRadius, lightRadius);
 }

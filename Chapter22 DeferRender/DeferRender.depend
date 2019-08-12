@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1564709922 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\camera.cpp
+1565576350 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\camera.cpp
 	"../Header/Camera.h"
 
 1564707914 e:\gamedev\opengl\trunk\openglproject\tools\header\camera.h
@@ -8,7 +8,7 @@
 	"../Header/ShaderMgr.h"
 	"../Header/FreetypeFont.h"
 
-1565145273 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1565322217 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -624,11 +624,12 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1563940395 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
+1565346030 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
 	"../Header/Tools.h"
 
-1565094864 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1565346250 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
+	"UtilPrint.h"
 
 1564576008 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
 	"../Header/FreetypeFont.h"
@@ -644,10 +645,10 @@
 
 1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
 
-1564037667 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
+1565346049 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
 	"../Header/GameObject.h"
 
-1565145334 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1565346282 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1562394948 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
@@ -669,7 +670,8 @@
 	<glut/glut.h>
 	<GL/glut.h>
 
-1558357749 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+1565576396 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+	"FreetypeFont.h"
 	<windows.h>
 	<mmsystem.h>
 	<sys/time.h>
@@ -708,7 +710,7 @@
 	<fstream>
 	<sstream>
 
-1565144780 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1565322360 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -718,17 +720,33 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1565098138 source:e:\gamedev\opengl\trunk\openglproject\chapter22 deferrender\main.cpp
+1565577585 source:e:\gamedev\opengl\trunk\openglproject\chapter22 deferrender\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
+	"../Tools/Header/UtilPrint.h"
 	"../Tools/Header/Camera.h"
 	"../Tools/Header/GameObject.h"
-	"../Tools/Header/FreetypeFont.h"
 	"../Tools/Header/Light.h"
+	"../Tools/Header/CommonStruct.h"
+	"../Tools/Header/UtilTimer.h"
 
 1564580158 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\light.cpp
 	"../Header/Light.h"
 
-1564711676 e:\gamedev\opengl\trunk\openglproject\tools\header\light.h
+1565434705 e:\gamedev\opengl\trunk\openglproject\tools\header\light.h
 	"Tools.h"
+
+1565247503 e:\gamedev\opengl\trunk\openglproject\tools\header\commonstruct.h
+
+1565322371 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\uitlprint.cpp
+	"../Header/UtilPrint.h"
+
+1565322530 e:\gamedev\opengl\trunk\openglproject\tools\header\utilprint.h
+	"Tools.h"
+
+1565322371 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\utilprint.cpp
+	"../Header/UtilPrint.h"
+
+1565576413 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\utiltimer.cpp
+	"../Header/UtilTimer.h"
 
