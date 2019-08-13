@@ -2,6 +2,7 @@
 #define SHADERMGR__ XXX
 #include "Tools.h"
 #include "UtilPrint.h"
+
 enum ShaderType
 {
     STSolid,
@@ -140,6 +141,7 @@ public:
     void InitGrassInstance(ShaderType type);
     void InitShadowmap(ShaderType type);
     void InitSphereLight(ShaderType type);
+    void InitDeferredIn(ShaderType type);
 
     void InitBaseShader(ShaderType type);
     void InitBaseShader(BaseShader* shader);

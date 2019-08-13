@@ -1,12 +1,14 @@
-#version 330
+#version 420
 
-layout(location = 0) in vec4 vVertex;
-layout(location = 1) in vec3 vNormal;
+layout(location = 0)in vec4 vVertex;
+layout(location = 3)in vec2 vTexcoord;
 
+out vec2 texCoord;
 uniform mat4 mvpMatrix;
-uniform mat3 normalMatrix;
+
 
 void main(void)
 {
-    gl_Position = vVertex*mvpMatrix;
+    texCoord = vTexcoord;
+    gl_Position = vVertex * mvpMatrix;
 }

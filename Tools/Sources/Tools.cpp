@@ -334,3 +334,32 @@ void Util::CalcNormal(M3DVector3f& result, const M3DVector3f& origin, const M3DV
     m3dNormalizeVector3(result);
     m3dScaleVector3(result,-1);
 }
+
+void Util::MakePlaneBatch(GLBatch& batch, float width, float height)
+{
+    batch.Begin(GL_TRIANGLES,6,1);
+    batch.MultiTexCoord2f(0,0,0);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(0,0,0);
+
+    batch.MultiTexCoord2f(0,1,0);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(width,0,0);
+
+    batch.MultiTexCoord2f(0,0,1);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(0,0,height);
+
+    batch.MultiTexCoord2f(0,0,1);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(0,0,height);
+
+    batch.MultiTexCoord2f(0,1,0);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(width,0,0);
+
+    batch.MultiTexCoord2f(0,1,1);
+    batch.Normal3f(0,1,0);
+    batch.Vertex3f(width,0,height);
+    batch.End();
+}

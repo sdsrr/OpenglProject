@@ -7,6 +7,13 @@
 #include "../Tools/Header/CommonStruct.h"
 #include "../Tools/Header/UtilTimer.h"
 
+enum ETex
+{
+    Position,
+    Normal,
+    Max,
+};
+
 bool useDeferredRender = false;
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
@@ -14,6 +21,15 @@ ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 UICamera uiCamera;
 FrameTimer frameTimer;
+BatchGObject ground;
+
+GLuint rbo;
+GLuint frameBuffer;
+GLuint textures[(int)Max];
+BatchGObject texObjects[(int)Max];
+BatchGObject scenePlane;
+const GLuint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+const GLenum windowBuffer[]={GL_BACK_LEFT};
 
 const int MaxLightNum = 500;
 const int MaxSphereNum = 500;
@@ -21,7 +37,6 @@ TriangleGObject sphere[MaxSphereNum];
 Light lights[MaxLightNum];
 TriangleGObject lightObjs[MaxLightNum];
 GLuint ubo_light;
-
 
 void ShowCameraPosition()
 {
@@ -51,7 +66,15 @@ void DrawLight()
     glEnable(GL_DEPTH_TEST);
 }
 
-void DrawSphereNormalMode()
+void NormalDrawGround()
+{
+    param.SetMMatrix(ground.modelStack.GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(ground.modelStack));
+    shaderMgr->UseSphereLight(param);
+    ground.Draw();
+}
+
+void NormalDrawSphere()
 {
     for (int i = 0 ; i < MaxSphereNum; i++)
     {
@@ -63,9 +86,70 @@ void DrawSphereNormalMode()
     }
 }
 
-void DrawSphereDeferredMode()
+void NormalMode()
 {
+    NormalDrawSphere();
+    NormalDrawGround();
+}
 
+void DrawTexture()
+{
+    for (int i = 0 ; i < (int)Max; i++)
+    {
+        BatchGObject& obj = texObjects[i];
+        param.colorMap[0] = i;
+        param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(obj.modelStack));
+        param.SetDiffuseColor(ShaderMgr::white);
+        shaderMgr->UseTexture2d(param);
+        obj.Draw();
+    }
+}
+
+void DeferredDrawSphereWrite()
+{
+    for (int i = 0 ; i < MaxSphereNum; i++)
+    {
+        GLMatrixStack& modelStack = sphere[i].modelStack;
+        param.SetMMatrix(modelStack.GetMatrix());
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelStack));
+        shaderMgr->UseDeferredIn(param);
+        sphere[i].Draw();
+    }
+}
+
+void DeferredDrawGroundWrite()
+{
+    param.SetMMatrix(ground.modelStack.GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(ground.modelStack));
+    shaderMgr->UseDeferredIn(param);
+    ground.Draw();
+}
+
+void DeferredDraw()
+{
+    param.colorMap[0] = 0;
+    param.colorMap[1] = 1;
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(scenePlane.modelStack));
+    shaderMgr->UseDeferredOut(param);
+    scenePlane.Draw();
+}
+
+void DeferredMode()
+{
+    //写入物件数据到fbo(textures)
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+    glDrawBuffers(2, attachments);
+    glClearColor(0,0,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    DeferredDrawSphereWrite();
+    DeferredDrawGroundWrite();
+
+    //从fbo(texture)中取物件数据,进行复杂光照计算,渲染到屏幕
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDrawBuffers(1, windowBuffer);
+    DeferredDraw();
+
+    DrawTexture();
 }
 
 void Display(void)
@@ -74,9 +158,9 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (useDeferredRender)
-        DrawSphereDeferredMode();
+        DeferredMode();
     else
-        DrawSphereNormalMode();
+        NormalMode();
 
     //DrawLight();
     ShowFrameCount();
@@ -89,13 +173,12 @@ void InitLight()
     //init light
     float space = 3.5f;
     int lineNum = 30;
-    GLuint progress = shaderMgr->GetShaderId(STSphereLight);
     for (int i = 0; i < MaxLightNum; i++)
     {
         Light& li = lights[i];
-        li.radius = random(10);
+        li.radius = random(12);
         li.position[0] = space * (i % lineNum);
-        li.position[1] = random(16);
+        li.position[1] = random(20);
         li.position[2] = space * (i / lineNum);
         Util::RandomCol(li.color);
 
@@ -122,6 +205,7 @@ void InitSphere()
 {
     float space = 3;
     int lineNum = 30;
+    float minY = 0;
     for (int i = 0; i < MaxSphereNum; i++)
     {
         M3DVector3f position;
@@ -129,10 +213,29 @@ void InitSphere()
         position[0] = space * (i & lineNum);
         position[1] = random(10);
         position[2] = space * (i / lineNum);
+        minY = std::min(0.0f, position[1]);
 
         gltMakeSphere(sphere[i].batch, 1, 20, 20);
         sphere[i].modelStack.Translate(position[0], position[1], position[2]);
     }
+
+    //init ground
+    Util::MakePlaneBatch(ground.batch, 100, 100);
+    ground.modelStack.Translate(-5, minY - 3, -15);
+
+    //init texture plane
+    for (int i = 0 ; i < (int)Max; i++)
+    {
+        BatchGObject& obj = texObjects[i];
+        Util::MakePlaneBatch(obj.batch, 25, 19);
+        obj.modelStack.Rotate(-90, 1, 0, 0);
+        obj.modelStack.Translate(-59 + i * 30, 0, -59);
+    }
+
+    //init scene plane
+    Util::MakePlaneBatch(scenePlane.batch, 120, 120);
+    scenePlane.modelStack.Rotate(-90, 1, 0, 0);
+    scenePlane.modelStack.Translate(-60, 10, -60);
 }
 
 void InitCamera()
@@ -145,11 +248,43 @@ void InitCamera()
     srand(int(time(0)));
 }
 
+void InitTexture(GLuint* id, float width, float height, GLenum attachment)
+{
+    glBindTexture(GL_TEXTURE_2D, *id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, *id, 0);
+}
+
+void InitFrameBuffer(float width, float height)
+{
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    glGenTextures((int)Max, textures);
+    glActiveTexture(GL_TEXTURE0);
+    InitTexture(&textures[(int)Position], width, height, GL_COLOR_ATTACHMENT0);
+    glActiveTexture(GL_TEXTURE1);
+    InitTexture(&textures[(int)Normal], width, height, GL_COLOR_ATTACHMENT1);
+    Util::CheckFBO();
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
 void OnStartUp()
 {
     InitCamera();
     InitSphere();
     InitLight();
+    InitFrameBuffer(640, 480);
 }
 
 void OnShutUp()
@@ -158,6 +293,9 @@ void OnShutUp()
     normalCamera.OnUnInit();
     uiCamera.OnUnInit();
     glDeleteBuffers(1, &ubo_light);
+    glDeleteRenderbuffers(1, &rbo);
+    glDeleteFramebuffers(1, &frameBuffer);
+    glDeleteTextures((int)Max, textures);
 }
 
 void Idle(void) {glutPostRedisplay();}

@@ -79,7 +79,7 @@ public:
     // file
     static bool FileExists(const std::string& abs_filename);
     static std::string GetBaseDir(const std::string& filepath);
-
+    static void MakePlaneBatch(GLBatch& batch, float width, float height);
     //vector
     static void NormalizeVector(vec3 &v);//单位化向量v
     static void Roate(vec2& v, float angle);

@@ -8,12 +8,11 @@ uniform mat4 mvpMatrix;
 
 out vec3 normal;
 out vec4 position;
-out mat4 modelMatrix;
 
 void main(void)
 {
-    normal = vNormal;
     position = vVertex * mMatrix;
-    modelMatrix = mMatrix;
+    mat3 normalMatrix = mat3(transpose(inverse(mMatrix)));
+    normal = vNormal * normalMatrix;
     gl_Position = vVertex * mvpMatrix;
 }

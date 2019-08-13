@@ -61,6 +61,8 @@
 		<Unit filename="../Tools/Shader/SolidColor/vertex.vp" />
 		<Unit filename="../Tools/Shader/SphereLight/fragment.fp" />
 		<Unit filename="../Tools/Shader/SphereLight/vertex.vp" />
+		<Unit filename="../Tools/Shader/Texture2D/fragment.fp" />
+		<Unit filename="../Tools/Shader/Texture2D/vertex.vp" />
 		<Unit filename="../Tools/Sources/Camera.cpp" />
 		<Unit filename="../Tools/Sources/FreetypeFont.cpp" />
 		<Unit filename="../Tools/Sources/GameObject.cpp" />

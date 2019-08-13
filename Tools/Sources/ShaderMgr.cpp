@@ -139,10 +139,18 @@ void ShaderMgr::InitFunctions()
     initfunctions[STCameraBox] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STCameraLine] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STDeferredOut] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
-    initfunctions[STDeferredIn] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
+    initfunctions[STDeferredIn] = (VoidDeldgate)&ShaderMgr::InitDeferredIn;
     initfunctions[STSphereLight] = (VoidDeldgate)&ShaderMgr::InitSphereLight;
 }
 
+void ShaderMgr::InitDeferredIn(ShaderType type)
+{
+    BaseShader* deferredShader = shaderList[(int)type];
+    InitBaseShader(deferredShader);
+    glBindFragDataLocation(deferredShader->id, 0, "gPosition");
+    glBindFragDataLocation(deferredShader->id, 1, "gNormal");
+    glLinkProgram(deferredShader->id);
+}
 
 void ShaderMgr::InitSphereLight(ShaderType type)
 {
@@ -583,6 +591,8 @@ void ShaderMgr::UseFont(const BaseShaderParam& param, float color[4])
 {
     BaseShader* fontShader = shaderList[(int)STFont];
     InitBaseShaderParam(fontShader, param);
+    //默认字体图片使用GL_TEXTURE31
+    glUniform1i(fontShader->colorMap[0], 31);
     glUniform4fv(fontShader_icolor, 1, color);
 }
 

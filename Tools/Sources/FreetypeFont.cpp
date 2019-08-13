@@ -41,7 +41,7 @@ void CharTextureManager::LoadCharTexture(char text[], int count)
 
         GLuint texture;
         glGenTextures(1, &texture);
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE31);
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -154,7 +154,7 @@ void CharText::Draw()
     {
         Char ch = charList[i];
         glBindVertexArray(ch.vao);
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE31);
         glBindTexture(GL_TEXTURE_2D, ch.texture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
