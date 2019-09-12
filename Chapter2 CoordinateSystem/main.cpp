@@ -1,8 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
+#include "../Tools/Header/UtilPrint.h"
 
 BaseShaderParam param;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 GLShaderManager shaderMgr_;
 GLBatch batch;
 GLFrustum frustum;
@@ -12,7 +14,7 @@ M3DMatrix44f modelMatrix;
 M3DMatrix44f viewMatrix;
 
 //使用管线方式
-GLMatrixStack modelviewMatrixStack;
+GLMatrixStack modelMatrixStack;
 GLMatrixStack projectMatrixStack;
 GLGeometryTransform transformPipeline;
 
@@ -34,25 +36,25 @@ static void Key(unsigned char key, int x, int y)
         std::cout<<key<<"\n";
     case 'a':
         cameraPosition[0] -= speed;
-        modelviewMatrixStack.Translate(speed,0,0);
+        modelMatrixStack.Translate(speed,0,0);
         break;
     case 'd':
         cameraPosition[0] += speed;
-        modelviewMatrixStack.Translate(-speed,0,0);
+        modelMatrixStack.Translate(-speed,0,0);
         break;
     case 'w':
         cameraPosition[1] += speed;
-        modelviewMatrixStack.Translate(0,-speed,0);
+        modelMatrixStack.Translate(0,-speed,0);
         break;
     case 's':
         cameraPosition[1] -= speed;
-        modelviewMatrixStack.Translate(0,speed,0);
+        modelMatrixStack.Translate(0,speed,0);
         break;
     }
     //移动相机
     m3dTranslationMatrix44(viewMatrix, -cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
 
-    Util::PrintMatrix44f(modelviewMatrixStack.GetMatrix());
+    UtilPrint::PrintMatrix44f(modelMatrixStack.GetMatrix());
     glutPostRedisplay();
 }
 
@@ -87,7 +89,7 @@ static void Display_normal()
     param.SetMVPMatrix(mvMatrix);
     param.SetDiffuseColor(color);
     param.colorMap[0] = 0;
-    shaderMgr.UseDiffuse(param);
+    shaderMgr->UseDiffuse(param);
     //shaderMgr_.UseStockShader(GLT_SHADER_FLAT, mvpMatrix, vRed);
     batch.Draw();
     glutSwapBuffers();
@@ -106,12 +108,12 @@ static void Display_transformpiple()
     //旋转三角形
     angle += delta*30;
 
-    modelviewMatrixStack.PushMatrix();
-    modelviewMatrixStack.Rotate(angle, 0, 1, 0);
+    modelMatrixStack.PushMatrix();
+    modelMatrixStack.Rotate(angle, 0, 1, 0);
     param.SetMVPMatrix(transformPipeline.GetModelViewProjectionMatrix());
     param.SetDiffuseColor(color);
-    shaderMgr.UseDiffuse(param);
-    modelviewMatrixStack.PopMatrix();
+    shaderMgr->UseDiffuse(param);
+    modelMatrixStack.PopMatrix();
 
     batch.Draw();
     glutSwapBuffers();
@@ -125,15 +127,15 @@ void OnStartUp()
     m3dLoadIdentity44(viewMatrix);
 
     //绑定矩阵堆栈与几何变换管线
-    transformPipeline.SetMatrixStacks(modelviewMatrixStack, projectMatrixStack);
+    transformPipeline.SetMatrixStacks(modelMatrixStack, projectMatrixStack);
 
     //初始相机
     //frustum.SetOrthographic(-1, 1, -1 ,1, -1, 1);
     frustum.SetPerspective(60, 1, 1, 100);
     projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelviewMatrixStack.Translate(0,0,-3);
+    modelMatrixStack.Translate(0,0,-3);
 
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     shaderMgr_.InitializeStockShaders();
     batch.Begin(GL_TRIANGLES, 3);
     batch.Color4f(1,0,0,1);
@@ -147,7 +149,7 @@ void OnStartUp()
 
 void OnShutUp()
 {
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
 }
 
 

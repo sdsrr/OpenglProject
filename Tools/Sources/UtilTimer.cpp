@@ -1,5 +1,9 @@
 #include"../Header/UtilTimer.h"
 
+/*
+1.创建uicamera 120*120
+2.使用fontshader
+*/
 void FrameTimer::Update()
 {
     UpdateFrame();

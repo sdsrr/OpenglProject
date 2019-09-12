@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------
 */
 
+#include "../Tools/Header/Camera.h"
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include <stdlib.h>

@@ -2,22 +2,22 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/UtilTimer.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
+UICamera uiCamera;
 
 TriangleStripGObject triangle[2];
 GLuint textures[3];
 GLfloat angle;
-GLboolean bUseGpuInstance = true;
+GLboolean bUseGpuInstance = false;
 GLuint maxCount = 100000;
 FrameTimer timer;
-
-int deltaTime = 0;
+int tickCount = 0;
 bool add = true;
-float tickCount = 0;
 
 void Display(void)
 {
@@ -25,28 +25,28 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //draw ground
-    GLMatrixStack* modelviewStack = &triangle[0].modelviewStack;
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    GLMatrixStack* modelStack = &triangle[0].modelStack;
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
     param.SetProjectMatrix(normalCamera.GetProjectMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 2;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     triangle[0].Draw();
 
     // draw grass
-    modelviewStack = &triangle[1].modelviewStack;
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
+    modelStack = &triangle[1].modelStack;
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
     param.SetProjectMatrix(normalCamera.GetProjectMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
     if (bUseGpuInstance)
     {
-        shaderMgr.DrawGrass(param, 0, tickCount/20.0f);
+        shaderMgr->DrawGrass(param, 0, tickCount/240.0f);
         glBindVertexArray(triangle[1].vao);
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, maxCount);
     }
@@ -54,25 +54,23 @@ void Display(void)
     {
         for (int i = 0; i < maxCount; i++)
         {
-            shaderMgr.DrawGrass(param, i, tickCount/20.0f);
+            shaderMgr->DrawGrass(param, i, tickCount/240.0f);
             glBindVertexArray(triangle[1].vao);
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         }
     }
 
-    deltaTime += timer.Update();
-    if (deltaTime >= 100)
-    {
-        if (add)
-            tickCount++;
-        else
-            tickCount--;
-        if (tickCount >= 5)
-            add = false;
-        if (tickCount <= -5)
-            add = true;
-        deltaTime = 0;
-    }
+    param.SetMVPMatrix(uiCamera.GetProjectMatrix());
+    shaderMgr->UseFont(param, ShaderMgr::black);
+    timer.Update();
+    if (add)
+        tickCount++;
+    else
+        tickCount--;
+    if (tickCount >= 20)
+        add = false;
+    if (tickCount <= -20)
+        add = true;
     glutSwapBuffers();
 }
 
@@ -113,22 +111,24 @@ void OnStartUp()
         glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7*sizeof(float)));
         glEnableVertexAttribArray(3);
     }
-    triangle[0].modelviewStack.Rotate(90,1,0,0);
-    triangle[0].modelviewStack.Scale(500,200,1);
-    triangle[1].modelviewStack.Translate(0,0,-5);
+    triangle[0].modelStack.Rotate(90,1,0,0);
+    triangle[0].modelStack.Scale(500,200,1);
+    triangle[1].modelStack.Translate(0,0,-5);
 
     // init camera
     param.deltatime = 10;
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
+    uiCamera.OnInit(120,120);
 }
 
 void OnShutUp()
 {
     glDeleteTextures(2, textures);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
+    uiCamera.OnUnInit();
 }
 
 void Idle(void) {glutPostRedisplay();}

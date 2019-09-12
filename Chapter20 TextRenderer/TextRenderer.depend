@@ -3,10 +3,11 @@
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 
-1561894269 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
+1565682100 e:\gamedev\opengl\trunk\openglproject\tools\header\shadermgr.h
 	"Tools.h"
+	"UtilPrint.h"
 
-1561894418 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
+1565670240 e:\gamedev\opengl\trunk\openglproject\tools\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -32,6 +33,7 @@
 	<map>
 	<vector>
 	<list>
+	<ctime>
 	<ImfRgbaFile.h>
 	<ImfArray.h>
 	<glut/glut.h>
@@ -374,7 +376,7 @@
 1548158450 d:\codeblocks\mingw\include\math.h
 	<_mingw.h>
 
-1304830080 d:\codeblocks\mingw\include\math3d.h
+1564719544 d:\codeblocks\mingw\include\math3d.h
 	<math.h>
 	<string.h>
 
@@ -458,7 +460,7 @@
 1304830080 d:\codeblocks\mingw\include\glframe.h
 	<math3d.h>
 
-1304830080 d:\codeblocks\mingw\include\glfrustum.h
+1563786750 d:\codeblocks\mingw\include\glfrustum.h
 	<math3d.h>
 	<GLFrame.h>
 
@@ -621,25 +623,27 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1554382646 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
+1562394948 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
 	"../Header/Tinyobjloader.h"
 	"tiny_obj_loader.h"
 
-1553602588 e:\gamedev\opengl\trunk\openglproject\tools\header\tinyobjloader.h
+1562395295 e:\gamedev\opengl\trunk\openglproject\tools\header\tinyobjloader.h
 	<algorithm>
 	<cassert>
 	<cmath>
 	<limits>
 	<map>
 	<vector>
-	"../Header/Tools.h"
-	"../Header/UtilTimer.h"
+	"Tools.h"
+	"UtilTimer.h"
+	"GameObject.h"
 	"stb_image.h"
 	"tiny_obj_loader.h"
 	<glut/glut.h>
 	<GL/glut.h>
 
-1558357749 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+1565576396 e:\gamedev\opengl\trunk\openglproject\tools\header\utiltimer.h
+	"FreetypeFont.h"
 	<windows.h>
 	<mmsystem.h>
 	<sys/time.h>
@@ -678,7 +682,7 @@
 	<fstream>
 	<sstream>
 
-1561894408 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
+1565670970 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tools.cpp
 	"../Header/Tools.h"
 	"stb_image.h"
 
@@ -688,7 +692,7 @@
 
 1553259899 e:\gamedev\opengl\trunk\openglproject\tools\header\trackball.h
 
-1561894274 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1568280490 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1562202741 source:e:\gamedev\opengl\trunk\openglproject\chapter20 textrenderer\main.cpp
@@ -701,15 +705,42 @@
 
 1550887566 d:\codeblocks\mingw\include\freetype\config\ftheader.h
 
-1561723552 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
+1565678474 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\freetypefont.cpp
 	"../Header/FreetypeFont.h"
 	"ft2build.h"
 
-1561685782 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
+1564574324 e:\gamedev\opengl\trunk\openglproject\tools\header\freetypefont.h
 	"../Header/Tools.h"
 	"../Header/GameObject.h"
 	"ft2build.h"
 
-1561696028 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
+1565346030 e:\gamedev\opengl\trunk\openglproject\tools\header\gameobject.h
 	"../Header/Tools.h"
+
+1565346049 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
+	"../Header/GameObject.h"
+
+1565322530 e:\gamedev\opengl\trunk\openglproject\tools\header\utilprint.h
+	"Tools.h"
+
+1568280131 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\camera.cpp
+	"../Header/Camera.h"
+
+1564707914 e:\gamedev\opengl\trunk\openglproject\tools\header\camera.h
+	"../Header/Tools.h"
+	"../Header/GameObject.h"
+	"../Header/ShaderMgr.h"
+	"../Header/FreetypeFont.h"
+
+1564580158 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\light.cpp
+	"../Header/Light.h"
+
+1565434705 e:\gamedev\opengl\trunk\openglproject\tools\header\light.h
+	"Tools.h"
+
+1565322371 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\utilprint.cpp
+	"../Header/UtilPrint.h"
+
+1565576413 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\utiltimer.cpp
+	"../Header/UtilTimer.h"
 

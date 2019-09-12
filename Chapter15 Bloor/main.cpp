@@ -1,9 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
 BaseShaderParam param;
@@ -48,10 +49,10 @@ void GenerateOffset(GLuint width, GLuint height)
 
 void Display(void)
 {
-    GLMatrixStack* modelviewStack = &screenQuards[0].modelviewStack;
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
+    GLMatrixStack* modelStack = &screenQuards[0].modelStack;
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
 
     //正常渲染到normalTexture(1)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, normalFbo);
@@ -59,7 +60,7 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     param.colorMap[0] = 0;
-    shaderMgr.UseBloorBase(param);
+    shaderMgr->UseBloorBase(param);
     screenQuards[0].Draw();
 
     //对normalTexture(1)曝光获得高亮部分,输出到brightTexture(2)
@@ -68,7 +69,7 @@ void Display(void)
     glDrawBuffers(1, fboBuffs);
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaderMgr.UseBloorBright(param, brightLimit);
+    shaderMgr->UseBloorBright(param, brightLimit);
     screenQuards[1].Draw();
 
     //对brightTexture(2)模糊输出到blurTexture(3,4,5,6,7)
@@ -79,7 +80,7 @@ void Display(void)
         glDrawBuffers(1, fboBuffs);
         glClearColor(1,1,1,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shaderMgr.UseBloorBlur(param, offset);
+        shaderMgr->UseBloorBlur(param, offset);
         screenQuards[2].Draw();
     }
 
@@ -91,7 +92,7 @@ void Display(void)
     param.colorMap[0] = 1;
     param.colorMap[1] = 2;
     param.colorMap[2] = 7;
-    shaderMgr.UseBloorMix(param, exposure, std::min(1.0f, std::max(0.0f, blurLevel)));
+    shaderMgr->UseBloorMix(param, exposure, std::min(1.0f, std::max(0.0f, blurLevel)));
     screenQuards[3].Draw();
 
     glutSwapBuffers();
@@ -137,9 +138,9 @@ void OnStartUp()
         screenQuard->MultiTexCoord2f(0,0,1);
         screenQuard->Vertex3f(0,10,0);
         screenQuard->End();
-        GLMatrixStack* modelviewStack = &screenQuards[i].modelviewStack;
-        modelviewStack->Translate(-5, -5, -10);
-        modelviewStack->Rotate(angle, 0, 1, 0);
+        GLMatrixStack* modelStack = &screenQuards[i].modelStack;
+        modelStack->Translate(-5, -5, -10);
+        modelStack->Rotate(angle, 0, 1, 0);
     }
 
     //init hdr texture
@@ -151,7 +152,7 @@ void OnStartUp()
 
     //init camera,shadermgr
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(600, 600, 53.2, 1, 2);
 
     //init fbo,texture
@@ -178,7 +179,7 @@ void OnShutUp()
     glDeleteFramebuffers(5, blurFbo);
 
     glDeleteTextures(1, textures);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

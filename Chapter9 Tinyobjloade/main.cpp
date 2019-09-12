@@ -3,11 +3,12 @@
 #include "../Tools/Header/Tinyobjloader.h"
 #include "../Tools/Header/Trackball.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 const char* modelName = Util::GetFullPath("Tools/Models/OBJ/box.obj");
 Tinyobjloader modelObj;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 M3DVector4f green = {0,1,0,0};
 NormalCamera normalCamera;
 
@@ -19,16 +20,16 @@ static void OnStartup()
     //load model data
     glActiveTexture(GL_TEXTURE0);
     modelObj.LoadObjAndConvert(modelName);
-    //modelObj.modelviewStack.Translate(0,0,-100);
+    //modelObj.modelStack.Translate(0,0,-100);
     normalCamera.OnInit(640, 480, 50, 2, 1);
 
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     glShaderMgr.InitializeStockShaders();
 }
 
 static void OnShutup()
 {
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
 }
 
 static void Display(void)
@@ -36,12 +37,12 @@ static void Display(void)
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     param.SetDiffuseColor(green);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelObj.modelviewStack));
-    param.SetMVMatrix(modelObj.modelviewStack.GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(modelObj.modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelObj.modelStack));
+    param.SetMVMatrix(modelObj.modelStack.GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(modelObj.modelStack));
     param.SetLightDirection(lightPosition);
     param.colorMap[0] = 0;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     modelObj.DefaultDrawGraph();
     glutSwapBuffers();
 }

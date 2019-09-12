@@ -1,10 +1,11 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 
 GLfloat angle = 0;
@@ -17,14 +18,14 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    param.SetMVMatrix(triangle.modelviewStack.GetMatrix());
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(triangle.modelviewStack));
+    param.SetMVMatrix(triangle.modelStack.GetMatrix());
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelStack));
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(triangle.modelStack));
     param.SetDiffuseColor(diffuseColor);
     param.colorMap[0] = 0;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     triangle.Draw();
-    shaderMgr.DrawNormal(param, 1.0f);
+    shaderMgr->DrawNormal(param, 1.0f);
     triangle.Draw();
 
     glutSwapBuffers();
@@ -40,19 +41,19 @@ void OnStartUp()
 
     // init cube
     gltMakeCube(triangle.batch, 1);
-    triangle.modelviewStack.Translate(0, 0, -10);
-    triangle.modelviewStack.Rotate(angle+=2, 1, 1, 0);
+    triangle.modelStack.Translate(0, 0, -10);
+    triangle.modelStack.Rotate(angle+=2, 1, 1, 0);
 
     // init camera
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 }
 
 void OnShutUp()
 {
     glDeleteTextures(1, &texture);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

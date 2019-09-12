@@ -1,9 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 BaseShaderParam param;
 
@@ -27,13 +28,13 @@ void Display(void)
     glClearColor(0.3f, 0.3f, 1, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLMatrixStack* modelviewStack = &triangles[0].modelviewStack;
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    GLMatrixStack* modelStack = &triangles[0].modelStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetLightDirection(lightDirection);
     param.SetEnvironmentColor(color);
-    shaderMgr.DrawToFBO(param);
+    shaderMgr->DrawToFBO(param);
     triangles[0].Draw();
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -42,13 +43,13 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //绘制trinagle[1]到左边
-    modelviewStack = &triangles[1].modelviewStack;
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    modelStack = &triangles[1].modelStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetLightDirection(lightDirection);
     param.SetDiffuseColor(color);
-    shaderMgr.UseDiffuse(param);
+    shaderMgr->UseDiffuse(param);
     triangles[1].Draw();
 
     //将多重采样rbo图像显示到屏幕右上
@@ -59,12 +60,12 @@ void Display(void)
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
     //将多重采样texture图像显示到屏幕右下(面片采样)
-    modelviewStack = &triangles[2].modelviewStack;
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    modelStack = &triangles[2].modelStack;
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.colorMap[0] = 0;
-    shaderMgr.UseMsaa(param);
+    shaderMgr->UseMsaa(param);
     triangles[2].Draw();
 
     glutSwapBuffers();
@@ -116,16 +117,16 @@ void OnStartUp()
         triangle.Vertex3f(1,1,0);
         triangle.End();
     }
-    triangles[0].modelviewStack.Translate(-2, -1.5f, -5);
-    triangles[0].modelviewStack.Rotate(angle+=2, 1, 1, 0);
-    triangles[1].modelviewStack.Translate(-2, 0, -5);
-    triangles[1].modelviewStack.Rotate(angle, 1, 1, 0);
-    triangles[2].modelviewStack.Translate(0, -2.4f, -5);
-    triangles[2].modelviewStack.Scale(4*0.78f, 3*0.78f, 1);
+    triangles[0].modelStack.Translate(-2, -1.5f, -5);
+    triangles[0].modelStack.Rotate(angle+=2, 1, 1, 0);
+    triangles[1].modelStack.Translate(-2, 0, -5);
+    triangles[1].modelStack.Rotate(angle, 1, 1, 0);
+    triangles[2].modelStack.Translate(0, -2.4f, -5);
+    triangles[2].modelStack.Scale(4*0.78f, 3*0.78f, 1);
 
     //init shadermgr
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 }
 
@@ -134,7 +135,7 @@ void OnShutUp()
     glDeleteTextures(1, &texture);
     glDeleteFramebuffers(1, &fbo);
     glDeleteRenderbuffers(2, rbo);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

@@ -1,10 +1,11 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 
 const int MaxStarNum = 30;
@@ -27,12 +28,12 @@ static void Display(void)
 
     for (int i = 0; i < MaxStarNum; i++)
     {
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(points[i].modelviewStack));
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(points[i].modelStack));
         param.colorMap[0] = 0;
         pointsSize[i][0]--;
         if (pointsSize[i][0] <= 0)
             pointsSize[i][0] = pointsSize[i][1];
-        shaderMgr.UseSpritePoint(param, pointsSize[i][0]);
+        shaderMgr->UseSpritePoint(param, pointsSize[i][0]);
         points[i].Draw();
     }
 
@@ -51,12 +52,12 @@ void OnStartup()
     //init matrix
     normalCamera.OnInit(640, 480, 50, 2, 1);
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
 
     //init points
     for (int i = 0; i < MaxStarNum; i++)
     {
-        points[i].modelviewStack.Translate(-2,-2,-12);
+        points[i].modelStack.Translate(-2,-2,-12);
         points[i].batch.Begin(GL_POINTS, 1, 1);
         //point position
         M3DVector3f vVertex;
@@ -90,7 +91,7 @@ void OnStartup()
 void OnShutup()
 {
     glDeleteTextures(1,&texture);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

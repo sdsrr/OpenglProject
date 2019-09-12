@@ -1,11 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/FreetypeFont.h"
-
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
-GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 UICamera uiCamera;
 
 
@@ -18,9 +17,9 @@ void Display(void)
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelviewStack));
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelStack));
     param.colorMap[0] = 0;
-    shaderMgr.UseFont(param, color);
+    shaderMgr->UseFont(param, color);
     charTex.Draw();
 
     glutSwapBuffers();
@@ -29,15 +28,14 @@ void Display(void)
 void OnStartUp()
 {
     charTex.CreateText(text, sizeof(text) - 1, 0, 0, 0.2f);
-    glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     uiCamera.OnInit(640, 480);
 }
 
 void OnShutUp()
 {
     charTex.OnUnInit();
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     uiCamera.OnUnInit();
 }
 

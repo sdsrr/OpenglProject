@@ -1,10 +1,11 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 
 GLuint tbo;
@@ -61,9 +62,9 @@ void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //glBindTexture(GL_TEXTURE_BUFFER, texture);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelStack));
     param.colorMap[0] = 0;
-    shaderMgr.UseTboShader(param, maxWidth, maxHeight);
+    shaderMgr->UseTboShader(param, maxWidth, maxHeight);
     triangle.Draw();
 
     glutSwapBuffers();
@@ -73,7 +74,7 @@ void OnStartUp()
 {
     //init triangle
     gltMakeCube(triangle.batch, 2);
-    triangle.modelviewStack.Translate(0,0,-20);
+    triangle.modelStack.Translate(0,0,-20);
 
     //init texture
     glActiveTexture(GL_TEXTURE0);
@@ -111,7 +112,7 @@ void OnStartUp()
 
     //init shadermgr
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit(1<<STTBO | 1<<STTexture2d);
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 }
 
@@ -119,7 +120,7 @@ void OnShutUp()
 {
     glDeleteTextures(1, &texture);
     glDeleteBuffers(1, &tbo);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

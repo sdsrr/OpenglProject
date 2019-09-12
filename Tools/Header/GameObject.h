@@ -3,7 +3,6 @@
 
 #include "../Header/Tools.h"
 
-
 class GObject
 {
 public:

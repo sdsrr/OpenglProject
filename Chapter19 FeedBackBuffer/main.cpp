@@ -1,9 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 GLMatrixStack modelviewStack;
 
@@ -33,7 +34,7 @@ void Display(void)
         glEnable(GL_RASTERIZER_DISCARD);
         glBindVertexArray(vaos[0]);
         //ÒªÔÚglBeginTransformFeedbackÇ°ÇÐ»»shader
-        shaderMgr.WriteFeedbackBuffer(param);
+        shaderMgr->WriteFeedbackBuffer(param);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
         glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, obj_feedback);
 
@@ -62,7 +63,7 @@ void Display(void)
         glBindVertexArray(vaos[1]);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_feedback);
 
-        shaderMgr.UseFeedbackBuffer(param);
+        shaderMgr->UseFeedbackBuffer(param);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
     modelviewStack.PopMatrix();
 
@@ -82,7 +83,8 @@ void OnStartUp()
 
     //init camera
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
+
     normalCamera.OnInit(640, 480, 50, 1, 2);
 
     //init texture
@@ -103,7 +105,7 @@ void OnStartUp()
     glEnableVertexAttribArray(3);
 
     //init feedback buffer object
-    GLuint program = shaderMgr.GetShaderId(STWriteFeedback);
+    GLuint program = shaderMgr->GetShaderId(STWriteFeedback);
     glTransformFeedbackVaryings(program, 3, verying_names, GL_INTERLEAVED_ATTRIBS);//
     glLinkProgram(program);
     glUseProgram(program);
@@ -133,7 +135,7 @@ void OnShutUp()
     glDeleteBuffers(1, &vbo_triangle);
     glDeleteTextures(1, &texture);
     glDeleteTransformFeedbacks(1, &obj_feedback);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

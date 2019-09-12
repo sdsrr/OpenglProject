@@ -1,10 +1,11 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 
 GLfloat angle;
@@ -28,16 +29,16 @@ void Display(void)
     //设置gl_fragdata[]与缓冲区映射关系
     glDrawBuffers(3, fboBuffers);
 
-    GLMatrixStack* modelviewStack = &triangle.modelviewStack;
+    GLMatrixStack* modelStack = &triangle.modelStack;
     glBindTexture(GL_TEXTURE_2D, texture2d);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetLightDirection(lightDirection);
     param.SetEnvironmentColor(ShaderMgr::ondine);
     param.colorMap[0] = 0;
-    //shaderMgr.UseDiffuse(param);
-    shaderMgr.DrawToFBO(param);
+    //shaderMgr->UseDiffuse(param);
+    shaderMgr->DrawToFBO(param);
     triangle.Draw();
 
     //还原默认fbo
@@ -80,12 +81,12 @@ void OnStartUp()
 
     Util::CheckFBO();
     gltMakeCylinder(triangle.batch, 1, 2, 3, 30, 30);
-    triangle.modelviewStack.Translate(0,0,-10);
-    triangle.modelviewStack.Rotate(angle+=2, 0,1,0);
+    triangle.modelStack.Translate(0,0,-10);
+    triangle.modelStack.Rotate(angle+=2, 0,1,0);
 
     // init camera
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit(1<<STFBO | 1<<STTexture2d);
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 
     //load texture
@@ -101,7 +102,7 @@ void OnShutUp()
     glDeleteTextures(1, &texture2d);
     glDeleteFramebuffers(1, &fbo);
     glDeleteRenderbuffers(4, rbo);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

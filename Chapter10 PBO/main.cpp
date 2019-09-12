@@ -2,6 +2,7 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/UtilTimer.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 UtilTimer timer;
 GLfloat angle = 0;
@@ -11,7 +12,7 @@ TriangleGObject torus;
 
 BaseShaderParam param;
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 
 GLuint textures[7];
@@ -38,9 +39,9 @@ static void Display()
     //绘制torus使用texture0纹理单元，textureid之前绑定过，不改变就不用再设置
     glActiveTexture(GL_TEXTURE0);
     param.SetDiffuseColor(whiteCol);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(torus.modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(torus.modelStack));
     param.colorMap[0] = 0;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     torus.Draw();
     timer.start();
 
@@ -63,8 +64,8 @@ static void Display()
         param.colorMap[2] = 3;
         param.colorMap[3] = 4;
         param.colorMap[4] = 5;
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
-        shaderMgr.UseBlurShader(param);
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelStack));
+        shaderMgr->UseBlurShader(param);
         triangle.Draw();
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     }
@@ -83,8 +84,8 @@ static void Display()
         param.colorMap[2] = 3;
         param.colorMap[3] = 4;
         param.colorMap[4] = 5;
-        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
-        shaderMgr.UseBlurShader(param);
+        param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelStack));
+        shaderMgr->UseBlurShader(param);
         triangle.Draw();
     }
 
@@ -117,14 +118,14 @@ void OnStartUp()
     triangle.batch.MultiTexCoord2f(0, 0, 1);
     triangle.batch.Vertex3f(0, 1, 0);
     triangle.batch.End();
-    triangle.modelviewStack.Translate(0,0,-2);
+    triangle.modelStack.Translate(0,0,-2);
 
     gltMakeTorus(torus.batch, 4, 1, 40, 40);
-    torus.modelviewStack.Translate(0,0,-15);
-    torus.modelviewStack.Rotate(angle+=2,0,1,0);
+    torus.modelStack.Translate(0,0,-15);
+    torus.modelStack.Rotate(angle+=2,0,1,0);
 
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit(1<<STTexture2d | 1<<STBlur);
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 
     //一个color有rgb3个byte
@@ -160,7 +161,7 @@ void OnStartUp()
 
 void OnShutUp()
 {
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
     for (int i = 0 ; i < 7; i++)
     {

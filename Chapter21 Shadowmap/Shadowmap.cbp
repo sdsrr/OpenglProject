@@ -43,12 +43,15 @@
 			<Add directory="D:/CodeBlocks/MinGW/lib" />
 		</Linker>
 		<Unit filename="../Tools/Header/Camera.h" />
+		<Unit filename="../Tools/Header/CommonStruct.h" />
 		<Unit filename="../Tools/Header/FreetypeFont.h" />
 		<Unit filename="../Tools/Header/GameObject.h" />
+		<Unit filename="../Tools/Header/Light.h" />
 		<Unit filename="../Tools/Header/ShaderMgr.h" />
 		<Unit filename="../Tools/Header/Tinyobjloader.h" />
 		<Unit filename="../Tools/Header/Tools.h" />
 		<Unit filename="../Tools/Header/Trackball.h" />
+		<Unit filename="../Tools/Header/UtilPrint.h" />
 		<Unit filename="../Tools/Header/UtilTimer.h" />
 		<Unit filename="../Tools/Shader/CameraBox/fragment_line.fp" />
 		<Unit filename="../Tools/Shader/CameraBox/fragment_normal.fp" />
@@ -67,10 +70,13 @@
 		<Unit filename="../Tools/Sources/Camera.cpp" />
 		<Unit filename="../Tools/Sources/FreetypeFont.cpp" />
 		<Unit filename="../Tools/Sources/GameObject.cpp" />
+		<Unit filename="../Tools/Sources/Light.cpp" />
 		<Unit filename="../Tools/Sources/ShaderMgr.cpp" />
 		<Unit filename="../Tools/Sources/Tinyobjloader.cpp" />
 		<Unit filename="../Tools/Sources/Tools.cpp" />
 		<Unit filename="../Tools/Sources/Trackball.cpp" />
+		<Unit filename="../Tools/Sources/UtilPrint.cpp" />
+		<Unit filename="../Tools/Sources/UtilTimer.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

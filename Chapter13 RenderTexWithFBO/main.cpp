@@ -1,9 +1,10 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 NormalCamera normalCamera;
 GLfloat lightDirection[] = {-1,0,1};
 
@@ -33,44 +34,44 @@ void Display(void)
     glDrawBuffers(1, fboBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLMatrixStack* modelviewStack = &triangle[0].modelviewStack;
+    GLMatrixStack* modelStack = &triangle[0].modelStack;
     param.SetDiffuseColor(ShaderMgr::ondine);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetLightDirection(lightDirection);
-    shaderMgr.UseDiffuse(param);
+    shaderMgr->UseDiffuse(param);
     triangle[0].Draw();
 
     //绘制到世界
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDrawBuffers(1, windowBuffer);
 
-    modelviewStack = &triangle[1].modelviewStack;
+    modelStack = &triangle[1].modelStack;
     param.SetDiffuseColor(ShaderMgr::ondine);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelviewStack));
-    param.SetMVMatrix(modelviewStack->GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(*modelStack));
+    param.SetMVMatrix(modelStack->GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(*modelStack));
     param.SetLightDirection(lightDirection);
-    shaderMgr.UseDiffuse(param);
+    shaderMgr->UseDiffuse(param);
     triangle[1].Draw();
 
     //绘制镜面，将fbo纹理作为主纹理
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     param.SetDiffuseColor(ShaderMgr::white);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(mirror.modelviewStack));
-    param.SetMVMatrix(mirror.modelviewStack.GetMatrix());
-    param.SetNormalMatrix(normalCamera.GetNormalMatrix(mirror.modelviewStack));
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(mirror.modelStack));
+    param.SetMVMatrix(mirror.modelStack.GetMatrix());
+    param.SetNormalMatrix(normalCamera.GetNormalMatrix(mirror.modelStack));
     param.colorMap[0] = 0;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     mirror.Draw();
 
     //绘制镜框
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, frameTex);
     param.colorMap[0] = 1;
-    shaderMgr.UseTexture2d(param);
+    shaderMgr->UseTexture2d(param);
     for (int i = 0; i < 4; i++)
         mirrorFrames[i].Draw();
 
@@ -112,7 +113,7 @@ void OnStartUp()
     mirror.batch.MultiTexCoord2f(0,1,1);
     mirror.batch.Vertex3f(20,20,0);
     mirror.batch.End();
-    mirror.modelviewStack.Translate(-10,-10,-30);
+    mirror.modelStack.Translate(-10,-10,-30);
 
     //init mirror frame
     float frame = 0.6f;
@@ -128,7 +129,7 @@ void OnStartUp()
     mirrorFrame->batch.MultiTexCoord2f(0,1,1);
     mirrorFrame->batch.Vertex3f(20,0,0);
     mirrorFrame->batch.End();
-    mirrorFrame->modelviewStack.Translate(-10,-10,-30);
+    mirrorFrame->modelStack.Translate(-10,-10,-30);
 
     mirrorFrame = &mirrorFrames[index++];
     mirrorFrame->batch.Begin(GL_TRIANGLE_STRIP,6,1);
@@ -141,7 +142,7 @@ void OnStartUp()
     mirrorFrame->batch.MultiTexCoord2f(0,1,1);
     mirrorFrame->batch.Vertex3f(20,20+frame,0);
     mirrorFrame->batch.End();
-    mirrorFrame->modelviewStack.Translate(-10,-10,-30);
+    mirrorFrame->modelStack.Translate(-10,-10,-30);
 
     mirrorFrame = &mirrorFrames[index++];
     mirrorFrame->batch.Begin(GL_TRIANGLE_STRIP,6,1);
@@ -154,7 +155,7 @@ void OnStartUp()
     mirrorFrame->batch.MultiTexCoord2f(0,1,1);
     mirrorFrame->batch.Vertex3f(0,20+frame,0);
     mirrorFrame->batch.End();
-    mirrorFrame->modelviewStack.Translate(-10,-10,-30);
+    mirrorFrame->modelStack.Translate(-10,-10,-30);
 
     mirrorFrame = &mirrorFrames[index++];
     mirrorFrame->batch.Begin(GL_TRIANGLE_STRIP,6,1);
@@ -167,7 +168,7 @@ void OnStartUp()
     mirrorFrame->batch.MultiTexCoord2f(0,1,1);
     mirrorFrame->batch.Vertex3f(20+frame,20+frame,0);
     mirrorFrame->batch.End();
-    mirrorFrame->modelviewStack.Translate(-10,-10,-30);
+    mirrorFrame->modelStack.Translate(-10,-10,-30);
 
     //init frame tex
     glActiveTexture(GL_TEXTURE1);
@@ -177,15 +178,15 @@ void OnStartUp()
 
     //init sphere
     gltMakeCube(triangle[0].batch, 1.5f);
-    triangle[0].modelviewStack.Translate(0,0,-15);
-    triangle[0].modelviewStack.Rotate(angle+=1.5f, 0, 1, 0);
+    triangle[0].modelStack.Translate(0,0,-15);
+    triangle[0].modelStack.Rotate(angle+=1.5f, 0, 1, 0);
 
     gltMakeCube(triangle[1].batch, 1.5f);
-    triangle[1].modelviewStack.Translate(0,0,-15);
-    triangle[1].modelviewStack.Rotate(angle+=1.5f, 0, 1, 0);
+    triangle[1].modelStack.Translate(0,0,-15);
+    triangle[1].modelStack.Rotate(angle+=1.5f, 0, 1, 0);
     //init shadermgr,camera
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     normalCamera.OnInit(640, 480, 50, 1, 2);
 }
 
@@ -195,7 +196,7 @@ void OnShutUp()
     glDeleteFramebuffers(1, &fbo);
     glDeleteTextures(1, &texture);
     glDeleteTextures(1, &frameTex);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

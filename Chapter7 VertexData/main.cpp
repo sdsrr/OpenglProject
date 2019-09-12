@@ -1,13 +1,14 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 BaseShaderParam param;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 GLShaderManager glShaderMgr;
 
 GLBatch rectangle;
-GLMatrixStack modelviewStack;
+GLMatrixStack modelStack;
 NormalCamera normalCamera;
 float color[] = {0.5f,0,0,1};
 
@@ -38,8 +39,8 @@ static void Display(void)
     glClearColor(1,1,1,1);
 
     param.SetDiffuseColor(color);
-    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelviewStack));
-    shaderMgr.UseDiffuse(param);
+    param.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(modelStack));
+    shaderMgr->UseDiffuse(param);
     rectangle.Draw();
 
     glBindVertexArray(vao);
@@ -95,16 +96,16 @@ void InitEBO()
 void OnShutup()
 {
     normalCamera.OnUnInit();
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
 }
 
 void OnStartup()
 {
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
     glShaderMgr.InitializeStockShaders();
 
     normalCamera.OnInit(640, 480, 50, 2, 1);
-    modelviewStack.Translate(0,0,-6);
+    modelStack.Translate(0,0,-6);
 
     //init rectangle
     rectangle.Begin(GL_TRIANGLES, 3, 1);

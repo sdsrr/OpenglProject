@@ -1,8 +1,12 @@
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/Tools.h"
+#include "../Tools/Header/Camera.h"
+#include "../Tools/Header/UtilPrint.h"
 
-BaseShaderParam shaderParam;
-ShaderMgr shaderMgr;
+BaseShaderParam param;
+ShaderMgr* shaderMgr;
+GLMatrixStack modelStack;
+
 GLfloat vertexs[] = {
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
@@ -28,8 +32,9 @@ static void Display(void)
     //解释顶点数组数据解析方式
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
-    shaderParam.SetDiffuseColor(color);
-    shaderMgr.UseSolidColor(shaderParam);
+    param.SetDiffuseColor(color);
+    param.SetMVPMatrix(modelStack.GetMatrix());
+    shaderMgr->UseSolidColor(param);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glutSwapBuffers();
@@ -38,12 +43,12 @@ static void Display(void)
 
 void OnStartUp()
 {
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
 }
 
 void OnShutUp()
 {
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
 }
 
 //使用纯色绘制一个三角形
@@ -65,7 +70,7 @@ int main(int argc, char *argv[])
     //初始化glew库
     if (glewInit() != GLEW_OK)
     {
-        Util::PrintString(1,  (char*)"Failed to initialize GLEW.\n");
+        UtilPrint::PrintString(1,  (char*)"Failed to initialize GLEW.\n");
         return -1;
     }
     OnStartUp();

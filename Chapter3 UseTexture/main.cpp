@@ -1,9 +1,10 @@
 #include "../Tools/Header/Tools.h"
 #include "../Tools/Header/ShaderMgr.h"
 #include "../Tools/Header/GameObject.h"
+#include "../Tools/Header/Camera.h"
 
 GLShaderManager shaderMgr_;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 BatchGObject triangle;
 BatchGObject cube;
 BaseShaderParam shaderParam;
@@ -60,7 +61,7 @@ GLfloat vertexs[]={-0.5f,0,0, 0.5f,0,0, -0.5f,1.0f,0};
 GLfloat texcoord[]={ 0.0f,0.0f, 1.0f,0.0f, 0,1.0f };
 M3DVector4f color={244.0f/255, 49.0f/255, 166.0f/255 ,0.0f};
 
-GLuint time;
+GLuint timeCount;
 NormalCamera normalCamera;
 GLMatrixStack* modelviewStack;
 
@@ -69,18 +70,18 @@ static void Display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1,1,1,1);
 
-    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelviewStack));
+    shaderParam.SetMVPMatrix(normalCamera.GetModelviewprojectMatrix(triangle.modelStack));
     shaderParam.SetDiffuseColor(color);
     shaderParam.colorMap[0] = 0;
 
     //use texture2d
     glBindTexture(GL_TEXTURE_2D, textureID);
-    shaderMgr.UseTexture2d(shaderParam);
+    shaderMgr->UseTexture2d(shaderParam);
 
     //use texture2d array
-    GLuint tick = (time++)/16%29;
+    GLuint tick = (timeCount++)/16%29;
     glBindTexture(GL_TEXTURE_2D_ARRAY, textureArrayID);
-    shaderMgr.UseTextureArray(shaderParam, tick);
+    shaderMgr->UseTextureArray(shaderParam, tick);
     triangle.Draw();
 
     //use cubemap
@@ -88,7 +89,7 @@ static void Display(void)
     //消除cubemap采样可能出现的缝隙
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubemap);
-    shaderMgr.UseCubeMap(shaderParam);
+    shaderMgr->UseCubeMap(shaderParam);
     cube.Draw();
 */
     glutSwapBuffers();
@@ -104,7 +105,7 @@ void OnStartUp()
 {
     //init shadermgr
     shaderMgr_.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
 
     //load texture
     glActiveTexture(GL_TEXTURE0);
@@ -132,15 +133,15 @@ void OnStartUp()
 
     //init camera
     normalCamera.OnInit(640, 480, 50, 1, 2);
-    triangle.modelviewStack.Translate(0,0,-3);
-    cube.modelviewStack.Translate(0,0,-3);
+    triangle.modelStack.Translate(0,0,-3);
+    cube.modelStack.Translate(0,0,-3);
 }
 
 void OnShutUp()
 {
     glDeleteTextures(1, &textureID);
     glDeleteTextures(29, texturesID);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
     normalCamera.OnUnInit();
 }
 

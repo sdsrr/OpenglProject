@@ -2,9 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="..\Tools\Shader\GeometryNormal\geometry.gp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Shader\Texture2D\fragment.fp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="222" topLine="3" />
+			<Cursor1 position="188" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\Tools\Sources\Tools.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -12,24 +12,14 @@
 			<Cursor1 position="7239" topLine="193" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Shader\GeometryNormal\vertex.vp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Shader\GeometryNormal\fragment.fp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="284" topLine="0" />
+			<Cursor1 position="29" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Shader\Texture2D\fragment.fp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Shader\Texture2D\vertex.vp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="188" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="15583" topLine="418" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="859" topLine="0" />
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\Tools\Header\ShaderMgr.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -37,14 +27,24 @@
 			<Cursor1 position="2690" topLine="58" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Shader\GeometryNormal\fragment.fp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Shader\GeometryNormal\geometry.gp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="29" topLine="0" />
+			<Cursor1 position="222" topLine="3" />
 		</Cursor>
 	</File>
-	<File name="..\Tools\Shader\Texture2D\vertex.vp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Tools\Sources\ShaderMgr.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="15583" topLine="418" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1285" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="..\Tools\Shader\GeometryNormal\vertex.vp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="284" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

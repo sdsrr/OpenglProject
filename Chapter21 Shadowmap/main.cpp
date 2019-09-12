@@ -56,7 +56,7 @@ BaseCamera& GetMainCamera()
 void DrawGround(BatchGObject& object)
 {
     BaseCamera& mainCamera = GetMainCamera();
-    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
@@ -65,13 +65,13 @@ void DrawGround(BatchGObject& object)
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETGround]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelStack));
     object.Draw();
 }
 
 void DrawGroundShadow(BatchGObject& object)
 {
-    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelStack));
     shaderMgr->WriteToShadowmap(param);
     object.Draw();
 }
@@ -79,7 +79,7 @@ void DrawGroundShadow(BatchGObject& object)
 void DrawCube(BatchGObject& object)
 {
     BaseCamera& mainCamera = GetMainCamera();
-    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetMVPMatrix(mainCamera.GetModelviewprojectMatrix(object.modelStack));
     param.colorMap[0] = 0;
     param.colorMap[1] = 1;
 
@@ -87,13 +87,13 @@ void DrawCube(BatchGObject& object)
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETCubeMaintex]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    shaderMgr->UseShadowmap(param, shadowCamera.GetModelviewprojectMatrix(object.modelStack));
     object.Draw();
 }
 
 void DrawCubeShadow(BatchGObject& object)
 {
-    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetMVPMatrix(shadowCamera.GetModelviewprojectMatrix(object.modelStack));
     shaderMgr->WriteToShadowmap(param);
     object.Draw();
 }
@@ -102,7 +102,7 @@ void DrawDepthTexture(BatchGObject& object)
 {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textures[(int)ETDepth]);
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(object.modelviewStack));
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(object.modelStack));
     param.SetDiffuseColor(ShaderMgr::white);
     param.colorMap[0] = 1;
     shaderMgr->UseTexture2d(param);
@@ -112,14 +112,14 @@ void DrawDepthTexture(BatchGObject& object)
 void DrawCharText()
 {
     param.colorMap[0] = 0;
-    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelviewStack));
+    param.SetMVPMatrix(uiCamera.GetModelviewprojectMatrix(charTex.modelStack));
     shaderMgr->UseFont(param, fontCol);
     charTex.Draw();
 }
 
 void RoateCube(BatchGObject& object)
 {
-    object.modelviewStack.Rotate(2.0f, 0, 1, 0);
+    object.modelStack.Rotate(2.0f, 0, 1, 0);
 }
 
 void DrawShadowCamera()
@@ -184,16 +184,16 @@ void OnStartUp()
     //init triangles
     BatchGObject& gameobj01 = triangles[(int)EOCube01];
     gltMakeCube(gameobj01.batch, 2.0f);
-    gameobj01.modelviewStack.Translate(0, 0, -15);
+    gameobj01.modelStack.Translate(0, 0, -15);
 
     BatchGObject& gameobj02 = triangles[(int)EOCube02];
     gltMakeCube(gameobj02.batch, 1.0f);
-    gameobj02.modelviewStack.Translate(-10, 5, -15);
-    gameobj02.modelviewStack.Scale(5,1,1);
+    gameobj02.modelStack.Translate(-10, 5, -15);
+    gameobj02.modelStack.Scale(5,1,1);
 
     BatchGObject& ground = triangles[(int)EOGround];
-    ground.modelviewStack.Translate(-10, -4, -20);
-    ground.modelviewStack.Rotate(90,1,0,0);
+    ground.modelStack.Translate(-10, -4, -20);
+    ground.modelStack.Rotate(90,1,0,0);
     ground.batch.Begin(GL_TRIANGLE_STRIP, 6, 1);
     ground.batch.MultiTexCoord2f(0,0,0);
     ground.batch.Vertex3f(-50,-50,0);
@@ -226,8 +226,8 @@ void OnStartUp()
     depth.batch.MultiTexCoord2f(0,0,1);
     depth.batch.Vertex3f(0,1,0);
     depth.batch.End();
-    depth.modelviewStack.Scale(60,60,1);
-    depth.modelviewStack.Translate(-2.7,-2,0);
+    depth.modelStack.Scale(60,60,1);
+    depth.modelStack.Translate(-2.7,-2,0);
     //init camera
     glShaderMgr.InitializeStockShaders();
     shaderMgr = ShaderMgr::GetInstance();

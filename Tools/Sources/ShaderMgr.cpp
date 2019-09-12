@@ -162,7 +162,7 @@ void ShaderMgr::InitShadowmap(ShaderType type)
 {
     BaseShader* shadowShader = shaderList[(int)type];
     InitBaseShader(shadowShader);
-    shadowmapShader_iLightMatrix = glGetUniformLocation(shadowShader->id, "lights");
+    shadowmapShader_iLightMatrix = glGetUniformLocation(shadowShader->id, "lightMatrix");
 }
 
 void ShaderMgr::InitFont(ShaderType type)

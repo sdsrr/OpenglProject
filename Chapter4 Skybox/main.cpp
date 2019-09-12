@@ -1,7 +1,8 @@
 #include "../Tools/Header/ShaderMgr.h"
+#include "../Tools/Header/Camera.h"
 
 GLShaderManager glShaderMgr;
-ShaderMgr shaderMgr;
+ShaderMgr* shaderMgr;
 GLBatch cubeBatch;
 GLTriangleBatch sphereBatch;
 BaseShaderParam shaderParam;
@@ -62,7 +63,7 @@ static void display(void)
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
         shaderParam.SetMVPMatrix(tranformPipeline.GetModelViewProjectionMatrix());
         shaderParam.colorMap[0] = 0;
-        shaderMgr.UseSkyBox(shaderParam);
+        shaderMgr->UseSkyBox(shaderParam);
         glDisable(GL_CULL_FACE);
         cubeBatch.Draw();
         glEnable(GL_CULL_FACE);
@@ -119,7 +120,7 @@ static void key(unsigned char key, int x, int y)
 void onStartUp()
 {
     glShaderMgr.InitializeStockShaders();
-    shaderMgr.OnInit();
+    shaderMgr = ShaderMgr::GetInstance();
 
     tranformPipeline.SetMatrixStacks(modelviewMatrixStack, projectMatrixStack);
     frustum.SetPerspective(50, 640/480, 0.1f, 100);
@@ -140,7 +141,7 @@ void onStartUp()
 void onShutUp()
 {
     glDeleteTextures(1, &textureId);
-    shaderMgr.OnUnInit();
+    shaderMgr->OnUnInit();
 }
 
 int main(int argc, char *argv[])
