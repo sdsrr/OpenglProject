@@ -62,11 +62,18 @@ const M3DMatrix44f& BaseCamera::GetProjectMatrix()
     return matrix;
 }
 
+const M3DMatrix44f& BaseCamera::GetViewMatrix()
+{
+    static M3DMatrix44f vector;
+    frame.GetMatrix(vector);
+    return vector;
+}
+
 const M3DMatrix44f& BaseCamera::GetModelviewMatrix(GLMatrixStack& modelStack)
 {
     static M3DMatrix44f vector;
     frame.GetMatrix(vector);
-    m3dScaleMatrix33(vector, modelStack.GetMatrix());
+    m3dScaleMatrix44(vector, modelStack.GetMatrix());
     return vector;
 }
 

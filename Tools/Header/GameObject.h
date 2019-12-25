@@ -16,6 +16,8 @@ class BatchGObject : public GObject
 public:
     BatchGObject();
     GLBatch batch;
+    void CreateCube(float length, float width, float height, int textureUnit);
+    void CreateTriangle(float length, float width, int textureUnit);
     virtual void Draw();
 };
 

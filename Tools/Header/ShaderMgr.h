@@ -30,6 +30,10 @@ enum ShaderType
     STDeferredOut,
     STDeferredIn,
     STSphereLight,
+    STSSAODeferredIn,
+    STCalcSSAO,
+    STSSAO,
+    //STAO,
     STMax,
 };
 
@@ -38,6 +42,7 @@ class BaseShader
 public:
     GLuint id = -1;
     GLint mMatrix;
+    GLint vMatrix;
     GLint mvMatrix;
     GLint mvpMatrix;
     GLint projectMatrix;
@@ -65,6 +70,7 @@ public:
     M3DMatrix44f mvpMatrix;
     M3DMatrix44f mvMatrix;
     M3DMatrix44f mMatrix;
+    M3DMatrix44f vMatrix;
     M3DMatrix44f projectMatrix;
     M3DMatrix33f normalMatrix;
     int deltatime;
@@ -78,6 +84,7 @@ public:
     void SetMVPMatrix(const M3DMatrix44f matrix);
     void SetMVMatrix(const M3DMatrix44f matrix);
     void SetMMatrix(const M3DMatrix44f matrix);
+    void SetViewMatrix(const M3DMatrix44f matrix);
     void SetProjectMatrix(const M3DMatrix44f matrix);
     void SetNormalMatrix(const M3DMatrix44f matrix);
     void SetCameraPosition(GLfloat x, GLfloat y, GLfloat z);
@@ -114,7 +121,10 @@ private:
     GLint bloorMixShader_iBlurLevel;
     GLint bloorBlurShader_iOffset;
     GLuint shadowmapShader_iLightMatrix;
-
+    GLuint ssaoShader_iNearPlane;
+    GLuint ssaoShader_iFarPlane;
+    GLuint ssaoCalShader_iKernel;
+    GLuint ssaoCalShader_iScene;
 
 public:
     static GLfloat white[];
@@ -142,12 +152,19 @@ public:
     void InitShadowmap(ShaderType type);
     void InitSphereLight(ShaderType type);
     void InitDeferredIn(ShaderType type);
+    void InitSSAO(ShaderType type);
+    void InitSSAODeferredIn(ShaderType type);
+    void InitSTCalcSSAO(ShaderType type);
 
     void InitBaseShader(ShaderType type);
     void InitBaseShader(BaseShader* shader);
     void InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& param);
 public:
     GLuint GetShaderId(ShaderType type);
+    void UseSSAO(const BaseShaderParam& param);
+    void UseSSAODeferred(const BaseShaderParam& param, float nearPlane, float farPlane);
+    void UseCalcSSAO(const BaseShaderParam& param, float length, float width);
+
     void UseSolidColor(const BaseShaderParam& param);
     void UseDiffuse(const BaseShaderParam& param);
     void UseTexture2d(const BaseShaderParam& param);

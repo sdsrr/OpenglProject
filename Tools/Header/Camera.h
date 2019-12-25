@@ -43,6 +43,7 @@ public:
     void RefreshProjectStack();
 
     const M3DMatrix44f& GetProjectMatrix();
+    const M3DMatrix44f& GetViewMatrix();
     const M3DMatrix44f& GetModelviewMatrix(GLMatrixStack& modelStack);
     const M3DMatrix44f& GetModelviewprojectMatrix(GLMatrixStack& modelStack);
     const M3DMatrix33f& GetNormalMatrix(GLMatrixStack& modelStack);

@@ -27,6 +27,7 @@
 #include <vector>
 #include <list>
 #include <ctime>
+#include <random>
 
 // OpenEXR headers
 #include <ImfRgbaFile.h>
@@ -72,6 +73,7 @@ public:
     static void CheckErrors(std::string desc);
     static void UpdateFrameRate();
     static void CheckFBO();
+    static float Lerp(float a, float b, float c);
     //result = origin + direction * distance
     static void MoveVector(M3DVector3f& result, const M3DVector3f& origin, const M3DVector3f& direction, GLfloat distance);
     //result = ((p1-origin)+(p2-origin)+(p3-origin))/3

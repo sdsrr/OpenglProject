@@ -17,6 +17,7 @@ void BaseShaderParam::SetDiffuseColor(M3DVector3f color, float alpha) {memcpy(di
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetViewMatrix(const M3DMatrix44f matrix){memcpy(vMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(projectMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetMMatrix(const M3DMatrix44f matrix){memcpy(mMatrix, matrix, 16*sizeof(float));}
@@ -64,6 +65,7 @@ void ShaderMgr::InitBaseShader(BaseShader* shader)
     shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
     shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
     shader->mMatrix = glGetUniformLocation(shader->id, "mMatrix");
+    shader->vMatrix = glGetUniformLocation(shader->id, "vMatrix");
     shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
     shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
     shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
@@ -112,6 +114,9 @@ void ShaderMgr::InitShaders()
     shaderList[STDeferredOut] = new BaseShader("Tools/Shader/DeferredRender/vertex_out.vp","Tools/Shader/DeferredRender/fragment_out.fp");
     shaderList[STDeferredIn] = new BaseShader("Tools/Shader/DeferredRender/vertex_in.vp","Tools/Shader/DeferredRender/fragment_in.fp");
     shaderList[STSphereLight] = new BaseShader("Tools/Shader/SphereLight/vertex.vp","Tools/Shader/SphereLight/fragment.fp");
+    shaderList[STSSAO] = new BaseShader("Tools/Shader/SSAO/vertex.vp","Tools/Shader/SSAO/fragment.fp");
+    shaderList[STSSAODeferredIn] = new BaseShader("Tools/Shader/SSAO/vertex_deferred_in.vp","Tools/Shader/SSAO/fragment_deferred_in.fp");
+    shaderList[STCalcSSAO] = new BaseShader("Tools/Shader/SSAO/vertex_ssao.vp","Tools/Shader/SSAO/fragment_ssao.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -141,6 +146,31 @@ void ShaderMgr::InitFunctions()
     initfunctions[STDeferredOut] = (VoidDeldgate)&ShaderMgr::InitBaseShader;
     initfunctions[STDeferredIn] = (VoidDeldgate)&ShaderMgr::InitDeferredIn;
     initfunctions[STSphereLight] = (VoidDeldgate)&ShaderMgr::InitSphereLight;
+    initfunctions[STSSAO] = (VoidDeldgate)&ShaderMgr::InitSSAO;
+    initfunctions[STSSAODeferredIn] = (VoidDeldgate)&ShaderMgr::InitSSAODeferredIn;
+    initfunctions[STCalcSSAO] = (VoidDeldgate)&ShaderMgr::InitSTCalcSSAO;
+}
+
+void ShaderMgr::InitSTCalcSSAO(ShaderType type)
+{
+    BaseShader* shader = shaderList[(int)type];
+    InitBaseShader(shader);
+    ssaoCalShader_iKernel = glGetUniformLocation(shader->id, "samples");
+    ssaoCalShader_iScene = glGetUniformLocation(shader->id, "scene");
+}
+
+void ShaderMgr::InitSSAODeferredIn(ShaderType type)
+{
+    BaseShader* shader = shaderList[(int)type];
+    InitBaseShader(shader);
+    ssaoShader_iFarPlane = glGetUniformLocation(shader->id, "farPlane");
+    ssaoShader_iNearPlane = glGetUniformLocation(shader->id, "nearPlane");
+}
+
+void ShaderMgr::InitSSAO(ShaderType type)
+{
+    BaseShader* shader = shaderList[(int)type];
+    InitBaseShader(shader);
 }
 
 void ShaderMgr::InitDeferredIn(ShaderType type)
@@ -408,6 +438,7 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
         glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
         glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
         glUniformMatrix4fv(shader->mMatrix, 1, GL_TRUE, param.mMatrix);
+        glUniformMatrix4fv(shader->vMatrix, 1, GL_TRUE, param.vMatrix);
         glUniformMatrix4fv(shader->projectMatrix, 1, GL_TRUE, param.projectMatrix);
         glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
         glUniform3fv(shader->lightDirection, 1, param.lightDirection);
@@ -637,4 +668,25 @@ void ShaderMgr::UseSphereLight(const BaseShaderParam& param)
 {
     BaseShader* shader = shaderList[(int)STSphereLight];
     InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseSSAO(const BaseShaderParam& param)
+{
+    BaseShader* shader = shaderList[(int)STSSAO];
+    InitBaseShaderParam(shader, param);
+}
+
+void ShaderMgr::UseSSAODeferred(const BaseShaderParam& param, float nearPlane, float farPlane)
+{
+    BaseShader* shader = shaderList[(int)STSSAODeferredIn];
+    InitBaseShaderParam(shader, param);
+    glUniform1f(ssaoShader_iFarPlane, farPlane);
+    glUniform1f(ssaoShader_iNearPlane, nearPlane);
+}
+
+void ShaderMgr::UseCalcSSAO(const BaseShaderParam& param, float length, float width)
+{
+    BaseShader* shader = shaderList[(int)STCalcSSAO];
+    InitBaseShaderParam(shader, param);
+    glUniform2f(ssaoCalShader_iScene, length, width);
 }

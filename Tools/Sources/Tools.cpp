@@ -261,6 +261,11 @@ std::string Util::GetBaseDir(const std::string& filepath)
     return "";
 }
 
+float Util::Lerp(float a, float b, float c)
+{
+    return b * c + (1 - c) * a;
+}
+
 void Util::NormalizeVector(vec3 &v)
 {
     float len2 = v.v[0] * v.v[0] + v.v[1] * v.v[1] + v.v[2] * v.v[2];
