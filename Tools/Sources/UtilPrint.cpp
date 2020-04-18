@@ -23,23 +23,31 @@ void UtilPrint::PrintString(int count, char* str, ...)
 
 void UtilPrint::PrintMatrix44f(M3DMatrix44f matrix)
 {
+    /*
     for (int n = 0; n < 4; n++)
     {
         for (int m = 0; m < 4; m++)
-            std::cout<<matrix[n+4*m]<<" ";
+            std::cout<<matrix[n*4+m]<<" ";
         std::cout<<'\n';
     }
+    */
+    for (int i=0; i< 16; i++)
+        std::cout<<matrix[i]<<" ";
     std::cout<<'\n';
 }
 
 void UtilPrint::PrintMatrix44f(const M3DMatrix44f matrix)
 {
+    /*
     for (int n = 0; n < 4; n++)
     {
         for (int m = 0; m < 4; m++)
-            std::cout<<matrix[n+4*m]<<" ";
+            std::cout<<matrix[n*4+m]<<" ";
         std::cout<<'\n';
     }
+    */
+    for (int i=0; i< 16; i++)
+        std::cout<<matrix[i]<<" ";
     std::cout<<'\n';
 }
 

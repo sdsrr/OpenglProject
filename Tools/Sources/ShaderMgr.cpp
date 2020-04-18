@@ -16,12 +16,10 @@ BaseShader::BaseShader(const char* vp, const char* gp, const char* fp)
 void BaseShaderParam::SetDiffuseColor(M3DVector3f color, float alpha) {memcpy(diffuseColor, color, 4*sizeof(float)); diffuseColor[3] = alpha;}
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
-void BaseShaderParam::SetMVPMatrix(const M3DMatrix44f matrix){memcpy(mvpMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetModelMatrix(const M3DMatrix44f matrix){memcpy(mMatrix, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetModelMatrix(const float matrix[4][4]){memcpy(model, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetViewMatrix(const M3DMatrix44f matrix){memcpy(vMatrix, matrix, 16*sizeof(float));}
-void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(projectMatrix, matrix, 16*sizeof(float));}
-void BaseShaderParam::SetMVMatrix(const M3DMatrix44f matrix){memcpy(mvMatrix, matrix, 16*sizeof(float));}
-void BaseShaderParam::SetMMatrix(const M3DMatrix44f matrix){memcpy(mMatrix, matrix, 16*sizeof(float));}
-void BaseShaderParam::SetNormalMatrix(const M3DMatrix44f matrix){memcpy(normalMatrix, matrix, 16*sizeof(float));};
+void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(pMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetLightDirection(GLfloat direction[3]){memcpy(lightDirection, direction, 3*sizeof(float));}
 void BaseShaderParam::SetCameraPosition(GLfloat x, GLfloat y, GLfloat z)
 {
@@ -62,12 +60,9 @@ void ShaderMgr::InitBaseShader(ShaderType type)
 void ShaderMgr::InitBaseShader(BaseShader* shader)
 {
     shader->id = LoadShader(Util::GetFullPath(shader->vp), Util::GetFullPath(shader->gp), Util::GetFullPath(shader->fp));
-    shader->mvpMatrix = glGetUniformLocation(shader->id, "mvpMatrix");
-    shader->mvMatrix = glGetUniformLocation(shader->id, "mvMatrix");
     shader->mMatrix = glGetUniformLocation(shader->id, "mMatrix");
     shader->vMatrix = glGetUniformLocation(shader->id, "vMatrix");
-    shader->projectMatrix = glGetUniformLocation(shader->id, "projectMatrix");
-    shader->normalMatrix = glGetUniformLocation(shader->id, "normalMatrix");
+    shader->pMatrix = glGetUniformLocation(shader->id, "pMatrix");
     shader->lightDirection = glGetUniformLocation(shader->id, "lightDirection");
     shader->diffuseColor = glGetUniformLocation(shader->id, "diffuseColor");
     shader->cameraPosition = glGetUniformLocation(shader->id, "cameraPosition");
@@ -165,6 +160,9 @@ void ShaderMgr::InitSSAODeferredIn(ShaderType type)
     InitBaseShader(shader);
     ssaoShader_iFarPlane = glGetUniformLocation(shader->id, "farPlane");
     ssaoShader_iNearPlane = glGetUniformLocation(shader->id, "nearPlane");
+    glBindFragDataLocation(shader->id, 0, "vPosition");
+    glBindFragDataLocation(shader->id, 1, "vNormal");
+    glLinkProgram(shader->id);
 }
 
 void ShaderMgr::InitSSAO(ShaderType type)
@@ -435,12 +433,10 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
     if (shader != NULL)
     {
         glUseProgram(shader->id);
-        glUniformMatrix4fv(shader->mvpMatrix, 1, GL_TRUE, param.mvpMatrix);
-        glUniformMatrix4fv(shader->mvMatrix, 1, GL_TRUE, param.mvMatrix);
-        glUniformMatrix4fv(shader->mMatrix, 1, GL_TRUE, param.mMatrix);
-        glUniformMatrix4fv(shader->vMatrix, 1, GL_TRUE, param.vMatrix);
-        glUniformMatrix4fv(shader->projectMatrix, 1, GL_TRUE, param.projectMatrix);
-        glUniformMatrix3fv(shader->normalMatrix, 1, GL_TRUE, param.normalMatrix);
+        //glUniformMatrix4fv param3:false列优先 true行优先(这里指参数matrix的格式是列优先还是行优先,都会被opengl转化为列优先)
+        glUniformMatrix4fv(shader->mMatrix, 1, GL_FALSE, param.mMatrix);//&param.model[0][0]
+        glUniformMatrix4fv(shader->vMatrix, 1, GL_FALSE, param.vMatrix);
+        glUniformMatrix4fv(shader->pMatrix, 1, GL_FALSE, param.pMatrix);
         glUniform3fv(shader->lightDirection, 1, param.lightDirection);
         glUniform4fv(shader->cameraPosition, 1, param.cameraPosition);
         glUniform4fv(shader->diffuseColor, 1, param.diffuseColor);
@@ -459,20 +455,12 @@ void ShaderMgr::PrintBaseShader(BaseShader* shader, const BaseShaderParam* param
         m3dLoadIdentity44(identity);
         printf("shader id %d\n", shader->id);
 
-        printf("mvpMatrix %d\n", shader->mvpMatrix);
-        UtilPrint::PrintMatrix44f(param != NULL ? param->mvpMatrix : identity);
-
-        printf("mMatrix %d\n", shader->mMatrix);
+        printf("modelMatrix %d\n", shader->mMatrix);
         UtilPrint::PrintMatrix44f(param != NULL ? param->mMatrix : identity);
-
-        printf("mvMatrix %d\n", shader->mvMatrix);
-        UtilPrint::PrintMatrix44f(param != NULL ? param->mvMatrix : identity);
-
-        printf("normalMatrix %d\n", shader->normalMatrix);
-        UtilPrint::PrintMatrix44f(param != NULL ? param->normalMatrix : identity);
-
-        printf("projectMatrix %d\n", shader->projectMatrix);
-        UtilPrint::PrintMatrix44f(param != NULL ? param->projectMatrix : identity);
+        printf("viewMatrix %d\n", shader->vMatrix);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->vMatrix : identity);
+        printf("projectMatrix %d\n", shader->pMatrix);
+        UtilPrint::PrintMatrix44f(param != NULL ? param->pMatrix : identity);
 
         printf("colorMap00 %d %d\n", shader->colorMap[0], param != NULL ? param->colorMap[0] : -1);
         printf("colorMap01 %d %d\n", shader->colorMap[1], param != NULL ? param->colorMap[1] : -1);
@@ -494,6 +482,7 @@ void ShaderMgr::UseDiffuse(const BaseShaderParam& param)
     //调用useprogram之后设置参数
     BaseShader* diffuseShader = shaderList[(int)STDiffuse];
     InitBaseShaderParam(diffuseShader, param);
+    PrintBaseShader(diffuseShader, &param);
 }
 
 void ShaderMgr::UseTexture2d(const BaseShaderParam& param)

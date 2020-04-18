@@ -1,13 +1,13 @@
 #include "../Header/Camera.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void BaseCamera::DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix,const M3DMatrix33f normalMatrix)
+void BaseCamera::DrawBox(const M3DMatrix44f modelMatrix,const M3DMatrix44f viewMatrix, const M3DMatrix44f projectMatrix)
 {
     ShaderMgr* shaderMgr = ShaderMgr::GetInstance();
     param.SetDiffuseColor(ShaderMgr::red);
-    param.SetMVMatrix(mvMatrix);
+    param.SetModelMatrix(modelMatrix);
+    param.SetViewMatrix(viewMatrix);
     param.SetProjectMatrix(projectMatrix);
-    param.SetNormalMatrix(normalMatrix);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -19,11 +19,13 @@ void BaseCamera::DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f project
     gObject[(int)COBox].Draw();
 }
 
-void BaseCamera::DrawLine(const M3DMatrix44f mvpMatrix)
+void BaseCamera::DrawLine(const M3DMatrix44f modelMatrix,const M3DMatrix44f viewMatrix, const M3DMatrix44f projectMatrix)
 {
     ShaderMgr* shaderMgr = ShaderMgr::GetInstance();
     param.SetDiffuseColor(ShaderMgr::red);
-    param.SetMVPMatrix(mvpMatrix);
+    param.SetModelMatrix(modelMatrix);
+    param.SetViewMatrix(viewMatrix);
+    param.SetProjectMatrix(projectMatrix);
     shaderMgr->UseSolidColor(param);
     gObject[(int)COLine].Draw();
 }

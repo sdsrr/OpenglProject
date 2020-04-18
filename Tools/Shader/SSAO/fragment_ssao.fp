@@ -21,17 +21,15 @@ void main(void)
     float radius = 0.3;
     //计算噪声图采样uv
     vec2 noiseUV = vec2(scene.x/4, scene.y/4) * texcoord;
-    //xy随机向量作为像素点切线空间的切线方向
+    //xy平面随机向量,作为像素点切线空间的切线
     vec3 randVec = texture(colorMap03, noiseUV).xyz;
-    //模型空间坐标
+    //视图空间坐标
     vec3 position = texture(colorMap00, texcoord).xyz;
-    //切向空间法线,这里垂直z轴
-    //vec3 normal = vec3(0, 0, 1);
+    //视图空间法线,这里垂直z轴
     vec3 normal = normalize(texture(colorMap01, texcoord).xyz);
 
-    //切线空间切线方向即垂直z轴的随机向量
-    //vec3 tangent = normalize(randVec);
-    //由randVec构造tangent,保证tangent与normal垂直
+
+    //normal是视图空间向量,将切线空间下的randVec映射到视图空间(通过垂直关系),感觉转化并不严谨??
     vec3 tangent = normalize(randVec - normal * dot(randVec, normal));
     //垂直normal-tangent的有两个向量,不考虑方向?
     vec3 bittangent = cross(normal, tangent);
@@ -46,10 +44,12 @@ void main(void)
         vec4 offset = vec4(kernel, 1) * projectMatrix;
         offset.xyz /= offset.w;
         offset.xyz = offset.xyz * 0.5 +0.5;
-        float depth = texture(colorMap02, offset.xy).r;
+        //位置贴图通过ndc坐标采样获取深度
+        float depth = texture(colorMap00, offset.xy).z;
         //采样点如果超过radius范围,则舍弃
-        float rangeCheck = smoothstep(0, 1, radius / abs(kernel.z - depth));
+        float rangeCheck = smoothstep(0, 1, radius / abs(position.z - depth));
         occlusion += (depth >= kernel.z ? 1 : 0) * rangeCheck;
     }
+    occlusion = 1 - occlusion/64.0;
     vFragColor = vec4(occlusion,occlusion,occlusion,1);
 }

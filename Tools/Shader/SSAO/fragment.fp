@@ -29,12 +29,12 @@ void main(void)
     vec3 light = lightDirection * matrix;
 
     //diffuse
-    vec4 diffuse = diffuseColor * max(dot(normalize(light), normalize(normal)), 0);
+    vec4 diffuse = diffuseColor * max(dot(normalize(lightDirection), normalize(normal)), 0);
 
     //speculer
     vec4 speculer = vec4(0);
 
-    vec4 color = (speculer + diffuse);
+    vec4 color = (speculer + diffuse) * ssao;
     //frag is background which normal data is zero
     vFragColor = lerp(color, background, step(length(normal), 0));
 }

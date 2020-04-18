@@ -5,20 +5,18 @@ layout (location = 1) in vec4 vColor;
 layout (location = 2) in vec3 vNormal;
 layout (location = 3) in vec2 vTexCoord;
 
-uniform mat4 mvpMatrix;
-uniform mat4 mvMatrix;
-//将normal从模型空间转化到世界空间
-uniform mat3 normalMatrix;
-uniform vec3 lightDirection;
+uniform mat4 mMatrix;
+uniform mat4 vMatrix;
+uniform mat4 pMatrix;
 
 out vec4 color;
 out vec3 normal;
-out vec3 light;
 
 void main(void)
 {
     color = vColor;
-    light = lightDirection;
-    normal = vNormal * normalMatrix;
-    gl_Position = vVertex * mvpMatrix;
+    mat4 mvMatrix = mMatrix * vMatrix;
+    normal = transpose(inverse(mat3(mvMatrix))) * vNormal;
+    //gl_Position = vVertex * mMatrix * vMatrix * pMatrix;
+    gl_Position = pMatrix * vMatrix * mMatrix * vVertex;
 }

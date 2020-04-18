@@ -34,7 +34,7 @@ enum EFrameBuf
     EFBMax,
 };
 
-const int MaxCount = 1;
+const int MaxCount = 10;
 
 GLuint uniformBuf;
 BaseShaderParam param;
@@ -76,30 +76,6 @@ void DrawDeferred()
         param.SetMVMatrix(sceneCamera.GetModelviewMatrix(object.modelStack));
         param.SetMVPMatrix(sceneCamera.GetModelviewprojectMatrix(object.modelStack));
         shaderMgr->UseSSAODeferred(param, 0.1f, 1000);
-        object.Draw();
-    }
-}
-
-void DrawDeferred1()
-{
-    //draw to deferred framebuffer
-    glClearColor(1,1,1,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    for (int i = 0 ; i < MaxCount; i++)
-    {
-        BatchGObject& object = objects[i];
-        param.SetMVPMatrix(sceneCamera.GetModelviewprojectMatrix(object.modelStack));
-        param.SetLightDirection(0,0,1);
-        param.SetDiffuseColor(ShaderMgr::white, 1);
-        shaderMgr->UseDiffuse(param);
-        object.Draw();
-    }
-    for (int i = 0 ; i < MaxCount; i++)
-    {
-        BatchGObject& object = objects[i];
-        param.SetMVPMatrix(sceneCamera.GetModelviewprojectMatrix(object.modelStack));
-        shaderMgr->DrawNormal(param, 5);
         object.Draw();
     }
 }
@@ -168,7 +144,7 @@ void Display(void)
     DrawScene();
     //绘制各阶段texture
     DrawTexture();
-    //DrawDeferred1();
+
     glutSwapBuffers();
 }
 
@@ -182,6 +158,7 @@ void CreateCubeObject()
         object.CreateCube(vector[0], vector[1], vector[2], 1);
 
         Util::RandomVector3(vector, 30, 30 ,30);
+        object.modelStack.LoadIdentity();
         object.modelStack.Translate(vector[0],vector[1],-90 + vector[2]);
         Util::RandomVector3(vector, 180, 180 ,180);
         object.modelStack.Rotate(60, vector[0], vector[1], vector[2]);
@@ -280,8 +257,10 @@ void CreateSSAOKernel()
         //限制采样点更接近像素点
         GLfloat scale = i / 64.0f;
         scale = Util::Lerp(0.1f, 1, scale * scale);
-        vec.v[0] *= scale;
-        vec.v[1] *= scale;
+        float d = randomFloats(generator);
+        vec.v[0] *= scale * d;
+        vec.v[1] *= scale * d;
+        vec.v[2] *= scale * d;
         ssaoKernel.push_back(vec);
     }
 

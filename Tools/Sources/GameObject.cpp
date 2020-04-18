@@ -38,47 +38,47 @@ void BatchGObject::CreateCube(float length, float width, float height, int textu
     {
         //back
         batch.MultiTexCoord2f(0,0,0);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(0,0,0);
         batch.MultiTexCoord2f(0,0,1);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(0,height,0);
         batch.MultiTexCoord2f(0,1,0);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(length,0,0);
 
         //
         batch.MultiTexCoord2f(0,1,0);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(length,0, 0);
         batch.MultiTexCoord2f(0,0,1);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(0,height,0);
         batch.MultiTexCoord2f(0,1,1);
-        batch.Normal3f(0,0,-1);
+        batch.Normal3f(0,0,1);
         batch.Vertex3f(length,height,0);
     }
 
     {
         //font
         batch.MultiTexCoord2f(0,0,0);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(0,0,width);
         batch.MultiTexCoord2f(0,1,0);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(length,0,width);
         batch.MultiTexCoord2f(0,1,1);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(0,height,width);
 
         batch.MultiTexCoord2f(0,0,1);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(0,height,width);
         batch.MultiTexCoord2f(0,1,0);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(length,0,width);
         batch.MultiTexCoord2f(0,1,1);
-        batch.Normal3f(0,0,1);
+        batch.Normal3f(0,0,-1);
         batch.Vertex3f(length,height,width);
     }
 

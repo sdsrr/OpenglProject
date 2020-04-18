@@ -43,10 +43,7 @@ public:
     GLuint id = -1;
     GLint mMatrix;
     GLint vMatrix;
-    GLint mvMatrix;
-    GLint mvpMatrix;
-    GLint projectMatrix;
-    GLint normalMatrix;
+    GLint pMatrix;
     GLint diffuseColor;
     GLint lightDirection;
     GLint cameraPosition;
@@ -67,12 +64,11 @@ class BaseShaderParam
 public:
     M3DVector4f environmentColor;
     M3DVector4f diffuseColor;
-    M3DMatrix44f mvpMatrix;
-    M3DMatrix44f mvMatrix;
     M3DMatrix44f mMatrix;
     M3DMatrix44f vMatrix;
-    M3DMatrix44f projectMatrix;
+    M3DMatrix44f pMatrix;
     M3DMatrix33f normalMatrix;
+    float model[4][4];
     int deltatime;
     GLint colorMap[6];
     GLfloat lightDirection[3];
@@ -81,9 +77,8 @@ public:
     void SetDiffuseColor(M3DVector3f color, float alpha);
     void SetDiffuseColor(M3DVector4f color);
     void SetEnvironmentColor(M3DVector4f color);
-    void SetMVPMatrix(const M3DMatrix44f matrix);
-    void SetMVMatrix(const M3DMatrix44f matrix);
-    void SetMMatrix(const M3DMatrix44f matrix);
+    void SetModelMatrix(const M3DMatrix44f matrix);
+    void SetModelMatrix(const float matrix[4][4]);
     void SetViewMatrix(const M3DMatrix44f matrix);
     void SetProjectMatrix(const M3DMatrix44f matrix);
     void SetNormalMatrix(const M3DMatrix44f matrix);

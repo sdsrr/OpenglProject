@@ -79,23 +79,24 @@ static void Display_normal()
 
     //旋转三角形
     angle += delta*30;
+    //移动以相对坐标移动
+    m3dTranslationMatrix44(modelMatrix, -5, 0, 0);
+    //旋转以自身为中心旋转
+    //先移动再旋转,否则效果是绕世界坐标原点旋转
     m3dRotationMatrix44(modelMatrix, angle, 0, 1, 0);
 
-    M3DMatrix44f mvMatrix;
-    m3dMatrixMultiply44(mvMatrix, viewMatrix, modelMatrix);
-
-    M3DMatrix44f mvpMatrix;
-    m3dMatrixMultiply44(mvpMatrix, frustum.GetProjectionMatrix(), mvMatrix);
-    param.SetMVPMatrix(mvMatrix);
+    param.SetModelMatrix(modelMatrix);
+    param.SetViewMatrix(viewMatrix);
+    param.SetProjectMatrix(frustum.GetProjectionMatrix());
+    param.SetLightDirection(0,0,1);
     param.SetDiffuseColor(color);
-    param.colorMap[0] = 0;
     shaderMgr->UseDiffuse(param);
     //shaderMgr_.UseStockShader(GLT_SHADER_FLAT, mvpMatrix, vRed);
     batch.Draw();
     glutSwapBuffers();
 }
 
-//使用几何变换管线
+//draw triangle
 static void Display_transformpiple()
 {
     const double time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
@@ -105,13 +106,27 @@ static void Display_transformpiple()
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //旋转三角形
+    //roate triangle
     angle += delta*30;
 
     modelMatrixStack.PushMatrix();
+    modelMatrixStack.Translate(0,0,-5);
     modelMatrixStack.Rotate(angle, 0, 1, 0);
-    param.SetMVPMatrix(transformPipeline.GetModelViewProjectionMatrix());
+
+    const float model[4][4]=
+    {
+		1.0f, 0.0f, 0.0f, -5,
+		0.0f, 1.0f, 0.0f, -1,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0, 0, 0, 0,
+    };
+
+    //param.SetModelMatrix(model);
+    param.SetModelMatrix(modelMatrixStack.GetMatrix());
+    param.SetViewMatrix(viewMatrix);
+    param.SetProjectMatrix(frustum.GetProjectionMatrix());
     param.SetDiffuseColor(color);
+    param.SetLightDirection(0,0,1);
     shaderMgr->UseDiffuse(param);
     modelMatrixStack.PopMatrix();
 
@@ -131,18 +146,20 @@ void OnStartUp()
 
     //初始相机
     //frustum.SetOrthographic(-1, 1, -1 ,1, -1, 1);
-    frustum.SetPerspective(60, 1, 1, 100);
+    frustum.SetPerspective(60, 640/480.0f, 1, 100);
     projectMatrixStack.LoadMatrix(frustum.GetProjectionMatrix());
-    modelMatrixStack.Translate(0,0,-3);
 
     shaderMgr = ShaderMgr::GetInstance();
     shaderMgr_.InitializeStockShaders();
     batch.Begin(GL_TRIANGLES, 3);
     batch.Color4f(1,0,0,1);
+    batch.Normal3f(0,0,1);
     batch.Vertex3f(-0.5f,0.0f,0.0f);
     batch.Color4f(0,1,0,1);
+    batch.Normal3f(0,0,1);
     batch.Vertex3f(0.5f,0.0f,0.0f);
     batch.Color4f(0,0,1,1);
+    batch.Normal3f(0,0,1);
     batch.Vertex3f(0.0f,0.5f,0.0f);
     batch.End();
 }
@@ -168,6 +185,7 @@ int main(int argc, char *argv[])
     glutDisplayFunc(Display_transformpiple);
     glutKeyboardFunc(Key);
     glutIdleFunc(Idle);
+    //glEnable(GL_CULL_FACE);
 
     if (GLEW_OK != glewInit())
     {

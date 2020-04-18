@@ -34,8 +34,8 @@ protected:
     GLFrame frame;
 public:
     void ResetFrame();
-    void DrawBox(const M3DMatrix44f mvMatrix, const M3DMatrix44f projectMatrix, const M3DMatrix33f normalMatrix);
-    void DrawLine(const M3DMatrix44f mvpMatrix);
+    void DrawBox(const M3DMatrix44f modelMatrix,const M3DMatrix44f viewMatrix, const M3DMatrix44f projectMatrix);
+    void DrawLine(const M3DMatrix44f modelMatrix,const M3DMatrix44f viewMatrix, const M3DMatrix44f projectMatrix);
     void ShowInfo(float x, float y);
 
     void Rotate(float angle, float x, float y, float z);

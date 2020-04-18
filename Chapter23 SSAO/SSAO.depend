@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1577260856 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\camera.cpp
+1577332582 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\camera.cpp
 	"../Header/Camera.h"
 
 1577260867 e:\gamedev\opengl\trunk\openglproject\tools\header\camera.h
@@ -649,7 +649,7 @@
 	"../Header/FreetypeFont.h"
 	"ft2build.h"
 
-1577257186 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
+1577334889 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\gameobject.cpp
 	"../Header/GameObject.h"
 
 1564580158 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\light.cpp
@@ -658,7 +658,7 @@
 1565434705 e:\gamedev\opengl\trunk\openglproject\tools\header\light.h
 	"Tools.h"
 
-1577274167 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
+1577334703 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1562394948 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\tinyobjloader.cpp
@@ -736,7 +736,7 @@
 1568282430 source:e:\gamedev\opengl\trunk\openglproject\tools\sources\utiltimer.cpp
 	"../Header/UtilTimer.h"
 
-1577276471 source:e:\gamedev\opengl\trunk\openglproject\chapter23 ssao\main.cpp
+1577334409 source:e:\gamedev\opengl\trunk\openglproject\chapter23 ssao\main.cpp
 	"../Tools/Header/ShaderMgr.h"
 	"../Tools/Header/Tools.h"
 	"../Tools/Header/Camera.h"
