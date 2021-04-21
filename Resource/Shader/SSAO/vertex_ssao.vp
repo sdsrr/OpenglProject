@@ -1,0 +1,15 @@
+#version 410
+
+layout (location = 0) in vec4 vVertex;
+layout (location = 1) in vec4 vColor;
+layout (location = 2) in vec3 vNormal;
+layout (location = 3) in vec2 vTexcoord;
+
+out vec2 texcoord;
+uniform mat4 mvpMatrix;
+
+void main(void)
+{
+    texcoord = vTexcoord;
+    gl_Position = vVertex * mvpMatrix;
+}

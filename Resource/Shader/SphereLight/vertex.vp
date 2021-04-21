@@ -1,0 +1,18 @@
+#version 420
+
+layout(location = 0) in vec4 vVertex;
+layout(location = 2) in vec3 vNormal;
+
+uniform mat4 mMatrix;
+uniform mat4 mvpMatrix;
+
+out vec3 normal;
+out vec4 position;
+
+void main(void)
+{
+    position = vVertex * mMatrix;
+    mat3 normalMatrix = mat3(transpose(inverse(mMatrix)));
+    normal = vNormal * normalMatrix;
+    gl_Position = vVertex * mvpMatrix;
+}

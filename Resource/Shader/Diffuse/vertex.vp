@@ -1,0 +1,22 @@
+#version 330
+
+layout (location = 0) in vec4 vVertex;
+layout (location = 1) in vec4 vColor;
+layout (location = 2) in vec3 vNormal;
+layout (location = 3) in vec2 vTexCoord;
+
+uniform mat4 mMatrix;
+uniform mat4 vMatrix;
+uniform mat4 pMatrix;
+
+out vec4 color;
+out vec3 normal;
+
+void main(void)
+{
+    color = vColor;
+    mat4 mvMatrix = mMatrix * vMatrix;
+    normal = transpose(inverse(mat3(mvMatrix))) * vNormal;
+    //gl_Position = vVertex * mMatrix * vMatrix * pMatrix;
+    gl_Position = pMatrix * vMatrix * mMatrix * vVertex;
+}

@@ -1,7 +1,7 @@
-#include "../Tools/Header/ShaderMgr.h"
-#include "../Tools/Header/Tools.h"
-#include "../Tools/Header/Camera.h"
-#include "../Tools/Header/UtilPrint.h"
+#include "../Common/Header/ShaderMgr.h"
+#include "../Common/Header/Tools.h"
+#include "../Common/Header/Camera.h"
+#include "../Common/Header/UtilPrint.h"
 
 BaseShaderParam param;
 ShaderMgr* shaderMgr;
@@ -33,7 +33,7 @@ static void Display(void)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
     param.SetDiffuseColor(color);
-    param.SetMVPMatrix(modelStack.GetMatrix());
+    //param.SetMVPMatrix(modelStack.GetMatrix());
     shaderMgr->UseSolidColor(param);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 

@@ -1,0 +1,73 @@
+#version 330
+
+layout(location = 0) in vec4 vVertex;
+layout(location = 2) in vec3 vNormal;
+layout(location = 3) in vec2 vTexCoord;
+
+/*
+uniform struct
+{
+    mat4 mvpMatrix;
+    mat4 mvMatrix;
+    mat4 normalMatrix;
+} data;
+*/
+
+int lineCount = 200;
+float period = 1f;
+float period_noise = 10;
+
+uniform mat4 mvMatrix;
+uniform mat4 projectMatrix;
+uniform sampler2D colorMap01;
+uniform int instance;
+uniform float time;
+
+out float r;
+out vec2 texcoord;
+
+mat4 createYMatrix(float angle)
+{
+    float st = sin(angle);
+    float ct = cos(angle);
+    mat4 roate = mat4(vec4(ct, 0.0, st, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(-st, 0.0, ct, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+    return roate;
+}
+
+mat4 createXMatrix(float angle)
+{
+    float st = sin(angle);
+    float ct = cos(angle);
+    mat4 roate = mat4(vec4(1, 0, 0, 0), vec4(0, ct, -st, 0), vec4(0, st, ct, 0), vec4(0, 0, 0, 1));
+    return roate;
+}
+
+int random(int seed, int iterations)
+{
+    int value = seed;
+    int n;
+
+    for (n = 0; n < iterations; n++) {
+        value = ((value >> 7) ^ (value << 9)) * 15485863;
+    }
+
+    return value;
+}
+
+void main(void)
+{
+    int _instance = max(instance, gl_InstanceID);
+    texcoord = vTexCoord;
+    mat4 roateMatrixX = createXMatrix(time);
+    mat4 roateMatrixY = createYMatrix(random(_instance, 3));
+    vec4 position = vVertex * roateMatrixY * roateMatrixX * mvMatrix;
+
+    float deltaX = float(_instance / lineCount);
+    float deltaZ = float(_instance - lineCount * deltaX);
+    vec4 noiseCol = texture(colorMap01, vec2(deltaX / 10000 * lineCount, deltaZ / lineCount));
+
+    position.x += deltaX * period + period_noise * noiseCol.r;
+    position.z += deltaZ * period + period_noise * noiseCol.r;
+    gl_Position = position * projectMatrix;
+}
+

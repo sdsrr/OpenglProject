@@ -1,7 +1,7 @@
-#include "../Tools/Header/ShaderMgr.h"
-#include "../Tools/Header/GameObject.h"
-#include "../Tools/Header/Camera.h"
-#include "../Tools/Header/UtilPrint.h"
+#include "../Common/Header/ShaderMgr.h"
+#include "../Common/Header/GameObject.h"
+#include "../Common/Header/Camera.h"
+#include "../Common/Header/UtilPrint.h"
 
 BaseShaderParam param;
 ShaderMgr* shaderMgr;
