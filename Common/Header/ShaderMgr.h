@@ -5,32 +5,37 @@
 
 enum ShaderType
 {
-    STSolid,
+    STSolid=0,
     STDiffuse,
     STTexture2d,
     STTextureArray,
     STCubemap,
-    STSkybox,
+
+    STSkybox=5,
     STTextureSprite,
     STBlur,
     STTBO,
     STFBO,
-    STHDR,
+
+    STHDR=10,
     STBloor,
     STMSAA,
     STGeometry,
     STGrassInstance,
-    STFeedback,
+
+    STFeedback=15,
     STWriteFeedback,
     STFont,
     STOutShadowmap,
     STShadowmap,
-    STCameraBox,
+
+    STCameraBox=20,
     STCameraLine,
     STDeferredOut,
     STDeferredIn,
     STSphereLight,
-    STSSAODeferredIn,
+
+    STSSAODeferredIn=25,
     STCalcSSAO,
     STSSAO,
     //STAO,
@@ -68,7 +73,6 @@ public:
     M3DMatrix44f vMatrix;
     M3DMatrix44f pMatrix;
     M3DMatrix33f normalMatrix;
-    float model[4][4];
     int deltatime;
     GLint colorMap[6];
     GLfloat lightDirection[3];
@@ -93,6 +97,7 @@ class ShaderMgr
 private:
     ShaderMgr();
     static ShaderMgr* _instance;
+    GLShaderManager* _standardShardMgr;
     BaseShader* shaderList[(int)STMax];
     std::map<ShaderType, VoidDeldgate> initfunctions;
 
@@ -107,10 +112,10 @@ private:
     GLuint fontShader_icolor;
     GLuint sphereLight_iUbo;
 
-    BaseShader* bloorNormalShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/normal.fp");
-    BaseShader* bloorBrightShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/bright.fp");
-    BaseShader* bloorBlurShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/blur.fp");
-    BaseShader* bloorMixShader = new BaseShader("Tools/Shader/Bloor/vertex.vp", "Tools/Shader/Bloor/mix.fp");
+    BaseShader* bloorNormalShader = new BaseShader("Resource/Shader/Bloor/vertex.vp", "Resource/Shader/Bloor/normal.fp");
+    BaseShader* bloorBrightShader = new BaseShader("Resource/Shader/Bloor/vertex.vp", "Resource/Shader/Bloor/bright.fp");
+    BaseShader* bloorBlurShader = new BaseShader("Resource/Shader/Bloor/vertex.vp", "Resource/Shader/Bloor/blur.fp");
+    BaseShader* bloorMixShader = new BaseShader("Resource/Shader/Bloor/vertex.vp", "Resource/Shader/Bloor/mix.fp");
     GLuint bloorBrightShader_iBrightLimit;
     GLint bloorMixShader_iExposure;
     GLint bloorMixShader_iBlurLevel;
@@ -134,6 +139,7 @@ public:
     void OnInit(int type=-1);
     void OnUnInit();
     void Update();
+    GLShaderManager* GetStandardShaderMgr();
 
     void InitBloor(ShaderType type);
     void InitTextureSprite(ShaderType type);

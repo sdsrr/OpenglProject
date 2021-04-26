@@ -12,6 +12,7 @@
 #include <GLBatch.h>
 #include <GLFrame.h>
 #include <GLFrustum.h>
+#include <GLShaderManager.h>
 #include <GLMatrixStack.h>
 #include <GLGeometryTransform.h>
 #include <StopWatch.h>

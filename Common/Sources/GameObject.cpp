@@ -1,7 +1,44 @@
 #include "../Header/GameObject.h"
+
+
+YoyoMoveAction::YoyoMoveAction(float speed, M3DVector3f offset)
+{
+    _speed = speed;
+    memset(_dir, 0, 3);
+    memset(_pos, 0, 3);
+    memcpy(_offset, offset, 3*sizeof(float));
+}
+
+void YoyoMoveAction::Run(GLMatrixStack* modelStack)
+{
+    if (_pos[0] < -_offset[0] || _pos[0] > _offset[0])
+        _dir[0] *= -1;
+    if (_pos[1] < -_offset[1] || _pos[1] > _offset[1])
+        _dir[1] *= -1;
+    if (_pos[1] < -_offset[1] || _pos[1] > _offset[0])
+        _dir[1] *= -1;
+    _pos[0] = _dir[0] * _speed;
+    _pos[1] = _dir[1] * _speed;
+    _pos[2] = _dir[2] * _speed;
+    modelStack->Translate(_pos[0], _pos[1], _pos[2]);
+}
+
+void SequenceAction::Run(GLMatrixStack* modelStack)
+{
+    for (std::list<Action>::iterator child = _children.begin(); child != _children.end(); ++child)
+        child->Run(modelStack);
+}
+
+
 GObject::GObject()
 {
     modelStack.LoadIdentity();
+}
+
+void GObject::RunAction()
+{
+    if (_action != NULL)
+        _action->Run(&modelStack);
 }
 
 BatchGObject::BatchGObject(){}

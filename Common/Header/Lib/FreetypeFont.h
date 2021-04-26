@@ -1,8 +1,8 @@
 #ifndef FREETYPEFONT
 #define FREETYPEFONT
 
-#include "../Header/Tools.h"
-#include "../Header/GameObject.h"
+#include "../../Header/Tools.h"
+#include "../../Header/GameObject.h"
 
 #include "ft2build.h"
 #include FT_FREETYPE_H

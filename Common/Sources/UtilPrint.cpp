@@ -21,7 +21,7 @@ void UtilPrint::PrintString(int count, char* str, ...)
     printf("\n");
 }
 
-void UtilPrint::PrintMatrix44f(M3DMatrix44f matrix)
+void UtilPrint::PrintMatrix44f(M3DMatrix44f matrix, std::string ext)
 {
     /*
     for (int n = 0; n < 4; n++)
@@ -31,12 +31,14 @@ void UtilPrint::PrintMatrix44f(M3DMatrix44f matrix)
         std::cout<<'\n';
     }
     */
+    if (ext != "")
+        std::cout<<ext;
     for (int i=0; i< 16; i++)
         std::cout<<matrix[i]<<" ";
     std::cout<<'\n';
 }
 
-void UtilPrint::PrintMatrix44f(const M3DMatrix44f matrix)
+void UtilPrint::PrintMatrix44f(const M3DMatrix44f matrix, std::string ext)
 {
     /*
     for (int n = 0; n < 4; n++)
@@ -46,6 +48,8 @@ void UtilPrint::PrintMatrix44f(const M3DMatrix44f matrix)
         std::cout<<'\n';
     }
     */
+    if (ext != "")
+        std::cout<<ext;
     for (int i=0; i< 16; i++)
         std::cout<<matrix[i]<<" ";
     std::cout<<'\n';

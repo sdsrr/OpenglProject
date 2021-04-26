@@ -6,6 +6,7 @@
 BaseShaderParam param;
 ShaderMgr* shaderMgr;
 GLMatrixStack modelStack;
+GLBatch triangle;
 
 GLfloat vertexs[] = {
     -0.5f, -0.5f, 0.0f,
@@ -13,40 +14,53 @@ GLfloat vertexs[] = {
      0.0f,  0.5f, 0.0f,
 };
 
-M3DVector4f color = {0,1,0,0};
+M3DVector4f color = {0,1,0,1};
 
 static void Resize(int width, int height)
 {
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width/2.0, height/2.0);
 }
 
 static void Display(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //创建vbo传入顶点信息
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexs), vertexs, GL_STATIC_DRAW);
-    //解释顶点数组数据解析方式
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-    glEnableVertexAttribArray(0);
-    param.SetDiffuseColor(color);
-    //param.SetMVPMatrix(modelStack.GetMatrix());
-    shaderMgr->UseSolidColor(param);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
+    glClear(GL_COLOR_BUFFER_BIT);
+    triangle.Begin(GL_TRIANGLES, 3);
+    triangle.CopyVertexData3f(vertexs);
+    triangle.End();
+    GLShaderManager* standardMgr = shaderMgr->GetStandardShaderMgr();
+    standardMgr->UseStockShader(GLT_SHADER_IDENTITY, color);
+    triangle.Draw();
     glutSwapBuffers();
 }
 
+static void KeyMove(unsigned char key, int x, int y)
+{
+    float step = 0.1;
+    float offsetX = 0;
+    float offsetY = 0;
+    if (key == 'w')
+        offsetY += step;
+    if (key == 's')
+        offsetY -= step;
+    if (key == 'a')
+        offsetX -= step;
+    if (key == 'd')
+        offsetX += step;
+    vertexs[0] += offsetX;
+    vertexs[3] += offsetX;
+    vertexs[6] += offsetX;
+    vertexs[1] += offsetY;
+    vertexs[4] += offsetY;
+    vertexs[7] += offsetY;
+    glutPostRedisplay();
+}
 
 void OnStartUp()
 {
     shaderMgr = ShaderMgr::GetInstance();
 }
 
-void OnShutUp()
+void OnShutDown()
 {
     shaderMgr->OnUnInit();
 }
@@ -67,6 +81,7 @@ int main(int argc, char *argv[])
     //注册函数
     glutReshapeFunc(Resize);
     glutDisplayFunc(Display);
+    glutKeyboardFunc(KeyMove);
     //初始化glew库
     if (glewInit() != GLEW_OK)
     {
@@ -76,6 +91,6 @@ int main(int argc, char *argv[])
     OnStartUp();
     //主循环
     glutMainLoop();
-    OnShutUp();
+    OnShutDown();
     return EXIT_SUCCESS;
 }

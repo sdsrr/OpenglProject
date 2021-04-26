@@ -50,7 +50,7 @@
  * Gavin Bell
  */
 #include <math.h>
-#include "../Header/trackball.h"
+#include "../../Header/Lib/Trackball.h"
 
 /*
  * This size should really be based on the distance from the center of

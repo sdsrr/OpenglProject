@@ -1517,13 +1517,13 @@
 1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\camera.cpp
 	"../Header/Camera.h"
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\camera.h
+1619341515 d:\projects\opengl\trunk\openglproject\common\header\camera.h
 	"../Header/Tools.h"
 	"../Header/GameObject.h"
 	"../Header/ShaderMgr.h"
-	"../Header/FreetypeFont.h"
+	"../Header/Lib/FreetypeFont.h"
 
-1618974413 d:\projects\opengl\trunk\openglproject\common\header\tools.h
+1619062050 d:\projects\opengl\trunk\openglproject\common\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -1535,6 +1535,7 @@
 	<GLBatch.h>
 	<GLFrame.h>
 	<GLFrustum.h>
+	<GLShaderManager.h>
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
 	<StopWatch.h>
@@ -1556,14 +1557,14 @@
 	<glut/glut.h>
 	<GL/glut.h>
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\gameobject.h
-	"../Header/Tools.h"
+1619357357 d:\projects\opengl\trunk\openglproject\common\header\gameobject.h
+	"Tools.h"
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\shadermgr.h
+1619176821 d:\projects\opengl\trunk\openglproject\common\header\shadermgr.h
 	"Tools.h"
 	"UtilPrint.h"
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\utilprint.h
+1619358903 d:\projects\opengl\trunk\openglproject\common\header\utilprint.h
 	"Tools.h"
 
 1618973972 d:\projects\opengl\trunk\openglproject\common\header\freetypefont.h
@@ -1575,7 +1576,7 @@
 	"../Header/FreetypeFont.h"
 	"ft2build.h"
 
-1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\gameobject.cpp
+1619357020 source:d:\projects\opengl\trunk\openglproject\common\sources\gameobject.cpp
 	"../Header/GameObject.h"
 
 1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\light.cpp
@@ -1584,7 +1585,7 @@
 1618883360 d:\projects\opengl\trunk\openglproject\common\header\light.h
 	"Tools.h"
 
-1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\shadermgr.cpp
+1619176853 source:d:\projects\opengl\trunk\openglproject\common\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
 1618972798 source:d:\projects\opengl\trunk\openglproject\common\sources\tinyobjloader.cpp
@@ -1606,8 +1607,8 @@
 	<glut/glut.h>
 	<GL/glut.h>
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\utiltimer.h
-	"FreetypeFont.h"
+1619341672 d:\projects\opengl\trunk\openglproject\common\header\utiltimer.h
+	"Lib/FreetypeFont.h"
 	<windows.h>
 	<mmsystem.h>
 	<sys/time.h>
@@ -1623,15 +1624,49 @@
 
 1618883360 d:\projects\opengl\trunk\openglproject\common\header\trackball.h
 
-1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\utilprint.cpp
+1619358951 source:d:\projects\opengl\trunk\openglproject\common\sources\utilprint.cpp
 	"../Header/UtilPrint.h"
 
 1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\utiltimer.cpp
 	"../Header/UtilTimer.h"
 
-1618993769 source:d:\projects\opengl\trunk\openglproject\chapter2 coordinatesystem\main.cpp
+1619358810 source:d:\projects\opengl\trunk\openglproject\chapter2 coordinatesystem\main.cpp
 	"../Common/Header/ShaderMgr.h"
 	"../Common/Header/GameObject.h"
 	"../Common/Header/Camera.h"
 	"../Common/Header/UtilPrint.h"
+
+1619341662 d:\projects\opengl\trunk\openglproject\common\header\lib\freetypefont.h
+	"../../Header/Tools.h"
+	"../../Header/GameObject.h"
+	"ft2build.h"
+
+1619341788 source:d:\projects\opengl\trunk\openglproject\common\sources\lib\trackball.cpp
+	<math.h>
+	"../../Header/Lib/Trackball.h"
+
+1618883360 d:\projects\opengl\trunk\openglproject\common\header\lib\trackball.h
+
+1619341646 source:d:\projects\opengl\trunk\openglproject\common\sources\lib\freetypefont.cpp
+	"../../Header/Lib/FreetypeFont.h"
+	"ft2build.h"
+
+1619341633 source:d:\projects\opengl\trunk\openglproject\common\sources\lib\tinyobjloader.cpp
+	"../../Header/Lib/Tinyobjloader.h"
+	"tiny_obj_loader.h"
+
+1619341692 d:\projects\opengl\trunk\openglproject\common\header\lib\tinyobjloader.h
+	<algorithm>
+	<cassert>
+	<cmath>
+	<limits>
+	<map>
+	<vector>
+	"../Tools.h"
+	"../UtilTimer.h"
+	"../GameObject.h"
+	"stb_image.h"
+	"tiny_obj_loader.h"
+	<glut/glut.h>
+	<GL/glut.h>
 

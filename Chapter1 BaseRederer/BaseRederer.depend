@@ -1137,7 +1137,7 @@
 1618883360 d:\projects\opengl\trunk\openglproject\common\header\gameobject.h
 	"../Header/Tools.h"
 
-1618974413 d:\projects\opengl\trunk\openglproject\common\header\tools.h
+1619062050 d:\projects\opengl\trunk\openglproject\common\header\tools.h
 	<windows.h>
 	<stdio.h>
 	<stdlib.h>
@@ -1149,6 +1149,7 @@
 	<GLBatch.h>
 	<GLFrame.h>
 	<GLFrustum.h>
+	<GLShaderManager.h>
 	<GLMatrixStack.h>
 	<GLGeometryTransform.h>
 	<StopWatch.h>
@@ -1176,10 +1177,10 @@
 1618883360 d:\projects\opengl\trunk\openglproject\common\header\light.h
 	"Tools.h"
 
-1618883361 source:d:\projects\opengl\trunk\openglproject\common\sources\shadermgr.cpp
+1619074955 source:d:\projects\opengl\trunk\openglproject\common\sources\shadermgr.cpp
 	"../Header/ShaderMgr.h"
 
-1618883360 d:\projects\opengl\trunk\openglproject\common\header\shadermgr.h
+1619075011 d:\projects\opengl\trunk\openglproject\common\header\shadermgr.h
 	"Tools.h"
 	"UtilPrint.h"
 
@@ -1246,7 +1247,7 @@
 	"../Header/Tools.h"
 	"stb_image.h"
 
-1618974430 source:d:\projects\opengl\trunk\openglproject\chapter1 baserederer\main.cpp
+1619074986 source:d:\projects\opengl\trunk\openglproject\chapter1 baserederer\main.cpp
 	"../Common/Header/ShaderMgr.h"
 	"../Common/Header/Tools.h"
 	"../Common/Header/Camera.h"

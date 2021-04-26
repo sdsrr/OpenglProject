@@ -1,7 +1,7 @@
 #ifndef UTILTIMER
 #define UTILTIMER
 
-#include "FreetypeFont.h"
+#include "Lib/FreetypeFont.h"
 
 #ifdef _WIN32
 #ifdef __cplusplus

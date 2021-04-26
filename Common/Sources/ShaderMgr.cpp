@@ -17,7 +17,7 @@ void BaseShaderParam::SetDiffuseColor(M3DVector3f color, float alpha) {memcpy(di
 void BaseShaderParam::SetDiffuseColor(M3DVector4f color) {memcpy(diffuseColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetEnvironmentColor(M3DVector4f color){memcpy(environmentColor, color, 4*sizeof(float));}
 void BaseShaderParam::SetModelMatrix(const M3DMatrix44f matrix){memcpy(mMatrix, matrix, 16*sizeof(float));}
-void BaseShaderParam::SetModelMatrix(const float matrix[4][4]){memcpy(model, matrix, 16*sizeof(float));}
+void BaseShaderParam::SetModelMatrix(const float matrix[4][4]){memcpy(mMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetViewMatrix(const M3DMatrix44f matrix){memcpy(vMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetProjectMatrix(const M3DMatrix44f matrix){memcpy(pMatrix, matrix, 16*sizeof(float));}
 void BaseShaderParam::SetLightDirection(GLfloat direction[3]){memcpy(lightDirection, direction, 3*sizeof(float));}
@@ -83,35 +83,40 @@ ShaderMgr::ShaderMgr()
     InitFunctions();
 }
 
+GLShaderManager* ShaderMgr::GetStandardShaderMgr()
+{
+    return _standardShardMgr;
+}
+
 void ShaderMgr::InitShaders()
 {
-    shaderList[STSolid] = new BaseShader("Tools/Shader/SolidColor/vertex.vp", "Tools/Shader/SolidColor/fragment.fp");
-    shaderList[STDiffuse] = new BaseShader("Tools/Shader/Diffuse/vertex.vp", "Tools/Shader/Diffuse/fragment.fp");
-    shaderList[STTexture2d] = new BaseShader("Tools/Shader/Texture2D/vertex.vp", "Tools/Shader/Texture2D/fragment.fp");
-    shaderList[STCubemap] = new BaseShader("Tools/Shader/Cubemap/vertex.vp", "Tools/Shader/Cubemap/fragment.fp");
-    shaderList[STSkybox] = new BaseShader("Tools/Shader/SkyBox/vertex.vp","Tools/Shader/SkyBox/fragment.fp");
-    shaderList[STBlur] = new BaseShader("Tools/Shader/Blur/vertex.vp", "Tools/Shader/Blur/fragment.fp");
-    shaderList[STFBO] = new BaseShader("Tools/Shader/FBO/vertex.vp", "Tools/Shader/FBO/fragment.fp");
-    shaderList[STMSAA] = new BaseShader("Tools/Shader/TexMsaa/vertex.vp", "Tools/Shader/TexMsaa/fragment.fp");
-    shaderList[STFeedback] = new BaseShader("Tools/Shader/FeedBack/vertex.vp", "Tools/Shader/FeedBack/fragment.fp");
-    shaderList[STWriteFeedback] = new BaseShader("Tools/Shader/FeedBack/vertex_out.vp", NULL);
-    shaderList[STGrassInstance] = new BaseShader("Tools/Shader/GrassInstance/vertex.vp", "Tools/Shader/GrassInstance/fragment.fp");
-    shaderList[STGeometry] = new BaseShader("Tools/Shader/GeometryNormal/vertex.vp", "Tools/Shader/GeometryNormal/geometry.gp", "Tools/Shader/GeometryNormal/fragment.fp");
-    shaderList[STTextureArray] = new BaseShader("Tools/Shader/TextureArray/vertex.vp","Tools/Shader/TextureArray/fragment.fp");
-    shaderList[STTextureSprite] = new BaseShader("Tools/Shader/SpritePoint/vertex.vp", "Tools/Shader/SpritePoint/fragment.fp");
-    shaderList[STTBO] = new BaseShader("Tools/Shader/TBO/vertex.vp", "Tools/Shader/TBO/fragment.fp");
-    shaderList[STHDR] = new BaseShader("Tools/Shader/HDR/vertex.vp","Tools/Shader/HDR/fragment.fp");
-    shaderList[STFont] = new BaseShader("Tools/Shader/Font/vertex.vp","Tools/Shader/Font/fragment.fp");
-    shaderList[STOutShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_outshadow.vp","Tools/Shader/Shadowmap/fragment_outshadow.fp");
-    shaderList[STShadowmap] = new BaseShader("Tools/Shader/Shadowmap/vertex_shadow.vp","Tools/Shader/Shadowmap/fragment_shadow.fp");
-    shaderList[STCameraBox] = new BaseShader("Tools/Shader/CameraBox/vertex_normal.vp","Tools/Shader/CameraBox/fragment_normal.fp");
-    shaderList[STCameraLine] = new BaseShader("Tools/Shader/CameraBox/vertex_line.vp","Tools/Shader/CameraBox/fragment_line.fp");
-    shaderList[STDeferredOut] = new BaseShader("Tools/Shader/DeferredRender/vertex_out.vp","Tools/Shader/DeferredRender/fragment_out.fp");
-    shaderList[STDeferredIn] = new BaseShader("Tools/Shader/DeferredRender/vertex_in.vp","Tools/Shader/DeferredRender/fragment_in.fp");
-    shaderList[STSphereLight] = new BaseShader("Tools/Shader/SphereLight/vertex.vp","Tools/Shader/SphereLight/fragment.fp");
-    shaderList[STSSAO] = new BaseShader("Tools/Shader/SSAO/vertex.vp","Tools/Shader/SSAO/fragment.fp");
-    shaderList[STSSAODeferredIn] = new BaseShader("Tools/Shader/SSAO/vertex_deferred_in.vp","Tools/Shader/SSAO/fragment_deferred_in.fp");
-    shaderList[STCalcSSAO] = new BaseShader("Tools/Shader/SSAO/vertex_ssao.vp","Tools/Shader/SSAO/fragment_ssao.fp");
+    shaderList[STSolid] = new BaseShader("Resource/Shader/SolidColor/vertex.vp", "Resource/Shader/SolidColor/fragment.fp");
+    shaderList[STDiffuse] = new BaseShader("Resource/Shader/Diffuse/vertex.vp", "Resource/Shader/Diffuse/fragment.fp");
+    shaderList[STTexture2d] = new BaseShader("Resource/Shader/Texture2D/vertex.vp", "Resource/Shader/Texture2D/fragment.fp");
+    shaderList[STCubemap] = new BaseShader("Resource/Shader/Cubemap/vertex.vp", "Resource/Shader/Cubemap/fragment.fp");
+    shaderList[STSkybox] = new BaseShader("Resource/Shader/SkyBox/vertex.vp","Resource/Shader/SkyBox/fragment.fp");
+    shaderList[STBlur] = new BaseShader("Resource/Shader/Blur/vertex.vp", "Resource/Shader/Blur/fragment.fp");
+    shaderList[STFBO] = new BaseShader("Resource/Shader/FBO/vertex.vp", "Resource/Shader/FBO/fragment.fp");
+    shaderList[STMSAA] = new BaseShader("Resource/Shader/TexMsaa/vertex.vp", "Resource/Shader/TexMsaa/fragment.fp");
+    shaderList[STFeedback] = new BaseShader("Resource/Shader/FeedBack/vertex.vp", "Resource/Shader/FeedBack/fragment.fp");
+    shaderList[STWriteFeedback] = new BaseShader("Resource/Shader/FeedBack/vertex_out.vp", NULL);
+    shaderList[STGrassInstance] = new BaseShader("Resource/Shader/GrassInstance/vertex.vp", "Resource/Shader/GrassInstance/fragment.fp");
+    shaderList[STGeometry] = new BaseShader("Resource/Shader/GeometryNormal/vertex.vp", "Resource/Shader/GeometryNormal/geometry.gp", "Resource/Shader/GeometryNormal/fragment.fp");
+    shaderList[STTextureArray] = new BaseShader("Resource/Shader/TextureArray/vertex.vp","Resource/Shader/TextureArray/fragment.fp");
+    shaderList[STTextureSprite] = new BaseShader("Resource/Shader/SpritePoint/vertex.vp", "Resource/Shader/SpritePoint/fragment.fp");
+    shaderList[STTBO] = new BaseShader("Resource/Shader/TBO/vertex.vp", "Resource/Shader/TBO/fragment.fp");
+    shaderList[STHDR] = new BaseShader("Resource/Shader/HDR/vertex.vp","Resource/Shader/HDR/fragment.fp");
+    shaderList[STFont] = new BaseShader("Resource/Shader/Font/vertex.vp","Resource/Shader/Font/fragment.fp");
+    shaderList[STOutShadowmap] = new BaseShader("Resource/Shader/Shadowmap/vertex_outshadow.vp","Resource/Shader/Shadowmap/fragment_outshadow.fp");
+    shaderList[STShadowmap] = new BaseShader("Resource/Shader/Shadowmap/vertex_shadow.vp","Resource/Shader/Shadowmap/fragment_shadow.fp");
+    shaderList[STCameraBox] = new BaseShader("Resource/Shader/CameraBox/vertex_normal.vp","Resource/Shader/CameraBox/fragment_normal.fp");
+    shaderList[STCameraLine] = new BaseShader("Resource/Shader/CameraBox/vertex_line.vp","Resource/Shader/CameraBox/fragment_line.fp");
+    shaderList[STDeferredOut] = new BaseShader("Resource/Shader/DeferredRender/vertex_out.vp","Resource/Shader/DeferredRender/fragment_out.fp");
+    shaderList[STDeferredIn] = new BaseShader("Resource/Shader/DeferredRender/vertex_in.vp","Resource/Shader/DeferredRender/fragment_in.fp");
+    shaderList[STSphereLight] = new BaseShader("Resource/Shader/SphereLight/vertex.vp","Resource/Shader/SphereLight/fragment.fp");
+    shaderList[STSSAO] = new BaseShader("Resource/Shader/SSAO/vertex.vp","Resource/Shader/SSAO/fragment.fp");
+    shaderList[STSSAODeferredIn] = new BaseShader("Resource/Shader/SSAO/vertex_deferred_in.vp","Resource/Shader/SSAO/fragment_deferred_in.fp");
+    shaderList[STCalcSSAO] = new BaseShader("Resource/Shader/SSAO/vertex_ssao.vp","Resource/Shader/SSAO/fragment_ssao.fp");
 }
 
 void ShaderMgr::InitFunctions()
@@ -284,6 +289,8 @@ void ShaderMgr::OnInit(int type)
             printf("init shader %d\n", i);
         }
     }
+    _standardShardMgr = new GLShaderManager();
+    _standardShardMgr->InitializeStockShaders();
 }
 
 void ShaderMgr::OnUnInit()
@@ -433,8 +440,8 @@ void ShaderMgr::InitBaseShaderParam(BaseShader* shader, const BaseShaderParam& p
     if (shader != NULL)
     {
         glUseProgram(shader->id);
-        //glUniformMatrix4fv param3:false列优先 true行优先(这里指参数matrix的格式是列优先还是行优先,都会被opengl转化为列优先)
-        glUniformMatrix4fv(shader->mMatrix, 1, GL_FALSE, param.mMatrix);//&param.model[0][0]
+        //glUniformMatrix4fv param3:false列优先 true行优先(二位数组[][]为行优先，[]一维数据如M3DMatrix44f为列优先)
+        glUniformMatrix4fv(shader->mMatrix, 1, GL_FALSE, param.mMatrix);
         glUniformMatrix4fv(shader->vMatrix, 1, GL_FALSE, param.vMatrix);
         glUniformMatrix4fv(shader->pMatrix, 1, GL_FALSE, param.pMatrix);
         glUniform3fv(shader->lightDirection, 1, param.lightDirection);

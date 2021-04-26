@@ -8,9 +8,9 @@
 #include <map>
 #include <vector>
 
-#include "Tools.h"
-#include "UtilTimer.h"
-#include "GameObject.h"
+#include "../Tools.h"
+#include "../UtilTimer.h"
+#include "../GameObject.h"
 
 #include "stb_image.h"
 #include "tiny_obj_loader.h"

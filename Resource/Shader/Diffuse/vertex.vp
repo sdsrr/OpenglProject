@@ -17,6 +17,5 @@ void main(void)
     color = vColor;
     mat4 mvMatrix = mMatrix * vMatrix;
     normal = transpose(inverse(mat3(mvMatrix))) * vNormal;
-    //gl_Position = vVertex * mMatrix * vMatrix * pMatrix;
     gl_Position = pMatrix * vMatrix * mMatrix * vVertex;
 }

@@ -4,7 +4,7 @@
 #include "../Header/Tools.h"
 #include "../Header/GameObject.h"
 #include "../Header/ShaderMgr.h"
-#include "../Header/FreetypeFont.h"
+#include "../Header/Lib/FreetypeFont.h"
 
 enum MouseMotion
 {
